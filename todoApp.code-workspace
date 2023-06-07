@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../april23/groceryListApp"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "todo-app"
+	}
+}
