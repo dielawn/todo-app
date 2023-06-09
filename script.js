@@ -1,6 +1,6 @@
 // //factory functions
-function createToDo(title, description, dueDate, time, priority) {
-    const toDo = {
+function createNote(title, description, dueDate, time, priority) {
+    const note = {
         title: title,
         description: description,
         dueDate: dueDate,
@@ -8,49 +8,45 @@ function createToDo(title, description, dueDate, time, priority) {
         priority: priority
     }
     return{
-        toDo,
+        note,
         setTitle(title) {
-            toDo.title = title
+            note.title = title
         },
         setDescription(description) {
-            toDo.description = description
+            note.description = description
         },
         setDueDate(dueDate) {
-            toDo.dueDate = dueDate
+            note.dueDate = dueDate
         },
         setTime(time) {
-            toDo.time = time
+            note.time = time
         },
         setPriority(priority) {
-            toDo.priority = priority
+            note.priority = priority
         },
         setArray(array) {
-            array.push (toDo.title, toDo.description, toDo.dueDate, toDo.time, toDo.priority)
+            array.push (note.title, note.description, note.dueDate, note.time, note.priority)
          },
-        editTodo(objectArg) {
-            toDo.addEventListener('click', () => {
-                console.log(this)
-            })
-        } 
+        
      }
  }
 
  let description = 'Teeth cleaning and x-ray'
- let firstEvent = createToDo('Dentist', description, '11/24/23', '12:00', 'High' )
- let secondEvent = createToDo('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
+ let firstEvent = createNote('Dentist', description, '11/24/23', '12:00', 'High' )
+ let secondEvent = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
  
 //Constructor function
-function Category(category, description, ) {
+function List(category, description, ) {
     this.category = category,
     this.description = description,
     this.array = []
 }
 
-const welcomeArray = ['Welcome', 'The bestest todo list app', 'Select a category then add a new todo', 'General tasks is the default category']
-const generalTasks = new Category ('General', 'tasks')
-const work = new Category('Work', 'Professional', )
-const edu = new Category('School', 'College')
-const appt = new Category('Appointment', 'dr, dentist, plumber, etc')
+const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
+const generalTasks = new List ('General', 'tasks')
+const work = new List('Work', 'Professional', )
+const edu = new List('School', 'College')
+const appt = new List('Appointment', 'dr, dentist, plumber, etc')
 
 
 //DOM stuff
@@ -62,7 +58,7 @@ function SuperElement(type, content) {
         console.log(this.el)
     })
 } 
-const renderToDos = (array) => {
+const renderNotes = (array) => {
     array.map(item => {
         return new SuperElement('p', item)
     })
@@ -71,7 +67,7 @@ const renderToDos = (array) => {
 const h2 = new SuperElement('h2', 'Check the console')
 
 const eventElements = welcomeArray.map(item => {
-    return new SuperElement('p', item)
+    return new SuperElement('h4', item)
 })
 
 
