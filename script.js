@@ -24,17 +24,47 @@ function createNote(title, description, dueDate, time, priority) {
         setPriority(priority) {
             note.priority = priority
         },
-        setArray(array) {
-            array.push (note.title, note.description, note.dueDate, note.time, note.priority)
+        setNoteArray(array) {
+            array.push (note)
          },
-        
+         removeNote(array, index) {
+            array.splice(index, 1);
+        },        
      }
  }
 
  let description = 'Teeth cleaning and x-ray'
- let firstEvent = createNote('Dentist', description, '11/24/23', '12:00', 'High' )
- let secondEvent = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
- 
+
+ function createList(name, info) {
+    const list = {
+        name: name,
+        info: info,
+        listArray: [],
+    }
+    return {
+        list,
+        setCategory(name) {
+            list.name = name
+        },
+        setInfo(info) {
+            list.info = info
+        },
+        setListArray(listArray) {
+            listArray.push (list)
+        }, 
+        removeList(listArray, index) {
+            listArray.splice(index, 1)
+        }
+    }
+ } 
+
+ const defaultList = createList('General', 'Uncatogorized list')
+ const defaultNotes = [
+    createNote('Dentist', description, '11/24/23', '12:00', 'High' ), 
+    createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
+]
+
+
 //Constructor function
 function List(category, description, ) {
     this.category = category,
@@ -50,9 +80,11 @@ const appt = new List('Appointment', 'dr, dentist, plumber, etc')
 
 
 //DOM stuff
-function SuperElement(type, content) {
+function SuperElement(type, content, className, id) {
     this.el = document.createElement(type)
     this.el.innerText = content
+    this.el.classList.add(className)
+    this.el.id = id
     document.body.append(this.el)
     this.el.addEventListener('click', () => {
         console.log(this.el)
@@ -64,10 +96,10 @@ const renderNotes = (array) => {
     })
 }
 
-const h2 = new SuperElement('h2', 'Check the console')
+const h2 = new SuperElement('h2', 'Check the console', 'header', 'header')
 
 const eventElements = welcomeArray.map(item => {
-    return new SuperElement('h4', item)
+    return new SuperElement('h4', item, 'defaultMsg', 'defaultMsg')
 })
 
 
