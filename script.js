@@ -64,42 +64,57 @@ function createNote(title, description, dueDate, time, priority) {
     createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
 ]
 
-
-//Constructor function
-function List(category, description, ) {
-    this.category = category,
-    this.description = description,
-    this.array = []
-}
-
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
-const generalTasks = new List ('General', 'tasks')
-const work = new List('Work', 'Professional', )
-const edu = new List('School', 'College')
-const appt = new List('Appointment', 'dr, dentist, plumber, etc')
+const generalTasks = createList('General', 'tasks')
+generalTasks.list.listArray
+const work = createList('Work', 'Professional', )
+const edu = createList('School', 'College')
+const appt = createList('Appointment', 'dr, dentist, plumber, etc')
 
 
 //DOM stuff
-function SuperElement(type, content, className, id) {
+function SuperElement(parent, type, content, className, id) {
     this.el = document.createElement(type)
     this.el.innerText = content
     this.el.classList.add(className)
     this.el.id = id
-    document.body.append(this.el)
+    parent.appendChild(this.el)
     this.el.addEventListener('click', () => {
         console.log(this.el)
     })
 } 
+
+    const bodyElement = document.querySelector('body');
+
+    const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container');
+    const containerDiv = document.getElementById('container')
+    
+
 const renderNotes = (array) => {
     array.map(item => {
         return new SuperElement('p', item)
     })
 }
 
-const h2 = new SuperElement('h2', 'Check the console', 'header', 'header')
+const renderListOrNote = (array, parent) => {
+    console.log(array)
+    if(array === array.list) {
+        console.log('list!')
+        array.map(item => {
+            return new SuperElement(parent, 'div', item, 'listDiv', item.name)
+        })
+    } else {
+        console.log('note!')
+        array.map(item => {
+            return new SuperElement(parent, 'p', item, 'noteDiv', item.name)
+        })
+    }
+}
+const testList = renderListOrNote(generalTasks.list.listArray, 'containerDiv')
+const h2 = new SuperElement(containerDiv, 'h2', 'Check the console', 'header', 'header')
 
 const eventElements = welcomeArray.map(item => {
-    return new SuperElement('h4', item, 'defaultMsg', 'defaultMsg')
+    return new SuperElement(containerDiv, 'h4', item, 'defaultMsg', 'defaultMsg')
 })
 
 
