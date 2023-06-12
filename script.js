@@ -35,41 +35,14 @@ function createNote(title, description, dueDate, time, priority) {
 
  let description = 'Teeth cleaning and x-ray'
 
- function createList(name, info) {
-    const list = {
-        name: name,
-        info: info,
-        listArray: [],
-    }
-    return {
-        list,
-        setCategory(name) {
-            list.name = name
-        },
-        setInfo(info) {
-            list.info = info
-        },
-        setListArray(listArray) {
-            listArray.push (list)
-        }, 
-        removeList(listArray, index) {
-            listArray.splice(index, 1)
-        }
-    }
- } 
 
- const defaultList = createList('General', 'Uncatogorized list')
+
  const defaultNotes = [
     createNote('Dentist', description, '11/24/23', '12:00', 'High' ), 
     createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
 ]
 
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
-const generalTasks = createList('General', 'tasks')
-generalTasks.list.listArray
-const work = createList('Work', 'Professional', )
-const edu = createList('School', 'College')
-const appt = createList('Appointment', 'dr, dentist, plumber, etc')
 
 
 //DOM stuff
@@ -79,38 +52,56 @@ function SuperElement(parent, type, content, className, id) {
     this.el.classList.add(className)
     this.el.id = id
     parent.appendChild(this.el)
-    this.el.addEventListener('click', () => {
-        console.log(this.el)
-    })
+    // this.el.addEventListener('click', () => {
+    //     console.log(this.el)
+    // })
 } 
 
     const bodyElement = document.querySelector('body');
 
     const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container');
     const containerDiv = document.getElementById('container')
-    
 
-const renderNotes = (array) => {
-    array.map(item => {
-        return new SuperElement('p', item)
-    })
-}
+    function createList(name) {
+        SuperElement(containerDiv, 'div', '', name, name)
+        const newList = document.getElementById(name)
+        SuperElement(newList, 'p', name, `list${name}`, `list${name}`)
+     
+      } 
+        const defaultList = createList('General')
+        const work = createList('Work')
+        const edu = createList('School')
+        const appt = createList('Appointment')
+   
 
-const renderListOrNote = (array, parent) => {
-    console.log(array)
-    if(array === array.list) {
-        console.log('list!')
-        array.map(item => {
-            return new SuperElement(parent, 'div', item, 'listDiv', item.name)
-        })
-    } else {
-        console.log('note!')
-        array.map(item => {
-            return new SuperElement(parent, 'p', item, 'noteDiv', item.name)
-        })
-    }
-}
-const testList = renderListOrNote(generalTasks.list.listArray, 'containerDiv')
+        const renderNotes = (array, parent) => {
+            const noteId = `note-${Date.now()}`; // Generate a unique ID for the note
+        
+            const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);
+        
+            array.map(item => {
+                new SuperElement(noteDiv.el, 'p', item, 'listDiv', '');
+            });
+        
+            const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
+            removeBtn.el.addEventListener('click', () => {
+                console.log('remove', noteId);
+                const noteToRemove = document.getElementById(noteId);
+                if (noteToRemove) {
+                    noteToRemove.remove(); // Remove the note element from the DOM
+                }
+                removeBtn.el.remove(); // Remove the remove button element from the DOM
+            });
+        };
+        
+        
+renderNotes(welcomeArray, Work)
+renderNotes(welcomeArray, School)
+renderNotes(welcomeArray, General)
+renderNotes(welcomeArray, Appointment)
+
+
+
 const h2 = new SuperElement(containerDiv, 'h2', 'Check the console', 'header', 'header')
 
 const eventElements = welcomeArray.map(item => {
