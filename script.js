@@ -94,11 +94,61 @@ function SuperElement(parent, type, content, className, id) {
             });
         };
                
-// renderNotes(welcomeArray, pro)
-// renderNotes(welcomeArray, school)
-// renderNotes(welcomeArray, general)
-// renderNotes(welcomeArray, appointment)
+const renderInputs = () => {
+    SuperElement(containerDiv, 'div', '', 'inputDiv', 'inputDiv')
+    const inputDiv = document.getElementById('inputDiv')
 
+        SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput')
+        const titleInput = document.getElementById('titleInput')
+        titleInput.placeholder = 'Title'
+
+        SuperElement(inputDiv, 'input', '', 'descInput', 'descInput')
+        const descInput = document.getElementById('descInput')
+        descInput.placeholder = 'Description'
+    
+        SuperElement(inputDiv, 'input', '', 'dateInput', 'dateInput')
+        const dateInput = document.getElementById('dateInput')
+        dateInput.placeholder = 'Date'
+    
+        SuperElement(inputDiv, 'input', '', 'timeInput', 'timeInput')
+        const timeInput = document.getElementById('timeInput')
+        timeInput.placeholder = 'Time'
+    
+        SuperElement(inputDiv, 'label', 'Priority', 'prioritySelectLabel', 'prioritySelectLabel')
+        const prioritySelectLabel = document.getElementById('prioritySelectLabel')
+        prioritySelectLabel.for = 'prioritySelect'
+        SuperElement(inputDiv, 'select', '', 'prioritySelect', 'prioritySelect')
+        const prioritySelect = document.getElementById('prioritySelect')   
+        prioritySelect.name = 'prioritySelectLabel'    
+        // Create option elements and set their values
+        const lowOption = document.createElement('option');
+            lowOption.value = 'Low';
+            lowOption.text = 'Low';
+
+        const mediumOption = document.createElement('option');
+            mediumOption.value = 'Medium';
+            mediumOption.text = 'Medium';
+
+        const highOption = document.createElement('option');
+            highOption.value = 'High';
+            highOption.text = 'High';
+
+        const urgentOption = document.createElement('option');
+            urgentOption.value = 'Urgent';
+            urgentOption.text = 'Urgent';
+        // Append the option elements to the select element
+        prioritySelect.add(lowOption);
+        prioritySelect.add(mediumOption);
+        prioritySelect.add(highOption);
+        prioritySelect.add(urgentOption);
+
+        SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
+        const addNoteBtn = document.getElementById('addNoteBtn')
+        addNoteBtn.addEventListener('click', () => {
+            createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, priorityInput.value, )
+        })
+}
+renderInputs()
 setTimeout(() => {
     renderNotes(welcomeArray, school)
     setTimeout(() => {
