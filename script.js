@@ -68,10 +68,10 @@ function SuperElement(parent, type, content, className, id) {
         SuperElement(newList, 'p', name, `list${name}`, `list${name}`)
      
       } 
-        const defaultList = createList('General')
-        const work = createList('Work')
-        const edu = createList('School')
-        const appt = createList('Appointment')
+        const defaultList = createList('general')
+        const work = createList('pro')
+        const edu = createList('school')
+        const appt = createList('appointment')
    
 
         const renderNotes = (array, parent) => {
@@ -85,7 +85,7 @@ function SuperElement(parent, type, content, className, id) {
         
             const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
             removeBtn.el.addEventListener('click', () => {
-                console.log('remove', noteId);
+                console.log('remove');
                 const noteToRemove = document.getElementById(noteId);
                 if (noteToRemove) {
                     noteToRemove.remove(); // Remove the note element from the DOM
@@ -94,18 +94,35 @@ function SuperElement(parent, type, content, className, id) {
             });
         };
         
+
+// const renderNotes = (array, parent) => {
+//     array.map(item => {
+//         const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', '');
+//         new SuperElement(noteDiv.el, 'p', item, 'listDiv', '');
+//     });
+
+//     const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', 'removeBtn');
+//     removeBtn.el.addEventListener('click', () => {
+//         console.log('remove');
+//         const noteDivs = document.getElementsByClassName('noteDiv');
+//         for (let i = noteDivs.length - 1; i >= 0; i--) {
+//             const noteDiv = noteDivs[i];
+//             noteDiv.remove(); // Remove the note element from the DOM
+//         }
+//         removeBtn.el.remove(); // Remove the remove button element from the DOM
+//     });
+// };
+
         
-renderNotes(welcomeArray, Work)
-renderNotes(welcomeArray, School)
-renderNotes(welcomeArray, General)
-renderNotes(welcomeArray, Appointment)
+        
+renderNotes(welcomeArray, pro)
+renderNotes(welcomeArray, school)
+renderNotes(welcomeArray, general)
+renderNotes(welcomeArray, appointment)
 
 
 
-const h2 = new SuperElement(containerDiv, 'h2', 'Check the console', 'header', 'header')
 
-const eventElements = welcomeArray.map(item => {
-    return new SuperElement(containerDiv, 'h4', item, 'defaultMsg', 'defaultMsg')
-})
+
 
 
