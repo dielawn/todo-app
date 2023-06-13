@@ -71,6 +71,30 @@ function SuperElement(parent, type, content, className, id) {
         const listNameTxt = document.getElementById(`list${name}`)
         listNameTxt.style.fontWeight = 900;
       } 
+
+      const renderListObject = (object) => {
+        const listId = `list-${Date.now()}`; // Generate a unique ID for the note        
+        const listDiv = new SuperElement(containerDiv, 'div', '', 'listDiv', listId);        
+       for(let i = 0; i < object.length; i++){
+        console.log(notes[i].title)
+        new SuperElement(listDiv.el, 'p', notes[i].title, 'listDiv', '');
+        new SuperElement(listDiv.el, 'p', notes[i].description, 'listDiv', '');
+        new SuperElement(listDiv.el, 'p', notes[i].dueDate, 'listDiv', '');
+        new SuperElement(listDiv.el, 'p', notes[i].time, 'listDiv', '');
+        new SuperElement(listDiv.el, 'p', notes[i].priority, 'listDiv', '');
+       }
+        const removeBtn = new SuperElement(listDiv.el, 'button', 'X', 'removeBtn', listId);
+        removeBtn.el.addEventListener('click', () => {
+            console.log('removeList');
+            const listToRemove = document.getElementById(listId);
+            if (listToRemove) {
+                listToRemove.remove(); // Remove the note element from the DOM
+            }
+            removeBtn.el.remove(); // Remove the remove button element from the DOM
+        });
+    };
+    renderListObject(dentistApt, containerDiv)
+
         const defaultList = createList('general')
         const work = createList('professional')
         const edu = createList('school')
