@@ -1,3 +1,5 @@
+
+const notes = []
 // //factory functions
 function createNote(title, description, dueDate, time, priority) {
     const note = {
@@ -24,12 +26,9 @@ function createNote(title, description, dueDate, time, priority) {
         setPriority(priority) {
             note.priority = priority
         },
-        setNoteArray(array) {
-            array.push (note)
-         },
-         removeNote(array, index) {
-            array.splice(index, 1);
-        },        
+        setNoteArray(noteArray) {
+            noteArray.push(note);
+        }            
      }
  }
  const capitalizeFirstLetter = (str) => {
@@ -39,10 +38,11 @@ function createNote(title, description, dueDate, time, priority) {
 
  //test variables 
  let description = 'Teeth cleaning and x-ray'
- const defaultNotes = [
-    createNote('Dentist', description, '11/24/23', '12:00', 'High' ), 
-    createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
-]
+
+   const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High' )
+
+    const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
+
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
 
@@ -77,12 +77,12 @@ function SuperElement(parent, type, content, className, id) {
         const appt = createList('appointment')
    
 
-        const renderNotes = (array, parent) => {
+        const renderNotes = (notes, parent) => {
             const noteId = `note-${Date.now()}`; // Generate a unique ID for the note        
             const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);        
-            array.map(item => {
-                new SuperElement(noteDiv.el, 'p', item, 'listDiv', '');
-            });        
+           for(let i = 0; i < notes.length; i++){
+            new SuperElement(noteDiv.el, 'p', notes[i], 'listDiv', '');
+           }
             const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
             removeBtn.el.addEventListener('click', () => {
                 console.log('remove');
@@ -145,9 +145,18 @@ const renderInputs = () => {
         SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
-            createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, priorityInput.value, )
+            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, )
+            newNote.setNoteArray(notes)
+            console.log(notes)
+            for(let i = 0; i < notes.length; i++){
+                console.log(notes[i].title)
+                renderNotes(notes[i], general)
+            }
+            
         })
 }
+
+
 renderInputs()
 setTimeout(() => {
     renderNotes(welcomeArray, school)
