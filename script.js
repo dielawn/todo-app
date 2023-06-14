@@ -37,9 +37,9 @@ function createNote(title, description, dueDate, time, priority) {
  //test variables 
  let description = 'Teeth cleaning and x-ray'
 
-   const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High' )
+const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High' )
+const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
 
-    const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
 
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
@@ -68,9 +68,21 @@ function SuperElement(parent, type, content, className, id) {
         const listNameTxt = document.getElementById(`list${name}`)
         listNameTxt.style.fontWeight = 900;
       } 
+    const lists = []
+    const createNewList = (name) => {
+        lists.push(name);
+    }
 
- 
+ createNewList('stuff')
+ createNewList('moreStuff')
 
+ const renderList = () => {
+    lists.map(item => {
+        let capitalName = capitalizeFirstLetter(item)
+        new SuperElement(containerDiv, 'div', capitalName, item, item)})
+        
+ }
+renderList()
         const defaultList = createList('general')
         const work = createList('professional')
         const edu = createList('school')
@@ -146,20 +158,22 @@ const renderInputs = () => {
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, )
-            renderNotes(newNote.note.array, professional)       
+            renderNotes(newNote.note.array, chooseParent())       
         })
 }
- renderNotes(hairApt.note.array, appointment)
+ const chooseParent = () => {
+
+ }
 
 renderInputs()
 setTimeout(() => {
     renderNotes(welcomeArray, school)
     setTimeout(() => {
-        renderNotes(welcomeArray, general)
+        renderNotes(hairApt.note.array, general)
         setTimeout(() => {
             renderNotes(welcomeArray, professional)
             setTimeout(() => {
-                renderNotes(welcomeArray, appointment)
+                renderNotes(dentistApt.note.array, appointment)
               }, 1);
           }, 1);
       }, 1);

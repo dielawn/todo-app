@@ -8,3 +8,10 @@
     color: red;
 }
 
+.hide {
+    display: none;
+}
+
+.block {
+    display: block;
+}
