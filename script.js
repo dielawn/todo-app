@@ -7,7 +7,8 @@ function createNote(title, description, dueDate, time, priority) {
         description: description,
         dueDate: dueDate,
         time: time,
-        priority: priority
+        priority: priority,
+        array: [title, description, dueDate, time, priority]
     }
     return{
         note,
@@ -25,10 +26,7 @@ function createNote(title, description, dueDate, time, priority) {
         },
         setPriority(priority) {
             note.priority = priority
-        },
-        setNoteArray(noteArray) {
-            noteArray.push(note);
-        }            
+        },            
      }
  }
  const capitalizeFirstLetter = (str) => {
@@ -59,41 +57,19 @@ function SuperElement(parent, type, content, className, id) {
 } 
 
     const bodyElement = document.querySelector('body');
-
     const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container');
     const containerDiv = document.getElementById('container')
 
     function createList(name) {
-        SuperElement(containerDiv, 'div', '', name, name)
+        new SuperElement(containerDiv, 'div', '', name, name)
         const newList = document.getElementById(name)       
          let capitalName = capitalizeFirstLetter(name)
-        SuperElement(newList, 'p', capitalName, `list${name}`, `list${name}`)
+        new SuperElement(newList, 'p', capitalName, `list${name}`, `list${name}`)
         const listNameTxt = document.getElementById(`list${name}`)
         listNameTxt.style.fontWeight = 900;
       } 
 
-      const renderListObject = (object) => {
-        const listId = `list-${Date.now()}`; // Generate a unique ID for the note        
-        const listDiv = new SuperElement(containerDiv, 'div', '', 'listDiv', listId);        
-       for(let i = 0; i < object.length; i++){
-        console.log(notes[i].title)
-        new SuperElement(listDiv.el, 'p', notes[i].title, 'listDiv', '');
-        new SuperElement(listDiv.el, 'p', notes[i].description, 'listDiv', '');
-        new SuperElement(listDiv.el, 'p', notes[i].dueDate, 'listDiv', '');
-        new SuperElement(listDiv.el, 'p', notes[i].time, 'listDiv', '');
-        new SuperElement(listDiv.el, 'p', notes[i].priority, 'listDiv', '');
-       }
-        const removeBtn = new SuperElement(listDiv.el, 'button', 'X', 'removeBtn', listId);
-        removeBtn.el.addEventListener('click', () => {
-            console.log('removeList');
-            const listToRemove = document.getElementById(listId);
-            if (listToRemove) {
-                listToRemove.remove(); // Remove the note element from the DOM
-            }
-            removeBtn.el.remove(); // Remove the remove button element from the DOM
-        });
-    };
-    renderListObject(dentistApt, containerDiv)
+ 
 
         const defaultList = createList('general')
         const work = createList('professional')
@@ -119,29 +95,29 @@ function SuperElement(parent, type, content, className, id) {
         };
                
 const renderInputs = () => {
-    SuperElement(containerDiv, 'div', '', 'inputDiv', 'inputDiv')
+    new SuperElement(containerDiv, 'div', '', 'inputDiv', 'inputDiv')
     const inputDiv = document.getElementById('inputDiv')
-
-        SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput')
+        //Title input
+        new SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput')
         const titleInput = document.getElementById('titleInput')
         titleInput.placeholder = 'Title'
-
-        SuperElement(inputDiv, 'input', '', 'descInput', 'descInput')
+        // Description input
+        new SuperElement(inputDiv, 'input', '', 'descInput', 'descInput')
         const descInput = document.getElementById('descInput')
         descInput.placeholder = 'Description'
-    
-        SuperElement(inputDiv, 'input', '', 'dateInput', 'dateInput')
+        //Date input
+        new SuperElement(inputDiv, 'input', '', 'dateInput', 'dateInput')
         const dateInput = document.getElementById('dateInput')
         dateInput.placeholder = 'Date'
-    
-        SuperElement(inputDiv, 'input', '', 'timeInput', 'timeInput')
+        //Time input
+        new SuperElement(inputDiv, 'input', '', 'timeInput', 'timeInput')
         const timeInput = document.getElementById('timeInput')
         timeInput.placeholder = 'Time'
-    
-        SuperElement(inputDiv, 'label', 'Priority', 'prioritySelectLabel', 'prioritySelectLabel')
+        //Priority Select
+        new SuperElement(inputDiv, 'label', 'Priority', 'prioritySelectLabel', 'prioritySelectLabel')
         const prioritySelectLabel = document.getElementById('prioritySelectLabel')
         prioritySelectLabel.for = 'prioritySelect'
-        SuperElement(inputDiv, 'select', '', 'prioritySelect', 'prioritySelect')
+        new SuperElement(inputDiv, 'select', '', 'prioritySelect', 'prioritySelect')
         const prioritySelect = document.getElementById('prioritySelect')   
         prioritySelect.name = 'prioritySelectLabel'    
         // Create option elements and set their values
@@ -166,20 +142,14 @@ const renderInputs = () => {
         prioritySelect.add(highOption);
         prioritySelect.add(urgentOption);
 
-        SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
+        new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, )
-            newNote.setNoteArray(notes)
-            console.log(notes)
-            for(let i = 0; i < notes.length; i++){
-                console.log(notes[i].title)
-                renderNotes(notes[i], general)
-            }
-            
+            renderNotes(newNote.note.array, professional)       
         })
 }
-
+ renderNotes(hairApt.note.array, appointment)
 
 renderInputs()
 setTimeout(() => {
