@@ -39,11 +39,8 @@ function createNote(title, description, dueDate, time, priority) {
   }
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-
 const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High' )
 const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High' )
-
-
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
 
@@ -63,16 +60,6 @@ function SuperElement(parent, type, content, className, id) {
     const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container');
     const containerDiv = document.getElementById('container')
 
-    // function createList(name) {
-    //     new SuperElement(containerDiv, 'div', '', name, name)
-    //     const newList = document.getElementById(name)       
-    //      let capitalName = capitalizeFirstLetter(name)
-    //     new SuperElement(newList, 'p', capitalName, `list${name}`, `list${name}`)
-    //     const listNameTxt = document.getElementById(`list${name}`)
-    //     listNameTxt.style.fontWeight = 900;
-    //   } 
-
-
  const stuffList = createNewList('stuff') 
  const moreStuffList = createNewList('moreStuff')
  const defaultList = createNewList('general')
@@ -90,28 +77,30 @@ function SuperElement(parent, type, content, className, id) {
  }
 
 renderList(lists)
-        // const defaultList = createList('general')
-        // const work = createList('professional')
-        // const edu = createList('school')
-        // const appt = createList('appointment')
    
 
-        const renderNotes = (notes, parent) => {
-            const noteId = `note-${Date.now()}`; // Generate a unique ID for the note        
-            const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);        
-           for(let i = 0; i < notes.length; i++){
-            new SuperElement(noteDiv.el, 'p', notes[i], 'note', '');
-           }
-            const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
-            removeBtn.el.addEventListener('click', () => {
-                console.log('remove');
-                const noteToRemove = document.getElementById(noteId);
-                if (noteToRemove) {
-                    noteToRemove.remove(); // Remove the note element from the DOM
-                }
-                removeBtn.el.remove(); // Remove the remove button element from the DOM
-            });
-        };
+const renderNotes = (notes, parent, callback) => {
+    const noteId = `note-${Date.now()}`;
+    const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);
+    
+    for (let i = 0; i < notes.length; i++) {
+      new SuperElement(noteDiv.el, 'p', notes[i], 'note', '');
+    }
+    
+    const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
+    removeBtn.el.addEventListener('click', () => {
+      console.log('remove');
+      const noteToRemove = document.getElementById(noteId);
+      if (noteToRemove) {
+        noteToRemove.remove();
+      }
+      removeBtn.el.remove();
+    });
+    
+    if (typeof callback === 'function') {
+      callback(); // Execute the callback function if provided
+    }
+  };
                
 const renderInputs = () => {
     new SuperElement(containerDiv, 'div', '', 'inputDiv', 'inputDiv')
@@ -168,64 +157,77 @@ const renderInputs = () => {
             renderNotes(newNote.note.array, chooseParent())       
         })
 }
+
+
+
+
 const hideListNotesExcept = (displayedList) => {
     const listOfLists = document.querySelectorAll('.list');
+    const allNotes = document.querySelectorAll('.noteDiv');
+  
     for (let i = 0; i < listOfLists.length; i++) {
-      console.log(listOfLists[i].id);
       let currentList = listOfLists[i];
-      
-// Hide all child elements with class 'noteDiv'
-const allNotes = currentList.querySelectorAll('.noteDiv');
-console.log(allNotes.length);
-for (let j = 0; j < allNotes.length; j++) {
-  allNotes[j].classList.add('hide');
-}
-
+  
+      // Hide all child elements with class 'noteDiv'
+      console.log(allNotes.length);
+      for (let j = 0; j < allNotes.length; j++) {
+        allNotes[j].classList.add('hide');
+      }
+  
+      console.log(currentList.id === displayedList.id);
+  
       // Display child elements of displayedList
-      if (displayedList === currentList) {
-        for (let j = 0; j < currentList.children.length; j++) {
-          currentList.children[j].classList.remove('hide');
+      if (currentList.id === displayedList.id) {
+        const currentListNote = currentList.querySelector(`#${displayedList.id}`);
+        if (currentListNote) {
+          currentListNote.classList.remove('hide');
         }
       }
+      
+      
+      
     }
   };
   
-
- const chooseParent = () => {    
-    //query the list names
-    const listOfLists = document.querySelectorAll('.list')
-   for (let i = 0; i < listOfLists.length; i++) {
-    console.log(listOfLists[i].classList)
-   
-   }
- }
-chooseParent()
-
+  
 renderInputs()
-setTimeout(() => {
-    renderNotes(welcomeArray, school)
+  document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
-        renderNotes(hairApt.note.array, general)
+        renderNotes(welcomeArray, school, () => {
+          hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+        });
         setTimeout(() => {
-            renderNotes(welcomeArray, professional)
+            renderNotes(hairApt.note.array, general, () => {
+                hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+              });
             setTimeout(() => {
-                renderNotes(dentistApt.note.array, appointment)
+                renderNotes(welcomeArray, professional, () => {
+                    hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                  });
                 setTimeout(() => {
-                    renderNotes(dentistApt.note.array, stuff)
+                    renderNotes(dentistApt.note.array, appointment, () => {
+                        hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                      });
                     setTimeout(() => {
-                        renderNotes(dentistApt.note.array, moreStuff)
+                        renderNotes(dentistApt.note.array, stuff, () => {
+                            hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                          });
+                        setTimeout(() => {
+                            renderNotes(dentistApt.note.array, moreStuff, () => {
+                                hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                              });
+                          }, 1);
                       }, 1);
                   }, 1);
+                  
               }, 1);
-              
           }, 1);
       }, 1);
-  }, 1);
-
-  window.onload = () => {
-    hideListNotesExcept(school)
-  }
+    //   hideListNotesExcept(school);
+  });
   
+  
+      
 
 
 
