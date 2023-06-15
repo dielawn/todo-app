@@ -4,10 +4,12 @@
     box-sizing: border-box;
 }
 
-.defaultMsg{
-    color: red;
+.list {
+    font-weight: 900;
 }
-
+.note {
+    font-weight: 100;
+}
 .hide {
     display: none;
 }

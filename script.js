@@ -63,14 +63,14 @@ function SuperElement(parent, type, content, className, id) {
     const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container');
     const containerDiv = document.getElementById('container')
 
-    function createList(name) {
-        new SuperElement(containerDiv, 'div', '', name, name)
-        const newList = document.getElementById(name)       
-         let capitalName = capitalizeFirstLetter(name)
-        new SuperElement(newList, 'p', capitalName, `list${name}`, `list${name}`)
-        const listNameTxt = document.getElementById(`list${name}`)
-        listNameTxt.style.fontWeight = 900;
-      } 
+    // function createList(name) {
+    //     new SuperElement(containerDiv, 'div', '', name, name)
+    //     const newList = document.getElementById(name)       
+    //      let capitalName = capitalizeFirstLetter(name)
+    //     new SuperElement(newList, 'p', capitalName, `list${name}`, `list${name}`)
+    //     const listNameTxt = document.getElementById(`list${name}`)
+    //     listNameTxt.style.fontWeight = 900;
+    //   } 
 
 
  const stuffList = createNewList('stuff') 
@@ -84,9 +84,8 @@ function SuperElement(parent, type, content, className, id) {
     array.map(item => {
         console.log(item)
         let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(containerDiv, 'div', capitalName, item, item)
-        const listName = document.getElementById(item)
-        listName.style.fontWeight = 900;
+        new SuperElement(containerDiv, 'div', capitalName, 'list', item)
+        
     })       
  }
 
@@ -101,7 +100,7 @@ renderList(lists)
             const noteId = `note-${Date.now()}`; // Generate a unique ID for the note        
             const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);        
            for(let i = 0; i < notes.length; i++){
-            new SuperElement(noteDiv.el, 'p', notes[i], 'listDiv', '');
+            new SuperElement(noteDiv.el, 'p', notes[i], 'note', '');
            }
             const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
             removeBtn.el.addEventListener('click', () => {
@@ -169,9 +168,38 @@ const renderInputs = () => {
             renderNotes(newNote.note.array, chooseParent())       
         })
 }
- const chooseParent = () => {
+const hideListNotesExcept = (displayedList) => {
+    const listOfLists = document.querySelectorAll('.list');
+    for (let i = 0; i < listOfLists.length; i++) {
+      console.log(listOfLists[i].id);
+      let currentList = listOfLists[i];
+      
+// Hide all child elements with class 'noteDiv'
+const allNotes = currentList.querySelectorAll('.noteDiv');
+console.log(allNotes.length);
+for (let j = 0; j < allNotes.length; j++) {
+  allNotes[j].classList.add('hide');
+}
 
+      // Display child elements of displayedList
+      if (displayedList === currentList) {
+        for (let j = 0; j < currentList.children.length; j++) {
+          currentList.children[j].classList.remove('hide');
+        }
+      }
+    }
+  };
+  
+
+ const chooseParent = () => {    
+    //query the list names
+    const listOfLists = document.querySelectorAll('.list')
+   for (let i = 0; i < listOfLists.length; i++) {
+    console.log(listOfLists[i].classList)
+   
+   }
  }
+chooseParent()
 
 renderInputs()
 setTimeout(() => {
@@ -194,7 +222,10 @@ setTimeout(() => {
       }, 1);
   }, 1);
 
-
+  window.onload = () => {
+    hideListNotesExcept(school)
+  }
+  
 
 
 
