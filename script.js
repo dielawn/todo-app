@@ -33,7 +33,10 @@ function createNote(title, description, dueDate, time, priority) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-
+  const lists = []
+  const createNewList = (name) => {
+      lists.push(name);
+  }
  //test variables 
  let description = 'Teeth cleaning and x-ray'
 
@@ -68,25 +71,30 @@ function SuperElement(parent, type, content, className, id) {
         const listNameTxt = document.getElementById(`list${name}`)
         listNameTxt.style.fontWeight = 900;
       } 
-    const lists = []
-    const createNewList = (name) => {
-        lists.push(name);
-    }
 
- createNewList('stuff')
- createNewList('moreStuff')
 
- const renderList = () => {
-    lists.map(item => {
+ const stuffList = createNewList('stuff') 
+ const moreStuffList = createNewList('moreStuff')
+ const defaultList = createNewList('general')
+ const work = createNewList('professional')
+ const edu = createNewList('school')
+ const appt = createNewList('appointment')
+
+ const renderList = (array) => {
+    array.map(item => {
+        console.log(item)
         let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(containerDiv, 'div', capitalName, item, item)})
-        
+        new SuperElement(containerDiv, 'div', capitalName, item, item)
+        const listName = document.getElementById(item)
+        listName.style.fontWeight = 900;
+    })       
  }
-renderList()
-        const defaultList = createList('general')
-        const work = createList('professional')
-        const edu = createList('school')
-        const appt = createList('appointment')
+
+renderList(lists)
+        // const defaultList = createList('general')
+        // const work = createList('professional')
+        // const edu = createList('school')
+        // const appt = createList('appointment')
    
 
         const renderNotes = (notes, parent) => {
@@ -174,7 +182,14 @@ setTimeout(() => {
             renderNotes(welcomeArray, professional)
             setTimeout(() => {
                 renderNotes(dentistApt.note.array, appointment)
+                setTimeout(() => {
+                    renderNotes(dentistApt.note.array, stuff)
+                    setTimeout(() => {
+                        renderNotes(dentistApt.note.array, moreStuff)
+                      }, 1);
+                  }, 1);
               }, 1);
+              
           }, 1);
       }, 1);
   }, 1);
