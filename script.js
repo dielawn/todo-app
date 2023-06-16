@@ -1,4 +1,5 @@
 
+
 const notes = []
 // //factory functions
 function createNote(title, description, dueDate, time, priority) {
@@ -67,18 +68,23 @@ function SuperElement(parent, type, content, className, id) {
  const edu = createNewList('school')
  const appt = createNewList('appointment')
 
+
  const renderList = (array) => {
     array.map(item => {
         console.log(item)
         let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(containerDiv, 'div', capitalName, 'listHeader', item + 'Header')
+        new SuperElement(containerDiv, 'div', capitalName, 'listHeader', item + 'Header')        
         new SuperElement(containerDiv, 'div', '', 'list', item)
-        
+        const listHeader = document.getElementById(item + 'Header')
+        listHeader.addEventListener('click', () => {
+            console.log(item)
+            hideListNotesExcept(item)
+        })
                 
     })       
  }
 
-renderList(lists)
+
    
 
 const renderNotes = (notes, parent, callback) => {
@@ -162,17 +168,20 @@ const renderInputs = () => {
 
 
 
-const hideListNotesExcept = (displayedList) => {
+const hideListNotesExcept = (displayedListId) => {
     const listOfLists = document.querySelectorAll('.list');
-    console.log(listOfLists.length)
+    
     for (let i = 0; i < listOfLists.length; i++) {
-        let currentList = listOfLists[i];
-        currentList.classList.add('hide');   
-      if(currentList.id === displayedList.id) {
+      const currentList = listOfLists[i];
+      
+      if (currentList.id === displayedListId) {
         currentList.classList.remove('hide');
-      }      
+      } else {
+        currentList.classList.add('hide');
+      }
     }
   };
+  
   
   
 renderInputs()
@@ -199,7 +208,7 @@ renderInputs()
                           });
                         setTimeout(() => {
                             renderNotes(dentistApt.note.array, moreStuff, () => {
-                                hideListNotesExcept(appointment); // Call hideListNotesExcept after rendering notes
+                                // hideListNotesExcept(appointment); // Call hideListNotesExcept after rendering notes
                               });
                           }, 1);
                       }, 1);
@@ -208,9 +217,9 @@ renderInputs()
               }, 1);
           }, 1);
       }, 1);
-
-  });
      
+  });
+  renderList(lists)
   
       
 
