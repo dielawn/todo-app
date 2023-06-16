@@ -71,8 +71,10 @@ function SuperElement(parent, type, content, className, id) {
     array.map(item => {
         console.log(item)
         let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(containerDiv, 'div', capitalName, 'list', item)
+        new SuperElement(containerDiv, 'div', capitalName, 'listHeader', item + 'Header')
+        new SuperElement(containerDiv, 'div', '', 'list', item)
         
+                
     })       
  }
 
@@ -82,11 +84,10 @@ renderList(lists)
 const renderNotes = (notes, parent, callback) => {
     const noteId = `note-${Date.now()}`;
     const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);
-    
+         
     for (let i = 0; i < notes.length; i++) {
       new SuperElement(noteDiv.el, 'p', notes[i], 'note', '');
-    }
-    
+    }    
     const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
     removeBtn.el.addEventListener('click', () => {
       console.log('remove');
@@ -154,7 +155,7 @@ const renderInputs = () => {
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, )
-            renderNotes(newNote.note.array, chooseParent())       
+            renderNotes(newNote.note.array, school)       
         })
 }
 
@@ -163,29 +164,13 @@ const renderInputs = () => {
 
 const hideListNotesExcept = (displayedList) => {
     const listOfLists = document.querySelectorAll('.list');
-    const allNotes = document.querySelectorAll('.noteDiv');
-  
+    console.log(listOfLists.length)
     for (let i = 0; i < listOfLists.length; i++) {
-      let currentList = listOfLists[i];
-  
-      // Hide all child elements with class 'noteDiv'
-      console.log(allNotes.length);
-      for (let j = 0; j < allNotes.length; j++) {
-        allNotes[j].classList.add('hide');
-      }
-  
-      console.log(currentList.id === displayedList.id);
-  
-      // Display child elements of displayedList
-      if (currentList.id === displayedList.id) {
-        const currentListNote = currentList.querySelector(`#${displayedList.id}`);
-        if (currentListNote) {
-          currentListNote.classList.remove('hide');
-        }
-      }
-      
-      
-      
+        let currentList = listOfLists[i];
+        currentList.classList.add('hide');   
+      if(currentList.id === displayedList.id) {
+        currentList.classList.remove('hide');
+      }      
     }
   };
   
@@ -194,27 +179,27 @@ renderInputs()
   document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         renderNotes(welcomeArray, school, () => {
-          hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+        //   hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
         });
         setTimeout(() => {
             renderNotes(hairApt.note.array, general, () => {
-                hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
               });
             setTimeout(() => {
                 renderNotes(welcomeArray, professional, () => {
-                    hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                    // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
                   });
                 setTimeout(() => {
                     renderNotes(dentistApt.note.array, appointment, () => {
-                        hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                        // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
                       });
                     setTimeout(() => {
                         renderNotes(dentistApt.note.array, stuff, () => {
-                            hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                            // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
                           });
                         setTimeout(() => {
                             renderNotes(dentistApt.note.array, moreStuff, () => {
-                                hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
+                                hideListNotesExcept(appointment); // Call hideListNotesExcept after rendering notes
                               });
                           }, 1);
                       }, 1);
@@ -223,9 +208,9 @@ renderInputs()
               }, 1);
           }, 1);
       }, 1);
-    //   hideListNotesExcept(school);
+
   });
-  
+     
   
       
 
