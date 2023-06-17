@@ -31,12 +31,12 @@ function createNote(title, description, dueDate, time, priority) {
      }
  }
  const capitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return str.charAt(0).toUpperCase() + str.slice(1)
   };
 
   const lists = []
   const createNewList = (name) => {
-      lists.push(name);
+      lists.push(name)
   }
  //test variables 
  let description = 'Teeth cleaning and x-ray'
@@ -57,61 +57,64 @@ function SuperElement(parent, type, content, className, id) {
     // })
 } 
 
-    const bodyElement = document.querySelector('body');
-    const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container');
+    const bodyElement = document.querySelector('body')
+    const newContainer = new SuperElement(bodyElement, 'div', '', 'container', 'container')
     const containerDiv = document.getElementById('container')
 
- const stuffList = createNewList('stuff') 
- const moreStuffList = createNewList('moreStuff')
+//  const stuffList = createNewList('stuff') 
+//  const moreStuffList = createNewList('moreStuff')
  const defaultList = createNewList('general')
- const work = createNewList('professional')
- const edu = createNewList('school')
- const appt = createNewList('appointment')
+//  const work = createNewList('professional')
+//  const edu = createNewList('school')
+//  const appt = createNewList('appointment')
+ console.log(lists)
 
-
- const renderList = (array) => {
+ let displayedList = 'general';
+ const renderList = (array) => {    
+    new SuperElement(containerDiv, 'div', '', 'listDiv', 'listDiv')
+    const listDiv = document.getElementById('listDiv')
     array.map(item => {
-        console.log(item)
         let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(containerDiv, 'div', capitalName, 'listHeader', item + 'Header')        
-        new SuperElement(containerDiv, 'div', '', 'list', item)
+        new SuperElement(listDiv, 'div', capitalName, 'listHeader', item + 'Header')        
+        new SuperElement(listDiv, 'div', '', 'list', item)
         const listHeader = document.getElementById(item + 'Header')
         listHeader.addEventListener('click', () => {
-            console.log(item)
-            hideListNotesExcept(item)
+          displayedList = hideListNotesExcept(item)
+            
         })
                 
-    })       
+    })    
+    return displayedList   
  }
 
 
    
 
 const renderNotes = (notes, parent, callback) => {
-    const noteId = `note-${Date.now()}`;
-    const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId);
-         
+    const noteId = `note-${Date.now()}`
+    const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId)        
     for (let i = 0; i < notes.length; i++) {
-      new SuperElement(noteDiv.el, 'p', notes[i], 'note', '');
+      new SuperElement(noteDiv.el, 'p', notes[i], 'note', '')
     }    
-    const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId);
+    const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId)
     removeBtn.el.addEventListener('click', () => {
-      console.log('remove');
+      console.log('remove')
       const noteToRemove = document.getElementById(noteId);
       if (noteToRemove) {
-        noteToRemove.remove();
+        noteToRemove.remove()
       }
-      removeBtn.el.remove();
+      removeBtn.el.remove()
     });
     
     if (typeof callback === 'function') {
       callback(); // Execute the callback function if provided
     }
-  };
+  }
                
-const renderInputs = () => {
+const renderNoteInputs = () => {
     new SuperElement(containerDiv, 'div', '', 'inputDiv', 'inputDiv')
     const inputDiv = document.getElementById('inputDiv')
+    inputDiv.classList.add('flexColumn')
         //Title input
         new SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput')
         const titleInput = document.getElementById('titleInput')
@@ -136,92 +139,77 @@ const renderInputs = () => {
         const prioritySelect = document.getElementById('prioritySelect')   
         prioritySelect.name = 'prioritySelectLabel'    
         // Create option elements and set their values
-        const lowOption = document.createElement('option');
-            lowOption.value = 'Low';
-            lowOption.text = 'Low';
+        const lowOption = document.createElement('option')
+            lowOption.value = 'Low'
+            lowOption.text = 'Low'
 
-        const mediumOption = document.createElement('option');
-            mediumOption.value = 'Medium';
-            mediumOption.text = 'Medium';
+        const mediumOption = document.createElement('option')
+            mediumOption.value = 'Medium'
+            mediumOption.text = 'Medium'
 
-        const highOption = document.createElement('option');
-            highOption.value = 'High';
-            highOption.text = 'High';
+        const highOption = document.createElement('option')
+            highOption.value = 'High'
+            highOption.text = 'High'
 
-        const urgentOption = document.createElement('option');
-            urgentOption.value = 'Urgent';
-            urgentOption.text = 'Urgent';
+        const urgentOption = document.createElement('option')
+            urgentOption.value = 'Urgent'
+            urgentOption.text = 'Urgent'
         // Append the option elements to the select element
-        prioritySelect.add(lowOption);
-        prioritySelect.add(mediumOption);
-        prioritySelect.add(highOption);
-        prioritySelect.add(urgentOption);
+        prioritySelect.add(lowOption)
+        prioritySelect.add(mediumOption)
+        prioritySelect.add(highOption)
+        prioritySelect.add(urgentOption)
 
         new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, )
-            renderNotes(newNote.note.array, school)       
+            
+            console.log(displayedList)
+            renderNotes(newNote.note.array, displayedList, () => {
+                console.log(displayedList)
+            })       
         })
 }
 
-
-
+const renderNewListInput = () => {
+    //Title input
+    new SuperElement(inputDiv, 'input', '', 'newListInput', 'newListInput')
+    const newListInput = document.getElementById('newListInput')
+    newListInput.placeholder = 'New List'
+    //Add list button
+    new SuperElement(inputDiv, 'button', 'Add List', 'addListBtn', 'addListBtn')
+        const addListBtn = document.getElementById('addListBtn')
+        addListBtn.addEventListener('click', () => {
+            const newList = createNewList(newListInput.value)            
+            console.log(newList)
+            renderList(lists)
+        })
+}
 
 const hideListNotesExcept = (displayedListId) => {
-    const listOfLists = document.querySelectorAll('.list');
-    
+    const listOfLists = document.querySelectorAll('.list')   
     for (let i = 0; i < listOfLists.length; i++) {
-      const currentList = listOfLists[i];
-      
+      const currentList = listOfLists[i]      
       if (currentList.id === displayedListId) {
-        currentList.classList.remove('hide');
+        currentList.classList.remove('hide')
       } else {
-        currentList.classList.add('hide');
+        currentList.classList.add('hide')
       }
     }
   };
   
   
   
-renderInputs()
+  renderNoteInputs()
+  renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        renderNotes(welcomeArray, school, () => {
-        //   hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
-        });
-        setTimeout(() => {
-            renderNotes(hairApt.note.array, general, () => {
-                // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
-              });
-            setTimeout(() => {
-                renderNotes(welcomeArray, professional, () => {
-                    // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
-                  });
-                setTimeout(() => {
-                    renderNotes(dentistApt.note.array, appointment, () => {
-                        // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
-                      });
-                    setTimeout(() => {
-                        renderNotes(dentistApt.note.array, stuff, () => {
-                            // hideListNotesExcept(school); // Call hideListNotesExcept after rendering notes
-                          });
-                        setTimeout(() => {
-                            renderNotes(dentistApt.note.array, moreStuff, () => {
-                                // hideListNotesExcept(appointment); // Call hideListNotesExcept after rendering notes
-                              });
-                          }, 1);
-                      }, 1);
-                  }, 1);
-                  
-              }, 1);
-          }, 1);
-      }, 1);
-     
-  });
-  renderList(lists)
+    renderNotes(hairApt.note.array, general, () => {
+        
+      })     
+  })
   
-      
-
+  displayedList = renderList(lists)
+  hideListNotesExcept(displayedList)
 
 
