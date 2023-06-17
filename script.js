@@ -75,9 +75,16 @@ function SuperElement(parent, type, content, className, id) {
     const listDiv = document.getElementById('listDiv')
     array.map(item => {
         let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(listDiv, 'div', capitalName, 'listHeader', item + 'Header')        
-        new SuperElement(listDiv, 'div', '', 'list', item)
-        const listHeader = document.getElementById(item + 'Header')
+        const listHeaderId = item + 'Header';
+        let listHeader = document.getElementById(listHeaderId);
+        console.log(item, listHeaderId);
+        console.log(!listHeader)
+        if(!listHeader) {
+            new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)        
+            new SuperElement(listDiv, 'div', '', 'list', item)
+        }
+        console.log(!listHeader)
+        // const listHeader = document.getElementById(item + 'Header')
         listHeader.addEventListener('click', () => {
           displayedList = hideListNotesExcept(item)
             
