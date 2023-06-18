@@ -12,6 +12,7 @@ function createNote(title, description, dueDate, time, priority, list) {
         list: list,
         array: [title, description, dueDate, time, priority]
     }
+    notes.push(note)
     return{
         note,
         setTitle(title) {
@@ -28,11 +29,14 @@ function createNote(title, description, dueDate, time, priority, list) {
         },
         setPriority(priority) {
             note.priority = priority
-        },           
+        },  
+        setList(list) {
+            note.list = list
+        },         
      }
  }
 
-  const lists = ['all', 'personal', 'professional', 'complete']
+  const lists = ['all', 'personal', 'professional', 'complete', 'new']
   const createNewList = (name) => {
       lists.push(name)
   }
@@ -43,7 +47,7 @@ function createNote(title, description, dueDate, time, priority, list) {
 
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', 'All')
+const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[2])
 const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', 'Personal' )
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
@@ -72,7 +76,8 @@ class SuperElement {
  const renderList = (array) => {
 
     array.map(item => {
-      let capitalName = capitalizeFirstLetter(item);
+        if (item != 'new') {
+            let capitalName = capitalizeFirstLetter(item);
       const listHeaderId = item.toLowerCase() + 'Header';
       let listHeader = document.getElementById(listHeaderId);
   
@@ -86,6 +91,8 @@ class SuperElement {
         displayedList = listHeader.id; // Assign the ID of the clicked list header
         // hideListNotesExcept(displayedList);
       });
+        }
+      
     });
   
     return displayedList;
@@ -235,12 +242,18 @@ const hideListNotesExcept = (displayedListId) => {
     let currentId = listSelect.value
     console.log(currentId)
  let parentElement = document.getElementById(currentId)    
-      setTimeout(renderNotes(hairApt.note.array, parentElement, () => {
-        console.log(`note rendered ${parentElement.id}`);
-        setTimeout(renderNotes(dentistApt.note.array, complete, () => {
-            console.log(`note rendered ${complete.textContent}`);
-          }), 1) 
-      }), 1)
+ let currentList = document.getElementById(dentistApt.note.list)
+ setTimeout(() => {
+    renderNotes(hairApt.note.array, parentElement, () => {
+      console.log(`note rendered ${parentElement.id}`);
+      setTimeout(() => {
+        renderNotes(dentistApt.note.array, currentList, () => {
+          console.log(`note rendered ${complete.textContent}`);
+        });
+      }, 1); 
+    });
+  }, 1); 
+  
      
       
    
