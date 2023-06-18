@@ -1,6 +1,8 @@
 
-
+const lists = ['personal', 'professional', 'all',  'complete', 'new']
+const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']  
 const notes = []
+
 // //factory functions
 function createNote(title, description, dueDate, time, priority, list) {
     const note = {
@@ -10,33 +12,31 @@ function createNote(title, description, dueDate, time, priority, list) {
         time: time,
         priority: priority,
         list: list,
-        array: [title, description, dueDate, time, priority]
-    }
-    notes.push(note)
-    return{
-        note,
+        array: [title, description, dueDate, time, priority],
         setTitle(title) {
-            note.title = title
+            this.title = title;
         },
         setDescription(description) {
-            note.description = description
+            this.description = description;
         },
         setDueDate(dueDate) {
-            note.dueDate = dueDate
+            this.dueDate = dueDate;
         },
         setTime(time) {
-            note.time = time
+            this.time = time;
         },
         setPriority(priority) {
-            note.priority = priority
-        },  
+            this.priority = priority;
+        },
         setList(list) {
-            note.list = list
-        },         
-     }
- }
+            this.list = list;
+        }
+    };
 
-  const lists = ['personal', 'professional', 'all',  'complete', 'new']
+    notes.push(note);
+    return note;
+}
+
   const createNewList = (name) => {
       lists.push(name)
   }
@@ -45,10 +45,12 @@ function createNote(title, description, dueDate, time, priority, list) {
     return str.charAt(0).toUpperCase() + str.slice(1)
   };
 
+   
+  
  //test variables 
  let description = 'Teeth cleaning and x-ray'
 const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1])
-const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', 'Personal' )
+const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', lists[0] )
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
 
@@ -99,6 +101,8 @@ class SuperElement {
     return displayedList;
   };
   
+
+
   const renderNotes = (notes, parent, callback) => {
     const noteId = `note-${Date.now()}`;
   
@@ -116,6 +120,7 @@ class SuperElement {
     removeBtn.addEventListener('click', () => {
       console.log('remove');
       const noteToRemove = document.getElementById(noteId);
+      console.log(notes)
       if (noteToRemove) {
         noteToRemove.remove();
       }
@@ -126,9 +131,35 @@ class SuperElement {
       callback(); // Execute the callback function if provided
     }
   };
+  const changeList = (note, newList) => {
+    note.setList(newList); // Call the setList method on the note object
+    return 'yo'
+  }
   
-  
-const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']     
+//   notes[0].list
+//   'professional'
+//   changeList(notes[0], lists[3]);  
+//   undefined
+//   notes[0].list
+//   'complete'
+
+const getNoteLists = () => {
+    console.log(notes)
+    notes.forEach(note => {
+        console.log(note.list)  
+        let noteId = note.list
+        console.log(noteId)
+        let noteParent = document.getElementById(noteId)
+        return console.log(noteParent)
+    })
+}
+// getNoteLists()
+const noteContainer = document.getElementById(notes[0].list)
+const noteToBeMoved = document.getElementById(notes[0])
+console.log(notes[0].list)
+// renderNotes(noteToBeMoved, noteContainer, )
+console.log(notes[0])
+
 const renderNoteInputs = () => {
     const inputDiv = document.getElementById('inputDiv')
     inputDiv.classList.add('flexColumn')
@@ -176,10 +207,10 @@ const renderNoteInputs = () => {
         addNoteBtn.addEventListener('click', () => {
             console.log(listSelect.value)
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value)
-            console.log(defaultList)
             
-            const parentElement = document.getElementById(listSelect.value);
-renderNotes(newNote.note.array, parentElement, () => {
+            
+            const parentElement = document.getElementById(newNote.list);
+renderNotes(newNote.array, parentElement, () => {
   console.log('rendered');
 });
  
@@ -225,7 +256,6 @@ const hideListNotesExcept = (displayedListId) => {
     const listOfLists = document.querySelectorAll('.list')   
     for (let i = 0; i < listOfLists.length; i++) {
       const currentList = listOfLists[i]      
-      console.log(currentList)
       if (currentList.id === displayedListId) {
         currentList.classList.remove('hide')
       } else if (displayedListId === 'all') {
@@ -236,23 +266,22 @@ const hideListNotesExcept = (displayedListId) => {
     }
   };
   
-  let defaultList = lists[0]
-  console.log(defaultList)
+
   renderNoteInputs()
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList(lists);
-    hideListNotesExcept('professional');
+    hideListNotesExcept(lists[2]);
     let currentId = listSelect.value
     console.log(currentId)
- let parentElement = document.getElementById(currentId)    
- let currentList = document.getElementById(dentistApt.note.list)
+ let parentElement = document.getElementById(lists[0])    
+ let currentList = document.getElementById(lists[1])
  setTimeout(() => {
-    renderNotes(hairApt.note.array, parentElement, () => {
-      console.log(`note rendered ${parentElement.id}`);
+    renderNotes(hairApt.array, parentElement, () => {
+      
       setTimeout(() => {
-        renderNotes(dentistApt.note.array, currentList, () => {
-          console.log(`note rendered ${complete.textContent}`);
+        renderNotes(dentistApt.array, currentList, () => {
+          
         });
       }, 1); 
     });
