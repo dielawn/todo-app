@@ -32,7 +32,7 @@ function createNote(title, description, dueDate, time, priority, list) {
      }
  }
 
-  const lists = ['all', 'personal', 'professional']
+  const lists = ['all', 'personal', 'professional', 'complete']
   const createNewList = (name) => {
       lists.push(name)
   }
@@ -59,7 +59,6 @@ class SuperElement {
       element.innerHTML = innerHTML;
       element.className = className;
       element.id = id;
-      
       if (parent) {
         parent.appendChild(element);
       } else {
@@ -85,33 +84,42 @@ class SuperElement {
   
       listHeader.addEventListener('click', () => {
         displayedList = listHeader.id; // Assign the ID of the clicked list header
-        hideListNotesExcept(displayedList);
+        // hideListNotesExcept(displayedList);
       });
     });
   
     return displayedList;
   };
   
-const renderNotes = (notes, parent, callback) => {
-    const noteId = `note-${Date.now()}`
-    const noteDiv = new SuperElement(parent, 'div', '', 'noteDiv', noteId)        
+  const renderNotes = (notes, parent, callback) => {
+    const noteId = `note-${Date.now()}`;
+  
+    new SuperElement(parent, 'div', '', 'noteDiv', noteId);
+    const noteDiv = document.getElementById(noteId);
+  
     for (let i = 0; i < notes.length; i++) {
-      new SuperElement(noteDiv.el, 'p', notes[i], 'note', '')
-    }    
-    const removeBtn = new SuperElement(parent, 'button', 'X', 'removeBtn', noteId)
-    removeBtn.el.addEventListener('click', () => {
-      console.log('remove')
+      new SuperElement(noteDiv, 'p', notes[i], 'note', '');
+    }
+  
+    const removeBtnId = `removeBtn-${Date.now()}`;
+    new SuperElement(parent, 'button', 'X', 'removeBtn', removeBtnId);
+    const removeBtn = document.getElementById(removeBtnId);
+  
+    removeBtn.addEventListener('click', () => {
+      console.log('remove');
       const noteToRemove = document.getElementById(noteId);
       if (noteToRemove) {
-        noteToRemove.remove()
+        noteToRemove.remove();
       }
-      removeBtn.el.remove()
+      removeBtn.remove();
     });
-    
+  
     if (typeof callback === 'function') {
       callback(); // Execute the callback function if provided
     }
-  }
+  };
+  
+  
 const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']     
 const renderNoteInputs = () => {
     const inputDiv = document.getElementById('inputDiv')
@@ -148,46 +156,25 @@ const renderNoteInputs = () => {
             option.text = item
             return option
         })
-        // const lowOption = document.createElement('option')
-        //     lowOption.value = 'Low'
-        //     lowOption.text = 'Low'
-
-        // const mediumOption = document.createElement('option')
-        //     mediumOption.value = 'Medium'
-        //     mediumOption.text = 'Medium'
-
-        // const highOption = document.createElement('option')
-        //     highOption.value = 'High'
-        //     highOption.text = 'High'
-
-        // const urgentOption = document.createElement('option')
-        //     urgentOption.value = 'Urgent'
-        //     urgentOption.text = 'Urgent'
-        // Append the option elements to the select element
         options.forEach(option => {
             prioritySelect.add(option)
         })
-        // prioritySelect.add(lowOption)
-        // prioritySelect.add(mediumOption)
-        // prioritySelect.add(highOption)
-        // prioritySelect.add(urgentOption)
+        
         
         renderListSelector()
 
         new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
-            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, )
-            console.log(displayedList)
+            console.log(listSelect.value)
+            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value)
             console.log(defaultList)
-            if (displayedList === undefined) {
-                console.log(defaultList)
-                displayedList = defaultList
-            }
-            console.log(displayedList)
-            renderNotes(newNote.note.array, general, () => {
-                console.log(displayedList)
-            })       
+            
+            const parentElement = document.getElementById(listSelect.value);
+renderNotes(newNote.note.array, parentElement, () => {
+  console.log('rendered');
+});
+ 
         })
 }
 const renderListSelector = () => {
@@ -237,23 +224,26 @@ const hideListNotesExcept = (displayedListId) => {
       }
     }
   };
-  console.log(displayedList)
+  
   let defaultList = lists[0]
   console.log(defaultList)
   renderNoteInputs()
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList(lists);
-    hideListNotesExcept(displayedList);
- 
-    const parentElement = document.getElementById(displayedList);
-    if (parentElement) {
-      renderNotes(hairApt.note.array, parentElement, () => {
-        console.log(`note rendered ${displayedList}`);
-      });
-    } else {
-      console.log(`Parent element '${displayedList}' does not exist.`);
-    }
+    // hideListNotesExcept('all');
+    let currentId = listSelect.value
+    console.log(currentId)
+ let parentElement = document.getElementById(currentId)    
+      setTimeout(renderNotes(hairApt.note.array, parentElement, () => {
+        console.log(`note rendered ${parentElement.id}`);
+        setTimeout(renderNotes(dentistApt.note.array, complete, () => {
+            console.log(`note rendered ${complete.textContent}`);
+          }), 1) 
+      }), 1)
+     
+      
+   
   });
   
   
