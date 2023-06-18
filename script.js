@@ -36,7 +36,7 @@ function createNote(title, description, dueDate, time, priority, list) {
      }
  }
 
-  const lists = ['all', 'personal', 'professional', 'complete', 'new']
+  const lists = ['personal', 'professional', 'all',  'complete', 'new']
   const createNewList = (name) => {
       lists.push(name)
   }
@@ -47,7 +47,7 @@ function createNote(title, description, dueDate, time, priority, list) {
 
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[2])
+const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1])
 const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', 'Personal' )
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
@@ -88,8 +88,9 @@ class SuperElement {
       }
   
       listHeader.addEventListener('click', () => {
-        displayedList = listHeader.id; // Assign the ID of the clicked list header
-        // hideListNotesExcept(displayedList);
+        displayedList = item // Assign the ID of the clicked list header
+      
+        hideListNotesExcept(displayedList);
       });
         }
       
@@ -224,11 +225,14 @@ const hideListNotesExcept = (displayedListId) => {
     const listOfLists = document.querySelectorAll('.list')   
     for (let i = 0; i < listOfLists.length; i++) {
       const currentList = listOfLists[i]      
+      console.log(currentList)
       if (currentList.id === displayedListId) {
         currentList.classList.remove('hide')
+      } else if (displayedListId === 'all') {
+        listOfLists[i].classList.remove('hide')
       } else {
         currentList.classList.add('hide')
-      }
+      } 
     }
   };
   
@@ -238,7 +242,7 @@ const hideListNotesExcept = (displayedListId) => {
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList(lists);
-    // hideListNotesExcept('all');
+    hideListNotesExcept('professional');
     let currentId = listSelect.value
     console.log(currentId)
  let parentElement = document.getElementById(currentId)    
