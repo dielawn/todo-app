@@ -1,5 +1,15 @@
 
-const lists = ['personal', 'professional', 'all',  'complete', 'new']
+  const lists = []
+  const createNewList = (name) => {
+      lists.push(name)
+  }
+
+
+let personalList = createNewList('personal')
+let professionalList = createNewList('professional')
+let viewAllList = createNewList('all')
+let completeList = createNewList('complete')
+let newList = createNewList('new')
 const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']  
 const notes = []
 
@@ -37,13 +47,8 @@ function createNote(title, description, dueDate, time, priority, list) {
     return note;
 }
 
-  const createNewList = (name) => {
-      lists.push(name)
-  }
 
-  const capitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  };
+
 
    
   
@@ -73,33 +78,36 @@ class SuperElement {
     }
   }
   
+  const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  };
 
  let displayedList
  const renderList = (array) => {
 
     array.map(item => {
-        if (item != 'new') {
-            let capitalName = capitalizeFirstLetter(item);
-      const listHeaderId = item.toLowerCase() + 'Header';
-      let listHeader = document.getElementById(listHeaderId);
+      if (item !== 'new' && item !== 'all')  {
+            // let capitalName = capitalizeFirstLetter(item)
+      const listHeaderId = item + 'Header'
+      let listHeader = document.getElementById(listHeaderId)
   
       if (!listHeader) {
-        new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId);
-        new SuperElement(listDiv, 'div', '', 'list', item);
-        listHeader = document.getElementById(listHeaderId);
+        new SuperElement(listDiv, 'div', item, 'listHeader', listHeaderId)
+        new SuperElement(listDiv, 'div', '', 'list', item)
+        listHeader = document.getElementById(listHeaderId)
       }
   
       listHeader.addEventListener('click', () => {
         displayedList = item // Assign the ID of the clicked list header
       
-        hideListNotesExcept(displayedList);
-      });
+        hideListNotesExcept(displayedList)
+      })
         }
       
-    });
+    })
   
-    return displayedList;
-  };
+    return displayedList
+  }
   
 
 
@@ -150,10 +158,10 @@ const getNoteLists = () => {
         let noteId = note.list
         console.log(noteId)
         let noteParent = document.getElementById(noteId)
-        return console.log(noteParent)
+        console.log(noteParent)
     })
 }
-// getNoteLists()
+getNoteLists()
 const noteContainer = document.getElementById(notes[0].list)
 const noteToBeMoved = document.getElementById(notes[0])
 console.log(notes[0].list)
