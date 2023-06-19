@@ -49,7 +49,6 @@ function createNote(title, description, dueDate, time, priority, list) {
 
 
 
-
    
   
  //test variables 
@@ -294,13 +293,29 @@ const hideListNotesExcept = (displayedListId) => {
       }, 1); 
     });
   }, 1); 
-  
-     
+
       
    
   });
   
-  
+  const getParent = () => {
+    console.log(notes)       
+    for (let i = 0; i < lists.length; i++) {
+      console.log(`list: ${lists[i]}`)
+      let currentList = lists[i]
+      for (let j = 0; j < notes.length; j++) {
+        console.log(`note list: ${notes[j].list}`)
+        let noteList = notes[j].list
+        if (currentList === noteList) {
+          console.log('match')
+          let parent = document.getElementById(notes[j].list)
+          return parent
+        }
+      }
+    }
+  }
+
+   console.log(getParent())
   
 
 
