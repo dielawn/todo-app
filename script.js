@@ -109,7 +109,6 @@ class SuperElement {
   }
   
 
-
   const renderNotes = (notes, parent, callback) => {
     const noteId = `note-${Date.now()}`;
   
@@ -137,9 +136,19 @@ class SuperElement {
     if (typeof callback === 'function') {
       callback(); // Execute the callback function if provided
     }
+  }
+  const renderNoteToList = (array) => {
+    array.forEach((item, index) => {
+      let itemList = document.getElementById(item.list)  
+      setTimeout(() => {
+        renderNotes(item.array, itemList)
+      }, index * 10)
+    });
   };
-  const changeList = (note, newList) => {
-    note.setList(newList); // Call the setList method on the note object
+  
+
+  const changeList = (array, newList) => {
+    array.setList(newList); // Call the setList method on the note object
     return 'yo'
   }
   
@@ -150,17 +159,17 @@ class SuperElement {
 //   notes[0].list
 //   'complete'
 
-const getNoteLists = () => {
-    console.log(notes)
-    notes.forEach(note => {
-        console.log(note.list)  
-        let noteId = note.list
-        console.log(noteId)
-        let noteParent = document.getElementById(noteId)
-        console.log(noteParent)
-    })
-}
-getNoteLists()
+// const getNoteLists = () => {
+//     console.log(notes)
+//     notes.forEach(note => {
+//         console.log(note.list)  
+//         let noteId = note.list
+//         console.log(noteId)
+//         let noteParent = document.getElementById(noteId)
+//         console.log(noteParent)
+//     })
+// }
+// getNoteLists()
 const noteContainer = document.getElementById(notes[0].list)
 const noteToBeMoved = document.getElementById(notes[0])
 console.log(notes[0].list)
@@ -279,41 +288,14 @@ const hideListNotesExcept = (displayedListId) => {
   document.addEventListener('DOMContentLoaded', function() {
     renderList(lists);
     hideListNotesExcept(lists[2]);
-    let currentId = listSelect.value
-    console.log(currentId)
- let parentElement = document.getElementById(lists[0])    
- let currentList = document.getElementById(lists[1])
- setTimeout(() => {
-    renderNotes(hairApt.array, parentElement, () => {
-      
-      setTimeout(() => {
-        renderNotes(dentistApt.array, currentList, () => {
-          
-        });
-      }, 1); 
-    });
-  }, 1); 
 
+  renderNoteToList(notes)
       
    
   });
   
-  const getParent = () => {
-    for (let i = 0; i < lists.length; i++) {
-      let currentList = lists[i];
-      for (let j = 0; j < notes.length; j++) {
-        let noteList = notes[j].list;
-        if (currentList === noteList) {
-           // Use the correct property that holds the parent ID
-          let parent = document.getElementById(noteList);
-          return parent;
-        }
-      }
-    }
-    return null; // Return null if no matching parent is found
-  };
+
   
-  console.log(getParent());
   
   
 
