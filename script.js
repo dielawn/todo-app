@@ -299,23 +299,22 @@ const hideListNotesExcept = (displayedListId) => {
   });
   
   const getParent = () => {
-    console.log(notes)       
     for (let i = 0; i < lists.length; i++) {
-      console.log(`list: ${lists[i]}`)
-      let currentList = lists[i]
+      let currentList = lists[i];
       for (let j = 0; j < notes.length; j++) {
-        console.log(`note list: ${notes[j].list}`)
-        let noteList = notes[j].list
+        let noteList = notes[j].list;
         if (currentList === noteList) {
-          console.log('match')
-          let parent = document.getElementById(notes[j].list)
-          return parent
+           // Use the correct property that holds the parent ID
+          let parent = document.getElementById(noteList);
+          return parent;
         }
       }
     }
-  }
-
-   console.log(getParent())
+    return null; // Return null if no matching parent is found
+  };
+  
+  console.log(getParent());
+  
   
 
 
