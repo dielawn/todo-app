@@ -14,7 +14,7 @@ const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']
 const notes = []
 
 // //factory functions
-function createNote(title, description, dueDate, time, priority, list) {
+function createNote(title, description, dueDate, time, priority, list, id) {
     const note = {
         title: title,
         description: description,
@@ -23,6 +23,7 @@ function createNote(title, description, dueDate, time, priority, list) {
         priority: priority,
         list: list,
         array: [title, description, dueDate, time, priority],
+        id: id,
         setTitle(title) {
             this.title = title;
         },
@@ -40,6 +41,9 @@ function createNote(title, description, dueDate, time, priority, list) {
         },
         setList(list) {
             this.list = list;
+        },
+        setId(id) {
+          this.id = id;
         }
     };
 
@@ -53,8 +57,8 @@ function createNote(title, description, dueDate, time, priority, list) {
   
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1])
-const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', lists[0] )
+const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1], 'dp')
+const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', lists[0], 'hp')
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
 
@@ -147,11 +151,7 @@ class SuperElement {
   };
   
 
-  const changeList = (array, newList) => {
-    array.setList(newList); // Call the setList method on the note object
-    return 'yo'
-  }
-  
+
 //   notes[0].list
 //   'professional'
 //   changeList(notes[0], lists[3]);  
@@ -159,22 +159,7 @@ class SuperElement {
 //   notes[0].list
 //   'complete'
 
-// const getNoteLists = () => {
-//     console.log(notes)
-//     notes.forEach(note => {
-//         console.log(note.list)  
-//         let noteId = note.list
-//         console.log(noteId)
-//         let noteParent = document.getElementById(noteId)
-//         console.log(noteParent)
-//     })
-// }
-// getNoteLists()
-const noteContainer = document.getElementById(notes[0].list)
-const noteToBeMoved = document.getElementById(notes[0])
-console.log(notes[0].list)
-// renderNotes(noteToBeMoved, noteContainer, )
-console.log(notes[0])
+
 
 const renderNoteInputs = () => {
     const inputDiv = document.getElementById('inputDiv')
@@ -222,12 +207,11 @@ const renderNoteInputs = () => {
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
             console.log(listSelect.value)
-            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value)
-            
-            
+            const noteId = `note-${Date.now()}`;
+            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId)
             const parentElement = document.getElementById(newNote.list);
-renderNotes(newNote.array, parentElement, () => {
-  console.log('rendered');
+            renderNotes(newNote.array, parentElement, () => {
+            console.log('rendered');
 });
  
         })
@@ -281,7 +265,20 @@ const hideListNotesExcept = (displayedListId) => {
       } 
     }
   };
-  
+  const changeList = (note, newList) => {
+    lists.map(item => {
+      let listDiv = document.getElementById(item)
+      if (listDiv) {
+        while (listDiv.firstChild) {
+            listDiv.firstChild.remove();
+        }
+    }
+    })
+    note.setList(newList); // Call the setList method on the note object
+    renderNotes(note, newList)
+    return 'yo'
+  }
+ console.log(notes)
 
   renderNoteInputs()
   renderNewListInput()
@@ -289,9 +286,14 @@ const hideListNotesExcept = (displayedListId) => {
     renderList(lists);
     hideListNotesExcept(lists[2]);
 
+  // renderNoteToList(notes)
+
+  console.log(notes[1].array, lists[3])
+  let complete = document.getElementById(lists[3])
+  console.log(complete)
+  // changeList(notes[1], complete)
+
   renderNoteToList(notes)
-      
-   
   });
   
 
