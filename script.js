@@ -43,7 +43,7 @@ function createNote(title, description, dueDate, time, priority, list, id) {
             this.list = list;
         },
         setId(id) {
-          this.id = id;
+            this.id = id;
         }
     };
 
@@ -86,9 +86,9 @@ class SuperElement {
   };
 
  let displayedList
- const renderList = (array) => {
+ const renderList = () => {
 
-    array.map(item => {
+    lists.map(item => {
       if (item !== 'new' && item !== 'all')  {
             // let capitalName = capitalizeFirstLetter(item)
       const listHeaderId = item + 'Header'
@@ -112,43 +112,74 @@ class SuperElement {
     return displayedList
   }
   
+  const redoNotes = () => {
 
-  const renderNotes = (notes, parent, callback) => {
-    const noteId = `note-${Date.now()}`;
-  
-    new SuperElement(parent, 'div', '', 'noteDiv', noteId);
-    const noteDiv = document.getElementById(noteId);
-  
-    for (let i = 0; i < notes.length; i++) {
-      new SuperElement(noteDiv, 'p', notes[i], 'note', '');
-    }
-  
-    const removeBtnId = `removeBtn-${Date.now()}`;
-    new SuperElement(parent, 'button', 'X', 'removeBtn', removeBtnId);
-    const removeBtn = document.getElementById(removeBtnId);
+  for (let i = 0; i < notes.length; i++) {
+    let noteId = notes[i].id
+    let noteList = notes[i].list
+
+    let listElement = document.getElementById(noteList)
+    new SuperElement(listElement, 'div', '', 'noteDiv', noteId)
+    const noteDiv = document.getElementById(noteId)
+    console.log(notes)
+    notes[i].array.map(item => {
+    console.log(item)
+    new SuperElement(noteDiv, 'p', item, 'note', '')
+  })
+  //remove Btn
+  const removeBtnId = `removeBtn-${noteId}`
+    new SuperElement(listElement, 'button', 'X', 'removeBtn', removeBtnId)
+    const removeBtn = document.getElementById(removeBtnId)
   
     removeBtn.addEventListener('click', () => {
-      console.log('remove');
+      console.log('remove')
       const noteToRemove = document.getElementById(noteId);
-      console.log(notes)
+      console.log(noteToRemove)
       if (noteToRemove) {
-        noteToRemove.remove();
+        noteToRemove.remove()
       }
-      removeBtn.remove();
-    });
+      removeBtn.remove()
+    })
+}
+}
   
-    if (typeof callback === 'function') {
-      callback(); // Execute the callback function if provided
-    }
-  }
-  const renderNoteToList = (array) => {
-    array.forEach((item, index) => {
-      let itemList = document.getElementById(item.list)  
-      setTimeout(() => {
-        renderNotes(item.array, itemList)
-      }, index * 10)
-    });
-  };
+
+  // const renderNotes = (notes, parent, callback) => {
+  //   const noteId = `note-${Date.now()}`
+  
+  //   new SuperElement(parent, 'div', '', 'noteDiv', noteId)
+  //   const noteDiv = document.getElementById(noteId)
+  
+  //   for (let i = 0; i < notes.length; i++) {
+  //     new SuperElement(noteDiv, 'p', notes[i], 'note', '')
+  //   }
+  
+  //   const removeBtnId = `removeBtn-${Date.now()}`
+  //   new SuperElement(parent, 'button', 'X', 'removeBtn', removeBtnId)
+  //   const removeBtn = document.getElementById(removeBtnId)
+  
+  //   removeBtn.addEventListener('click', () => {
+  //     console.log('remove')
+  //     const noteToRemove = document.getElementById(noteId);
+  //     console.log(notes)
+  //     if (noteToRemove) {
+  //       noteToRemove.remove()
+  //     }
+  //     removeBtn.remove()
+  //   })
+  
+  //   if (typeof callback === 'function') {
+  //     callback(); // Execute the callback function if provided
+  //   }
+  // }
+  // const renderNoteToList = (array) => {
+  //   array.forEach((item, index) => {
+  //     let itemList = document.getElementById(item.list)  
+  //     setTimeout(() => {
+  //       renderNotes(item.array, itemList)
+  //     }, index * 10)
+  //   })
+  // }
   
 
 
@@ -207,11 +238,11 @@ const renderNoteInputs = () => {
         const addNoteBtn = document.getElementById('addNoteBtn')
         addNoteBtn.addEventListener('click', () => {
             console.log(listSelect.value)
-            const noteId = `note-${Date.now()}`;
+            const noteId = `note-${Date.now()}`
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId)
             const parentElement = document.getElementById(newNote.list);
             renderNotes(newNote.array, parentElement, () => {
-            console.log('rendered');
+            console.log('rendered')
 });
  
         })
@@ -270,7 +301,7 @@ const hideListNotesExcept = (displayedListId) => {
       let listDiv = document.getElementById(item)
       if (listDiv) {
         while (listDiv.firstChild) {
-            listDiv.firstChild.remove();
+            listDiv.firstChild.remove()
         }
     }
     })
@@ -283,7 +314,7 @@ const hideListNotesExcept = (displayedListId) => {
   renderNoteInputs()
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
-    renderList(lists);
+    renderList();
     hideListNotesExcept(lists[2]);
 
   // renderNoteToList(notes)
@@ -293,7 +324,8 @@ const hideListNotesExcept = (displayedListId) => {
   console.log(complete)
   // changeList(notes[1], complete)
 
-  renderNoteToList(notes)
+  // renderNoteToList(notes)
+  redoNotes()
   });
   
 

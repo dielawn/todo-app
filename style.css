@@ -3,7 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.container{
+    padding: 30px;
+}
 .listHeader {
     font-weight: 900;
 }
