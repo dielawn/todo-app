@@ -51,10 +51,6 @@ function createNote(title, description, dueDate, time, priority, list, id) {
     return note;
 }
 
-
-
-   
-  
  //test variables 
  let description = 'Teeth cleaning and x-ray'
 const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1], 'dp')
@@ -105,14 +101,12 @@ class SuperElement {
       
         hideListNotesExcept(displayedList)
       })
-        }
-      
-    })
-  
+    }      
+  })
     return displayedList
-  }
+}
   
-  const redoNotes = () => {
+  const renderNotes = () => {
     clearNoteEl()
   for (let i = 0; i < notes.length; i++) {
     let noteId = notes[i].id
@@ -121,9 +115,7 @@ class SuperElement {
     let listElement = document.getElementById(noteList)
     new SuperElement(listElement, 'div', '', 'noteDiv', noteId)
     const noteDiv = document.getElementById(noteId)
-    console.log(notes)
     notes[i].array.map(item => {
-    console.log(item)
     new SuperElement(noteDiv, 'p', item, 'note', '')
   })
   //remove Btn
@@ -142,57 +134,9 @@ class SuperElement {
     })
 }
 }
-  
-
-  // const renderNotes = (notes, parent, callback) => {
-  //   const noteId = `note-${Date.now()}`
-  
-  //   new SuperElement(parent, 'div', '', 'noteDiv', noteId)
-  //   const noteDiv = document.getElementById(noteId)
-  
-  //   for (let i = 0; i < notes.length; i++) {
-  //     new SuperElement(noteDiv, 'p', notes[i], 'note', '')
-  //   }
-  
-  //   const removeBtnId = `removeBtn-${Date.now()}`
-  //   new SuperElement(parent, 'button', 'X', 'removeBtn', removeBtnId)
-  //   const removeBtn = document.getElementById(removeBtnId)
-  
-  //   removeBtn.addEventListener('click', () => {
-  //     console.log('remove')
-  //     const noteToRemove = document.getElementById(noteId);
-  //     console.log(notes)
-  //     if (noteToRemove) {
-  //       noteToRemove.remove()
-  //     }
-  //     removeBtn.remove()
-  //   })
-  
-  //   if (typeof callback === 'function') {
-  //     callback(); // Execute the callback function if provided
-  //   }
-  // }
-  // const renderNoteToList = (array) => {
-  //   array.forEach((item, index) => {
-  //     let itemList = document.getElementById(item.list)  
-  //     setTimeout(() => {
-  //       renderNotes(item.array, itemList)
-  //     }, index * 10)
-  //   })
-  // }
-  
-
-
-//   notes[0].list
-//   'professional'
-//   changeList(notes[0], lists[3]);  
-//   undefined
-//   notes[0].list
-//   'complete'
-
-
 
 const renderNoteInputs = () => {
+
     const inputDiv = document.getElementById('inputDiv')
     inputDiv.classList.add('flexColumn')
         //Title input
@@ -240,11 +184,12 @@ const renderNoteInputs = () => {
             console.log(listSelect.value)
             const noteId = `note-${Date.now()}`
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId)
-           redoNotes()
+            renderNotes()
  
         })
 }
 const renderListSelector = () => {
+
     // list selector
     new SuperElement(inputDiv, 'div', '', 'listSelectDiv', 'listSelectDiv')
     const listSelectDiv = document.getElementById('listSelectDiv')
@@ -264,7 +209,9 @@ const renderListSelector = () => {
     listSelect.add(option);
 });
 }
+
 const renderNewListInput = () => {
+
     //Title input
     new SuperElement(inputDiv, 'input', '', 'newListInput', 'newListInput')
     const newListInput = document.getElementById('newListInput')
@@ -281,6 +228,7 @@ const renderNewListInput = () => {
 }
 
 const hideListNotesExcept = (displayedListId) => {
+
     const listOfLists = document.querySelectorAll('.list')   
     for (let i = 0; i < listOfLists.length; i++) {
       const currentList = listOfLists[i]      
@@ -308,26 +256,48 @@ const hideListNotesExcept = (displayedListId) => {
   const changeList = (note, newList) => {
    clearNoteEl()
     note.setList(newList); // Call the setList method on the note object
-    redoNotes()
-    return 'yo'
+    renderNotes()
+    return 'list changed'
   }
- console.log(notes)
+  const changeTitle = (note, newTitle) => {
+    clearNoteEl()
+    note.setTitle(newTitle)
+    renderNotes()
+    return 'title changed'
+  }
+  const changeDescription = (note, newDescription) => {
+    clearNoteEl()
+    note.setDescrition(newDescription)
+    renderNotes()
+    return 'description changed'
+  }
+  const changeDueDate = (note, newDate) => {
+    clearNoteEl()
+    note.setDueDate(newDate)
+    renderNotes()
+    return 'date changed'
+  }
+  const changeTime = (note, newTime) => {
+    clearNoteEl()
+    note.setTime(newTime)
+    renderNotes()
+    return 'time changed'
+  }
+  const changePriority = (note, newPriority) => {
+    clearNoteEl()
+    note.setPriority(newPriority)
+    renderNotes()
+    return 'priority changed'
+  }
+
+
 
   renderNoteInputs()
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList();
     hideListNotesExcept(lists[2]);
-
- 
-
-  console.log(notes[1].array, lists[3])
-  let completeDiv = document.getElementById(lists[3])
-  console.log(completeDiv)
-  
-
- 
-  redoNotes()
+    renderNotes()
   // changeList(notes[0], lists[0])
   });
   
