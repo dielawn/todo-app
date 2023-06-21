@@ -113,7 +113,7 @@ class SuperElement {
   }
   
   const redoNotes = () => {
-
+    clearNoteEl()
   for (let i = 0; i < notes.length; i++) {
     let noteId = notes[i].id
     let noteList = notes[i].list
@@ -240,10 +240,7 @@ const renderNoteInputs = () => {
             console.log(listSelect.value)
             const noteId = `note-${Date.now()}`
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId)
-            const parentElement = document.getElementById(newNote.list);
-            renderNotes(newNote.array, parentElement, () => {
-            console.log('rendered')
-});
+           redoNotes()
  
         })
 }
@@ -296,17 +293,22 @@ const hideListNotesExcept = (displayedListId) => {
       } 
     }
   };
-  const changeList = (note, newList) => {
+
+  const clearNoteEl = () => {
     lists.map(item => {
       let listDiv = document.getElementById(item)
+      //clears the note elements
       if (listDiv) {
         while (listDiv.firstChild) {
             listDiv.firstChild.remove()
         }
     }
     })
+  }
+  const changeList = (note, newList) => {
+   clearNoteEl()
     note.setList(newList); // Call the setList method on the note object
-    renderNotes(note, newList)
+    redoNotes()
     return 'yo'
   }
  console.log(notes)
@@ -317,15 +319,16 @@ const hideListNotesExcept = (displayedListId) => {
     renderList();
     hideListNotesExcept(lists[2]);
 
-  // renderNoteToList(notes)
+ 
 
   console.log(notes[1].array, lists[3])
-  let complete = document.getElementById(lists[3])
-  console.log(complete)
-  // changeList(notes[1], complete)
+  let completeDiv = document.getElementById(lists[3])
+  console.log(completeDiv)
+  
 
-  // renderNoteToList(notes)
+ 
   redoNotes()
+  // changeList(notes[0], lists[0])
   });
   
 
