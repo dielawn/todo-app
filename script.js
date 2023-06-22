@@ -119,13 +119,15 @@ class SuperElement {
     let listElement = document.getElementById(noteList)
     new SuperElement(listElement, 'div', '', 'noteDiv', noteId)
     const noteDiv = document.getElementById(noteId)
-  //   notes[i].array.map(item => {
-  //   new SuperElement(noteDiv, 'p', item, 'note', `${notes[i].id}-Note`)
-  // })
+
+    //note title
   new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`)
-  let editTitle = document.getElementById(`${notes[i].id}-noteTitle`)
-  editTitle.addEventListener('click', () => {
-    changeTitle(notes[i], 'Title Changed!')
+  let displayedTitle = document.getElementById(`${notes[i].id}-noteTitle`)
+  displayedTitle.addEventListener('click', () => {
+    //hide p element show titleInput save and cancel btns
+    displayedTitle.classList.add('hide')
+    handleTitleChange(noteDiv, i)
+    
   })
   new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`)
   // document.getElementById()
@@ -208,6 +210,25 @@ const renderNoteInputs = () => {
             renderNotes()
  
         })
+}
+const handleTitleChange = (parent, i) => {
+
+   new SuperElement(parent, 'input', '', 'editTitleInput', 'editTitleInput')
+   const titleInput = document.getElementById('editTitleInput')
+   titleInput.placeholder = notes[i].title
+   new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn')
+   const saveTitleBtn = document.getElementById('saveTitleBtn')
+   saveTitleBtn.addEventListener('click', () => {
+    changeTitle(notes[i], titleInput.value)
+   })   
+   new SuperElement(parent, 'button', 'Cancel', 'cancelBtn', 'cancelTitleBtn')
+   const cancelTitleBtn = document.getElementById('cancelTitleBtn')
+   cancelTitleBtn.addEventListener('click', () => {
+    titleInput.remove()
+    saveTitleBtn.remove()
+    cancelTitleBtn.remove()
+
+   })  
 }
 const renderListSelector = () => {
 
