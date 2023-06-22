@@ -14,7 +14,7 @@ const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']
 const notes = []
 
 // //factory functions
-function createNote(title, description, dueDate, time, priority, list, id) {
+function createNote(title, description, dueDate, time, priority, list, id, checkList) {
     const note = {
         title: title,
         description: description,
@@ -24,6 +24,7 @@ function createNote(title, description, dueDate, time, priority, list, id) {
         list: list,
         array: [title, description, dueDate, time, priority],
         id: id,
+        checkList: checkList,
         setTitle(title) {
             this.title = title;
         },
@@ -44,6 +45,9 @@ function createNote(title, description, dueDate, time, priority, list, id) {
         },
         setId(id) {
             this.id = id;
+        },
+        setCheckList(checkList) {
+            this.checkList = checkList
         }
     };
 
@@ -53,8 +57,8 @@ function createNote(title, description, dueDate, time, priority, list, id) {
 
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1], 'dp')
-const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', lists[0], 'hp')
+const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1], 'dp', false)
+const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', lists[0], 'hp', true)
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
 
 
@@ -115,9 +119,25 @@ class SuperElement {
     let listElement = document.getElementById(noteList)
     new SuperElement(listElement, 'div', '', 'noteDiv', noteId)
     const noteDiv = document.getElementById(noteId)
-    notes[i].array.map(item => {
-    new SuperElement(noteDiv, 'p', item, 'note', '')
+  //   notes[i].array.map(item => {
+  //   new SuperElement(noteDiv, 'p', item, 'note', `${notes[i].id}-Note`)
+  // })
+  new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`)
+  let editTitle = document.getElementById(`${notes[i].id}-noteTitle`)
+  editTitle.addEventListener('click', () => {
+    changeTitle(notes[i], 'Title Changed!')
   })
+  new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`)
+  // document.getElementById()
+  new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`)
+  // document.getElementById()
+  new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`)
+  // document.getElementById()
+  new SuperElement(noteDiv, 'p', notes[i].priority, 'note', `${notes[i].id}-notePriority`)
+  // document.getElementById()
+  
+
+  
   //remove Btn
   const removeBtnId = `removeBtn-${noteId}`
     new SuperElement(listElement, 'button', 'X', 'removeBtn', removeBtnId)
@@ -134,6 +154,7 @@ class SuperElement {
     })
 }
 }
+
 
 const renderNoteInputs = () => {
 
@@ -183,7 +204,7 @@ const renderNoteInputs = () => {
         addNoteBtn.addEventListener('click', () => {
             console.log(listSelect.value)
             const noteId = `note-${Date.now()}`
-            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId)
+            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId, false)
             renderNotes()
  
         })
@@ -290,6 +311,12 @@ const hideListNotesExcept = (displayedListId) => {
     return 'priority changed'
   }
 
+  function handleCLick(event) {
+    const clickedElement = event.target
+    console.log(clickedElement)
+  }
+
+document.querySelector('body').addEventListener('click', handleCLick)
 
 
   renderNoteInputs()
