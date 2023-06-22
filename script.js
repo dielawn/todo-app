@@ -119,24 +119,28 @@ class SuperElement {
     let listElement = document.getElementById(noteList)
     new SuperElement(listElement, 'div', '', 'noteDiv', noteId)
     const noteDiv = document.getElementById(noteId)
-
+    //create edit div
+    new SuperElement(listElement, 'div', '', 'editDiv', 'editDiv')
+    const editDiv = document.getElementById('editDiv')
+    editDiv.classList.add('hide')
     //note title
   new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`)
   let displayedTitle = document.getElementById(`${notes[i].id}-noteTitle`)
-  displayedTitle.addEventListener('click', () => {
+  noteDiv.addEventListener('click', () => {
     //hide p element show titleInput save and cancel btns
-    displayedTitle.classList.add('hide')
-    handleTitleChange(noteDiv, i)
+    noteDiv.classList.add('hide')
+    editDiv.classList.remove('hide')
+    editNote(editDiv, noteDiv, i)
     
   })
   new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`)
-  // document.getElementById()
+  const displayedDesc = document.getElementById(`${notes[i].id}-noteDesc`)
   new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`)
-  // document.getElementById()
+  const displayedDate = document.getElementById(`${notes[i].id}-noteDueDate`)
   new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`)
-  // document.getElementById()
+  const displayedTime = document.getElementById(`${notes[i].id}-noteTime`)
   new SuperElement(noteDiv, 'p', notes[i].priority, 'note', `${notes[i].id}-notePriority`)
-  // document.getElementById()
+  const displayedPriority = document.getElementById(`${notes[i].id}-notePriority`)
   
 
   
@@ -158,7 +162,7 @@ class SuperElement {
 }
 
 
-const renderNoteInputs = () => {
+const renderNoteInputs = (parent) => {
 
     const inputDiv = document.getElementById('inputDiv')
     inputDiv.classList.add('flexColumn')
@@ -199,7 +203,7 @@ const renderNoteInputs = () => {
         })
         
         
-        renderListSelector()
+        renderListSelector(inputDiv)
 
         new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
         const addNoteBtn = document.getElementById('addNoteBtn')
@@ -211,29 +215,64 @@ const renderNoteInputs = () => {
  
         })
 }
-const handleTitleChange = (parent, i) => {
-
+const editNote = (parent, noteElem, i) => {
+  
+//title
    new SuperElement(parent, 'input', '', 'editTitleInput', 'editTitleInput')
    const titleInput = document.getElementById('editTitleInput')
-   titleInput.placeholder = notes[i].title
+   titleInput.value = notes[i].title
+   //description
+   new SuperElement(parent, 'input', '', 'editDescriptInput', 'editDescriptInput')
+   const editDescriptInput = document.getElementById('editDescriptInput')
+   editDescriptInput.value = notes[i].description
+//date
+new SuperElement(parent, 'input', '', 'editDateInput', 'editDateInput')
+   const editDateInput = document.getElementById('editDateInput')
+   editDateInput.value = notes[i].dueDate
+//time
+new SuperElement(parent, 'input', '', 'editTimeInput', 'editTimeInput')
+   const editTimeInput = document.getElementById('editTimeInput')
+   editTimeInput.value = notes[i].time
+//priority
+   new SuperElement(parent, 'div', '', 'prioritySelectDiv', 'editPriority')
+        const editPriorityDiv = document.getElementById('editPriority')
+        new SuperElement(editPriorityDiv, 'label', 'Priority', 'editPriorityLabel', 'editPriorityLabel')
+        const editPriorityLabel = document.getElementById('editPriorityLabel')
+        editPriorityLabel.for = 'editPriority'
+        new SuperElement(editPriorityDiv, 'select', '', 'prioritySelect', 'editPrioritySeect')
+        const prioritySelect = document.getElementById('editPrioritySeect')   
+        prioritySelect.name = 'prioritySelectLabel'    
+
+        // Create option elements and set their values
+        const options = priorityLevel.map(item => {
+          const option = document.createElement('option')
+          option.value = item
+          option.text = item
+          return option
+      })
+      options.forEach(option => {
+          prioritySelect.add(option)
+      })     
+      renderListSelector(parent)
+   //save btn
    new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn')
    const saveTitleBtn = document.getElementById('saveTitleBtn')
    saveTitleBtn.addEventListener('click', () => {
     changeTitle(notes[i], titleInput.value)
    })   
+   //cancel btn
    new SuperElement(parent, 'button', 'Cancel', 'cancelBtn', 'cancelTitleBtn')
    const cancelTitleBtn = document.getElementById('cancelTitleBtn')
    cancelTitleBtn.addEventListener('click', () => {
-    titleInput.remove()
-    saveTitleBtn.remove()
-    cancelTitleBtn.remove()
+    noteElem.classList.remove('hide')
+    parent.classList.add('hide')
 
    })  
 }
-const renderListSelector = () => {
+const renderListSelector = (parent) => {
 
     // list selector
-    new SuperElement(inputDiv, 'div', '', 'listSelectDiv', 'listSelectDiv')
+    new SuperElement(parent, 'div', '', 'listSelectDiv', 'listSelectDiv')
     const listSelectDiv = document.getElementById('listSelectDiv')
     listSelectDiv.innerHTML = ''
     new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect')
@@ -340,7 +379,7 @@ const hideListNotesExcept = (displayedListId) => {
 document.querySelector('body').addEventListener('click', handleCLick)
 
 
-  renderNoteInputs()
+  renderNoteInputs('inputDiv')
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList();
