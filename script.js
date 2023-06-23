@@ -398,6 +398,30 @@ const hideListNotesExcept = (displayedListId) => {
 
 document.querySelector('body').addEventListener('click', handleCLick)
 
+console.log(notes)
+const saveToLocalStorage = () => {
+  localStorage.setItem('savedNotes', JSON.stringify(notes));
+  localStorage.setItem('savedLists', JSON.stringify(lists));   
+ } 
+
+saveToLocalStorage()
+
+console.log(localStorage)
+const loadLocalStorage = () => {
+  const savedNotes = JSON.parse(localStorage.getItem('savedNotes'));
+  const savedLists = JSON.parse(localStorage.getItem('savedLists'));
+  console.log(savedNotes, savedLists)
+}
+loadLocalStorage()
+const removeItemLocalStorage = () => {
+  localStorage.removeItem(key)
+}
+
+const clearLocalStorage = () => {
+  localStorage.clear()
+}
+
+// clearLocalStorage()
 
   renderNoteInputs('inputDiv')
   
