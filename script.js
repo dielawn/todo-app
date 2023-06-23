@@ -57,15 +57,16 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', 'High', lists[1], 'dp', false)
-const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', 'Very High', lists[0], 'hp', true)
+const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', priorityLevel[1], lists[1], 'dp', false)
+const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', priorityLevel[0], lists[0], 'hp', true)
 const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
-
+const emptyNote = createNote('New note', 'description', 'date', 'time', priorityLevel[3], lists[0], 'newNote', false)
 
 //DOM stuff
 const containerDiv = document.getElementById('container')
 const listDiv = document.getElementById('listDiv')
 const inputDiv = document.getElementById('inputDiv')
+
 
 class SuperElement {
     constructor(parent, elementType, innerHTML = '', className = '', id = '') {
@@ -145,16 +146,24 @@ class SuperElement {
 
   
   //remove Btn
-  const removeBtnId = `removeBtn-${noteId}`
-    new SuperElement(listElement, 'button', 'X', 'removeBtn', removeBtnId)
+   const removeBtnId = `removeBtn-${noteId}`
+    new SuperElement(listElement, 'button', 'Complete', 'removeBtn', removeBtnId)
     const removeBtn = document.getElementById(removeBtnId)
-  
+
     removeBtn.addEventListener('click', () => {
       console.log('remove')
+     
       const noteToRemove = document.getElementById(noteId);
-      console.log(noteToRemove)
-      if (noteToRemove) {
+      // console.log(notes[i].list)
+      if (notes[i].list != 'complete') {
+        changeList(notes[i], 'complete')
+        
+      } else {
         noteToRemove.remove()
+        console.log(notes[i])
+        notes.splice(i, 1);
+        renderNotes()
+        console.log(notes[i])
       }
       removeBtn.remove()
     })
@@ -162,10 +171,11 @@ class SuperElement {
 }
 
 
-const renderNoteInputs = (parent) => {
-
+const renderNoteInputs = () => {
+  
     const inputDiv = document.getElementById('inputDiv')
-    inputDiv.classList.add('flexColumn')
+    
+    inputDiv.classList.add('hide')
         //Title input
         new SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput')
         const titleInput = document.getElementById('titleInput')
@@ -211,6 +221,8 @@ const renderNoteInputs = (parent) => {
             console.log(listSelect.value)
             const noteId = `note-${Date.now()}`
             const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId, false)
+            inputDiv.classList.remove('flexColumn')
+            inputDiv.classList.add('hide')
             renderNotes()
  
         })
@@ -259,15 +271,12 @@ new SuperElement(parent, 'input', '', 'editTimeInput', 'editTimeInput')
    const saveTitleBtn = document.getElementById('saveTitleBtn')
    saveTitleBtn.addEventListener('click', () => {
     changeTitle(notes[i], titleInput.value)
+    changeDescription(notes[i], editDescriptInput.value)
+    changeDueDate(notes[i], editDateInput.value)
+    changeTime(notes[i], editTimeInput.value)
+    changePriority(notes[i], prioritySelect.value)
    })   
-   //cancel btn
-   new SuperElement(parent, 'button', 'Cancel', 'cancelBtn', 'cancelTitleBtn')
-   const cancelTitleBtn = document.getElementById('cancelTitleBtn')
-   cancelTitleBtn.addEventListener('click', () => {
-    noteElem.classList.remove('hide')
-    parent.classList.add('hide')
 
-   })  
 }
 const renderListSelector = (parent) => {
 
@@ -348,7 +357,7 @@ const hideListNotesExcept = (displayedListId) => {
   }
   const changeDescription = (note, newDescription) => {
     clearNoteEl()
-    note.setDescrition(newDescription)
+    note.setDescription(newDescription)
     renderNotes()
     return 'description changed'
   }
@@ -371,6 +380,17 @@ const hideListNotesExcept = (displayedListId) => {
     return 'priority changed'
   }
 
+  const renderNewNoteBtn = () => {
+    new SuperElement(containerDiv, 'button', '+', 'newNoteBtn', 'newNoteBtn')
+    const newNoteBtn = document.getElementById('newNoteBtn')
+    newNoteBtn.addEventListener('click', () => {
+      console.log(inputDiv)
+      inputDiv.classList.remove('hide')
+      inputDiv.classList.add('flexColumn')
+      console.log(inputDiv)
+    })
+  }
+
   function handleCLick(event) {
     const clickedElement = event.target
     console.log(clickedElement)
@@ -380,15 +400,17 @@ document.querySelector('body').addEventListener('click', handleCLick)
 
 
   renderNoteInputs('inputDiv')
+  
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList();
     hideListNotesExcept(lists[2]);
     renderNotes()
+    renderNewNoteBtn()
   // changeList(notes[0], lists[0])
   });
   
-
+console.log(inputDiv)
   
   
   
