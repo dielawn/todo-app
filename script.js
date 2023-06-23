@@ -407,12 +407,30 @@ const saveToLocalStorage = () => {
 saveToLocalStorage()
 
 console.log(localStorage)
-const loadLocalStorage = () => {
-  const savedNotes = JSON.parse(localStorage.getItem('savedNotes'));
+const loadSavedLists = () => {  
   const savedLists = JSON.parse(localStorage.getItem('savedLists'));
-  console.log(savedNotes, savedLists)
+  console.log(savedLists)
 }
-loadLocalStorage()
+const loadSavedNotes = () => {
+  const savedNotes = JSON.parse(localStorage.getItem('savedNotes'));
+  console.log(savedNotes);
+
+  savedNotes.forEach(savedNote => {
+    createNote(
+      savedNote.title,
+      savedNote.description,
+      savedNote.dueDate,
+      savedNote.time,
+      savedNote.priority,
+      savedNote.list,
+      savedNote.array,
+      savedNote.id,
+      savedNote.checkList
+    );
+  });
+};
+
+loadSavedNotes()
 const removeItemLocalStorage = () => {
   localStorage.removeItem(key)
 }
