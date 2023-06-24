@@ -66,6 +66,7 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 const containerDiv = document.getElementById('container')
 const listDiv = document.getElementById('listDiv')
 const inputDiv = document.getElementById('inputDiv')
+const menuDiv = document.getElementById('menuDiv')
 
 
 class SuperElement {
@@ -91,7 +92,7 @@ class SuperElement {
   listDiv.innerHTML = ''
   loadSavedLists()
     lists.map(item => {
-      if (item !== 'new' && item !== 'all')  {            
+      // if (item !== 'new' && item !== 'all')  {            
       const listHeaderId = item + 'Header'
       let listHeader = document.getElementById(listHeaderId)  
       if (!listHeader) {
@@ -105,7 +106,7 @@ class SuperElement {
         displayedList = item // Assign the ID of the clicked list header      
         hideListNotesExcept(displayedList)
       })
-    }
+    // }
   })
 }
    
@@ -354,7 +355,7 @@ const hideListNotesExcept = (displayedListId) => {
   }
   const changeList = (note, newList) => {
    clearNoteEl()
-    note.setList(newList); // Call the setList method on the note object
+    note.setList(newList)
     renderNotes()
     return 'list changed'
   }
@@ -402,24 +403,46 @@ const hideListNotesExcept = (displayedListId) => {
 
 
 
+//localStorage stuff
+  const saveToLocalStorage = () => {
+    const savedNotes = localStorage.getItem('savedNotes');
+    const savedLists = localStorage.getItem('savedLists');
+  
+    if (JSON.stringify(notes) !== savedNotes) {
+      localStorage.setItem('savedNotes', JSON.stringify(notes));
+      console.log('firstOne')
+    }
+  console.log(lists)
+    if (JSON.stringify(lists) !== savedLists) {
+      localStorage.setItem('savedLists', JSON.stringify(lists));
+      console.log('secondOne')
+    }
+  
+    console.log('Saved to local storage');
+  };
+  
+  
+ const removeItemLocalStorage = (key) => {
 
-const saveToLocalStorage = () => {
-  localStorage.setItem('savedNotes', JSON.stringify(notes));
-  localStorage.setItem('savedLists', JSON.stringify(lists));   
-  console.log(`Saved ${localStorage}`)
- } 
-
-const loadSavedLists = () => {  
-  const savedLists = JSON.parse(localStorage.getItem('savedLists'))
-  if (savedLists) {
-    savedLists.map(item => {
-      lists.push(item)
-    })
-  }
-
+  localStorage.removeItem(key)
 }
 
+const loadSavedLists = () => {  
+  const savedLists = JSON.parse(localStorage.getItem('savedLists'));
+
+  if (savedLists) {
+    lists.length = 0; // Clear the lists array
+
+    savedLists.forEach(item => {
+      lists.push(item);
+      console.log(lists, item)
+    });
+  }
+};
+
+console.log(lists)
 const loadSavedNotes = () => {
+
   const savedNotes = JSON.parse(localStorage.getItem('savedNotes'))
   if (savedNotes) {
     // console.log(savedNotes);
@@ -439,52 +462,71 @@ const loadSavedNotes = () => {
   }  
 }
 
+const clearLocalStorage = () => {
+  localStorage.clear()
+}
+const handleDefault = () => {
+  new SuperElement(menuDiv, 'button', 'Default Settings', 'defaultBtn', 'defaultBtn')
+  const defaultBtn = document.getElementById('defaultBtn')
+  defaultBtn.addEventListener('click', () => {
+    clearLocalStorage()
+   // Reload the current page
+    location.reload();
 
-const removeItemLocalStorage = (key) => {
-  localStorage.removeItem(key)
+  })
 }
 
-// const clearLocalStorage = () => {
-  // localStorage.clear()
-// }
-console.log(localStorage)
-// removeItemLocalStorage()
 
 
 const removeList = () => {
-  
-  for (let i = 0; i < lists.length; i++) {
-    if (lists[i] != 'complete' && lists[i] != 'all') {
-      new SuperElement(containerDiv, 'button', `Remove ${lists[i]}`, 'removeBtn', `removeListBtn${i}`)
-      const removeListBtn = document.getElementById(`removeListBtn${i}`)
-        console.log(lists[i])
-        removeListBtn.addEventListener('click', () => {
-          lists.splice(i, 1)
+  lists.forEach((list, index) => {
+    
+    if (list !== 'complete' && list !== 'all') {
+
+      const capitalList = capitalizeFirstLetter(list)
+      new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`)
+      const removeListBtn = document.getElementById(`removeListBtn${index}`)
+      handleRemoveBtn(removeListBtn)
+      removeListBtn.addEventListener('click', () => {
+        const listIndex = lists.findIndex(item => item === list)
+        if (listIndex !== -1) {
+          console.log(lists)
+          lists.splice(listIndex, 1)
+          console.log(lists)
+          console.log(localStorage)
           saveToLocalStorage()
           console.log(localStorage)
-          removeItemLocalStorage('savedLists')
-         console.log(localStorage)
           renderList()
-          removeListBtn.remove()
-        })
+          renderListSelector(inputDiv)
+          removeListBtn.remove();
+        }
+      })
     }
-   
-   
-    
-  }
- 
+  })
 }
+
+const handleRemoveBtn = (btn) => {
+
+  let listRemoved = false
+  if (lists.length < 4) {
+    listRemoved = true
+  }
+  if (listRemoved === true) {
+    btn.remove()
+  }
+}
+
 removeList()
 
   renderNoteInputs('inputDiv')
   
-  
+  handleDefault()
   document.addEventListener('DOMContentLoaded', function() {
     loadSavedLists()
     renderListSelector(inputDiv)
+    
     renderList();
     hideListNotesExcept(lists[2]);
-    loadSavedNotes()
     
     renderNotes()
     renderNewNoteBtn()
