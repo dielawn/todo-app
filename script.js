@@ -9,7 +9,7 @@ let personalList = createNewList('personal')
 let professionalList = createNewList('professional')
 let viewAllList = createNewList('all')
 let completeList = createNewList('complete')
-let newList = createNewList('new')
+
 const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']  
 const notes = []
 
@@ -88,29 +88,84 @@ class SuperElement {
 
  let displayedList
  const renderList = () => {
-
+  listDiv.innerHTML = ''
+  loadSavedLists()
     lists.map(item => {
-      if (item !== 'new' && item !== 'all')  {
-            // let capitalName = capitalizeFirstLetter(item)
+      if (item !== 'new' && item !== 'all')  {            
       const listHeaderId = item + 'Header'
-      let listHeader = document.getElementById(listHeaderId)
-  
+      let listHeader = document.getElementById(listHeaderId)  
       if (!listHeader) {
-        new SuperElement(listDiv, 'div', item, 'listHeader', listHeaderId)
+        let capitalName = capitalizeFirstLetter(item)
+        new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)
         new SuperElement(listDiv, 'div', '', 'list', item)
         listHeader = document.getElementById(listHeaderId)
       }
   
       listHeader.addEventListener('click', () => {
-        displayedList = item // Assign the ID of the clicked list header
-      
+        displayedList = item // Assign the ID of the clicked list header      
         hideListNotesExcept(displayedList)
       })
-    }      
+    }
   })
-    return displayedList
 }
+   
+   
+    
+
   
+const editNote = (parent, i) => {
+  
+  //title
+     new SuperElement(parent, 'input', '', 'editTitleInput', 'editTitleInput')
+     const titleInput = document.getElementById('editTitleInput')
+     titleInput.value = notes[i].title
+     //description
+     new SuperElement(parent, 'input', '', 'editDescriptInput', 'editDescriptInput')
+     const editDescriptInput = document.getElementById('editDescriptInput')
+     editDescriptInput.value = notes[i].description
+  //date
+  new SuperElement(parent, 'input', '', 'editDateInput', 'editDateInput')
+     const editDateInput = document.getElementById('editDateInput')
+     editDateInput.value = notes[i].dueDate
+  //time
+  new SuperElement(parent, 'input', '', 'editTimeInput', 'editTimeInput')
+     const editTimeInput = document.getElementById('editTimeInput')
+     editTimeInput.value = notes[i].time
+  //priority
+     new SuperElement(parent, 'div', '', 'prioritySelectDiv', 'editPriority')
+          const editPriorityDiv = document.getElementById('editPriority')
+          new SuperElement(editPriorityDiv, 'label', 'Priority', 'editPriorityLabel', 'editPriorityLabel')
+          const editPriorityLabel = document.getElementById('editPriorityLabel')
+          editPriorityLabel.for = 'editPriority'
+          new SuperElement(editPriorityDiv, 'select', '', 'prioritySelect', 'editPrioritySeect')
+          const prioritySelect = document.getElementById('editPrioritySeect')   
+          prioritySelect.name = 'prioritySelectLabel'    
+  
+          // Create option elements and set their values
+          const options = priorityLevel.map(item => {
+            const option = document.createElement('option')
+            option.value = item
+            option.text = item
+            return option
+        })
+        options.forEach(option => {
+            prioritySelect.add(option)
+        })     
+        renderListSelector(parent)
+     //save btn
+     new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn')
+     const saveTitleBtn = document.getElementById('saveTitleBtn')
+     saveTitleBtn.addEventListener('click', () => {
+      changeTitle(notes[i], titleInput.value)
+      changeDescription(notes[i], editDescriptInput.value)
+      changeDueDate(notes[i], editDateInput.value)
+      changeTime(notes[i], editTimeInput.value)
+      changePriority(notes[i], prioritySelect.value)
+      saveToLocalStorage()
+     })   
+  
+  }
+
   const renderNotes = () => {
     clearNoteEl()
   for (let i = 0; i < notes.length; i++) {
@@ -131,7 +186,7 @@ class SuperElement {
     //hide p element show titleInput save and cancel btns
     noteDiv.classList.add('hide')
     editDiv.classList.remove('hide')
-    editNote(editDiv, noteDiv, i)
+    editNote(editDiv, i)
     
   })
   new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`)
@@ -221,65 +276,14 @@ const renderNoteInputs = () => {
         addNoteBtn.addEventListener('click', () => {
             console.log(listSelect.value)
             const noteId = `note-${Date.now()}`
-            const newNote = createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId, false)
+            createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId, false)
             inputDiv.classList.remove('flexColumn')
             inputDiv.classList.add('hide')
             renderNotes()
             saveToLocalStorage()
         })
 }
-const editNote = (parent, noteElem, i) => {
-  
-//title
-   new SuperElement(parent, 'input', '', 'editTitleInput', 'editTitleInput')
-   const titleInput = document.getElementById('editTitleInput')
-   titleInput.value = notes[i].title
-   //description
-   new SuperElement(parent, 'input', '', 'editDescriptInput', 'editDescriptInput')
-   const editDescriptInput = document.getElementById('editDescriptInput')
-   editDescriptInput.value = notes[i].description
-//date
-new SuperElement(parent, 'input', '', 'editDateInput', 'editDateInput')
-   const editDateInput = document.getElementById('editDateInput')
-   editDateInput.value = notes[i].dueDate
-//time
-new SuperElement(parent, 'input', '', 'editTimeInput', 'editTimeInput')
-   const editTimeInput = document.getElementById('editTimeInput')
-   editTimeInput.value = notes[i].time
-//priority
-   new SuperElement(parent, 'div', '', 'prioritySelectDiv', 'editPriority')
-        const editPriorityDiv = document.getElementById('editPriority')
-        new SuperElement(editPriorityDiv, 'label', 'Priority', 'editPriorityLabel', 'editPriorityLabel')
-        const editPriorityLabel = document.getElementById('editPriorityLabel')
-        editPriorityLabel.for = 'editPriority'
-        new SuperElement(editPriorityDiv, 'select', '', 'prioritySelect', 'editPrioritySeect')
-        const prioritySelect = document.getElementById('editPrioritySeect')   
-        prioritySelect.name = 'prioritySelectLabel'    
 
-        // Create option elements and set their values
-        const options = priorityLevel.map(item => {
-          const option = document.createElement('option')
-          option.value = item
-          option.text = item
-          return option
-      })
-      options.forEach(option => {
-          prioritySelect.add(option)
-      })     
-      renderListSelector(parent)
-   //save btn
-   new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn')
-   const saveTitleBtn = document.getElementById('saveTitleBtn')
-   saveTitleBtn.addEventListener('click', () => {
-    changeTitle(notes[i], titleInput.value)
-    changeDescription(notes[i], editDescriptInput.value)
-    changeDueDate(notes[i], editDateInput.value)
-    changeTime(notes[i], editTimeInput.value)
-    changePriority(notes[i], prioritySelect.value)
-    saveToLocalStorage()
-   })   
-
-}
 const renderListSelector = (parent) => {
 
     // list selector
@@ -312,12 +316,15 @@ const renderNewListInput = () => {
     new SuperElement(inputDiv, 'button', 'Add List', 'addListBtn', 'addListBtn')
         const addListBtn = document.getElementById('addListBtn')
         addListBtn.addEventListener('click', () => {
-            const newList = createNewList(newListInput.value)            
-            console.log(newList)
+
+            createNewList(newListInput.value)        
+            saveToLocalStorage()    
+            console.log(lists)
             renderList(lists)
-            renderListSelector()
+            renderListSelector(inputDiv)
         })
 }
+
 
 const hideListNotesExcept = (displayedListId) => {
 
@@ -393,30 +400,29 @@ const hideListNotesExcept = (displayedListId) => {
     })
   }
 
-  function handleCLick(event) {
-    const clickedElement = event.target
-    console.log(clickedElement)
-  }
 
-document.querySelector('body').addEventListener('click', handleCLick)
 
-console.log(notes)
+
 const saveToLocalStorage = () => {
   localStorage.setItem('savedNotes', JSON.stringify(notes));
   localStorage.setItem('savedLists', JSON.stringify(lists));   
+  console.log(`Saved ${localStorage}`)
  } 
 
-
-
-console.log(localStorage)
 const loadSavedLists = () => {  
-  const savedLists = JSON.parse(localStorage.getItem('savedLists'));
-  console.log(savedLists)
-}
-const loadSavedNotes = () => {
-  const savedNotes = JSON.parse(localStorage.getItem('savedNotes'));
-  console.log(savedNotes);
+  const savedLists = JSON.parse(localStorage.getItem('savedLists'))
+  if (savedLists) {
+    savedLists.map(item => {
+      lists.push(item)
+    })
+  }
 
+}
+
+const loadSavedNotes = () => {
+  const savedNotes = JSON.parse(localStorage.getItem('savedNotes'))
+  if (savedNotes) {
+    // console.log(savedNotes);
   savedNotes.forEach(savedNote => {
     createNote(
       savedNote.title,
@@ -428,39 +434,67 @@ const loadSavedNotes = () => {
       savedNote.array,
       savedNote.id,
       savedNote.checkList
-    );
-  });
-};
+    )
+  })
+  }  
+}
 
 
-const removeItemLocalStorage = () => {
+const removeItemLocalStorage = (key) => {
   localStorage.removeItem(key)
 }
 
-const clearLocalStorage = () => {
-  localStorage.clear()
-}
+// const clearLocalStorage = () => {
+  // localStorage.clear()
+// }
+console.log(localStorage)
+// removeItemLocalStorage()
 
 
+const removeList = () => {
   
+  for (let i = 0; i < lists.length; i++) {
+    if (lists[i] != 'complete' && lists[i] != 'all') {
+      new SuperElement(containerDiv, 'button', `Remove ${lists[i]}`, 'removeBtn', `removeListBtn${i}`)
+      const removeListBtn = document.getElementById(`removeListBtn${i}`)
+        console.log(lists[i])
+        removeListBtn.addEventListener('click', () => {
+          lists.splice(i, 1)
+          saveToLocalStorage()
+          console.log(localStorage)
+          removeItemLocalStorage('savedLists')
+         console.log(localStorage)
+          renderList()
+          removeListBtn.remove()
+        })
+    }
+   
+   
+    
+  }
+ 
+}
+removeList()
+
   renderNoteInputs('inputDiv')
   
-  renderNewListInput()
+  
   document.addEventListener('DOMContentLoaded', function() {
+    loadSavedLists()
+    renderListSelector(inputDiv)
     renderList();
     hideListNotesExcept(lists[2]);
-    // if (notes.length === 0) {
-    //   loadSavedNotes()
-    // }
     loadSavedNotes()
+    
     renderNotes()
     renderNewNoteBtn()
-  // changeList(notes[0], lists[0])
-  });
-  
-console.log(inputDiv)
+  })
   
   
   
-
+function handleCLick(event) {
+  const clickedElement = event.target
+  console.log(clickedElement)
+}
+document.querySelector('body').addEventListener('click', handleCLick)
 
