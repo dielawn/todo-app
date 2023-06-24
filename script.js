@@ -57,10 +57,10 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 
  //test variables 
  let description = 'Teeth cleaning and x-ray'
-const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', priorityLevel[1], lists[1], 'dp', false)
-const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', priorityLevel[0], lists[0], 'hp', true)
-const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
-const emptyNote = createNote('New note', 'description', 'date', 'time', priorityLevel[3], lists[0], 'newNote', false)
+// const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', priorityLevel[1], lists[1], 'dp', false)
+// const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', priorityLevel[0], lists[0], 'hp', true)
+// const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
+// const emptyNote = createNote('New note', 'description', 'date', 'time', priorityLevel[3], lists[0], 'newNote', false)
 
 //DOM stuff
 const containerDiv = document.getElementById('container')
@@ -165,6 +165,7 @@ class SuperElement {
         renderNotes()
         console.log(notes[i])
       }
+      saveToLocalStorage()
       removeBtn.remove()
     })
 }
@@ -224,7 +225,7 @@ const renderNoteInputs = () => {
             inputDiv.classList.remove('flexColumn')
             inputDiv.classList.add('hide')
             renderNotes()
- 
+            saveToLocalStorage()
         })
 }
 const editNote = (parent, noteElem, i) => {
@@ -275,6 +276,7 @@ new SuperElement(parent, 'input', '', 'editTimeInput', 'editTimeInput')
     changeDueDate(notes[i], editDateInput.value)
     changeTime(notes[i], editTimeInput.value)
     changePriority(notes[i], prioritySelect.value)
+    saveToLocalStorage()
    })   
 
 }
@@ -404,7 +406,7 @@ const saveToLocalStorage = () => {
   localStorage.setItem('savedLists', JSON.stringify(lists));   
  } 
 
-saveToLocalStorage()
+
 
 console.log(localStorage)
 const loadSavedLists = () => {  
@@ -430,7 +432,7 @@ const loadSavedNotes = () => {
   });
 };
 
-loadSavedNotes()
+
 const removeItemLocalStorage = () => {
   localStorage.removeItem(key)
 }
@@ -439,14 +441,18 @@ const clearLocalStorage = () => {
   localStorage.clear()
 }
 
-// clearLocalStorage()
 
+  
   renderNoteInputs('inputDiv')
   
   renderNewListInput()
   document.addEventListener('DOMContentLoaded', function() {
     renderList();
     hideListNotesExcept(lists[2]);
+    // if (notes.length === 0) {
+    //   loadSavedNotes()
+    // }
+    loadSavedNotes()
     renderNotes()
     renderNewNoteBtn()
   // changeList(notes[0], lists[0])
