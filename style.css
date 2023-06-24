@@ -27,3 +27,12 @@
     flex-direction: column;
     flex-wrap: wrap;
 }
+.greenish {
+    background-color: rgba(0, 255, 0, .5);
+}
+.yellowish {
+    background-color: rgba(248, 245, 64, 0.5);
+}
+.redish {
+    background-color: rgba(255, 0, 0, .5);
+}

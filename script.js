@@ -110,7 +110,9 @@ class SuperElement {
   })
 }
    
-   
+   const handlePriority = () => {
+
+   }
     
 
   
@@ -199,8 +201,13 @@ const editNote = (parent, i) => {
   new SuperElement(noteDiv, 'p', notes[i].priority, 'note', `${notes[i].id}-notePriority`)
   const displayedPriority = document.getElementById(`${notes[i].id}-notePriority`)
   
-
+  handlePriorityColor(displayedPriority, notes[i])
+  handlePriorityColor(displayedTitle, notes[i])
+  handlePriorityColor(displayedDesc, notes[i])
+  handlePriorityColor(displayedDate, notes[i])
+  handlePriorityColor(displayedTime, notes[i])
   
+
   //remove Btn
    const removeBtnId = `removeBtn-${noteId}`
     new SuperElement(listElement, 'button', 'Complete', 'removeBtn', removeBtnId)
@@ -527,13 +534,32 @@ removeList()
     
     renderList();
     hideListNotesExcept(lists[2]);
-    
+    loadSavedNotes()
     renderNotes()
     renderNewNoteBtn()
+    
   })
+  const handlePriorityColor = (el, note) => {
+    console.log(note);
+    if (note.priority === 'Urgent') {
+      el.classList.add('redish');
+      console.log(`Urgent ${note.priority}`);
+    } else if (note.priority === 'High') {
+      el.classList.add('redish');
+      console.log(`High ${note.priority}`);
+    } else if (note.priority === 'Medium') {
+      el.classList.add('yellowish');
+      console.log(`Medium ${note.priority}`);
+    } else {
+      el.classList.add('greenish');
+      console.log(`Low ${note.priority}`);
+    }
+  };
   
   
+
   
+  //diagnostic tools
 function handleCLick(event) {
   const clickedElement = event.target
   console.log(clickedElement)
