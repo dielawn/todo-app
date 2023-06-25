@@ -195,6 +195,10 @@ const renderNotes = () => {
       handlePriorityColor(displayedDate, notes[i])
       handlePriorityColor(displayedTime, notes[i])    
     }
+    //checklist
+    let checkListDiv =  new SuperElement(noteDiv, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`)
+   checkListDiv.textContent = 'Check List'
+
   //remove Btn
   const removeBtnId = `removeBtn-${notes[i].id}`
   console.log(removeBtnId)
@@ -224,15 +228,13 @@ const renderNotes = () => {
     const addCLBtn = document.getElementById('addCLBtn-' + i)
     addCLBtn.addEventListener('click', () => {
       addCheckList(notes[i], listInput.value)
+      renderCheckList()
     })
+    
   }
 }
 
-const getNote = () => {
-  for (let i = 0; i < notes.length; i++) {
 
-  }
-}
 
 const renderNoteInputs = () => {  
   const inputDiv = document.getElementById('inputDiv')    
@@ -526,6 +528,27 @@ const handleRemoveBtn = () => {
     removeListBtn2.remove()
   }
 }
+
+const renderCheckList = () => {
+  const noteDivs = document.getElementsByClassName('noteDiv')
+  Array.from(noteDivs).forEach(noteDiv => {
+    const noteId = noteDiv.id
+    const checkListDiv = document.getElementById(`checkListDiv-${noteId}`)
+    const note = notes.find(note => note.id === noteId)
+    if (note.checkList.length > 0) {      
+        checkListDiv.innerHTML = ''
+        note.checkList.forEach((checkListItem, index) => {
+        new SuperElement(checkListDiv, 'p', checkListItem, 'checkList', `checkList-${noteId}-${index}`)
+      })
+    } 
+  })
+}
+
+
+// checkListDiv-note-1687708536409
+// checkListDiv-note-1687708555384
+
+
 
 
 
