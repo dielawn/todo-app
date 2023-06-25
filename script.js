@@ -22,7 +22,7 @@ function createNote(title, description, dueDate, time, priority, list, id, check
         priority: priority,
         list: list,
         id: id,
-        checkList: checkList,
+        checkList: [],
         array: [title, description, dueDate, time, priority, list, id, checkList],        
         setTitle(title) {
             this.title = title
@@ -45,9 +45,9 @@ function createNote(title, description, dueDate, time, priority, list, id, check
         setId(id) {
             this.id = id
         },
-        setCheckList(checkList) {
-            this.checkList = checkList
-        }
+        setCheckList(listItem) {
+          this.checkList.push(listItem);
+        },
     }
 
     notes.push(note)
@@ -196,18 +196,15 @@ const renderNotes = () => {
       handlePriorityColor(displayedTime, notes[i])    
     }
   //remove Btn
-  console.log(notes[i].id)
   const removeBtnId = `removeBtn-${notes[i].id}`
   console.log(removeBtnId)
-  new SuperElement(listElement, 'button', 'Complete', 'removeBtn', removeBtnId)
+  new SuperElement(listElement, 'button', 'Completed', 'removeBtn', removeBtnId)
   const removeBtn = document.getElementById(removeBtnId)
   removeBtn.addEventListener('click', () => {
     const noteToRemove = document.getElementById(noteId)
     if (notes[i].list != 'complete') {      
       changeList(notes[i], 'complete')
-      removeBtn.textContent = 'Delete'
     } else {
-      removeBtn.textContent = 'Delete'
       noteToRemove.remove()
       notes.splice(i, 1)
       renderNotes()
@@ -215,9 +212,27 @@ const renderNotes = () => {
       saveToLocalStorage()
       removeBtn.remove()
     })
+    // Checklist Input
+    new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
+
+    const listItemInputs = document.querySelectorAll('.listItemInput')
+    const listInput = listItemInputs[i]
+    listInput.placeholder = 'Checklist Item'
+
+    // CheckList button
+    new SuperElement(listElement, 'button', 'Add List Item', 'addCLBtn', 'addCLBtn-' + i)
+    const addCLBtn = document.getElementById('addCLBtn-' + i)
+    addCLBtn.addEventListener('click', () => {
+      addCheckList(notes[i], listInput.value)
+    })
   }
 }
 
+const getNote = () => {
+  for (let i = 0; i < notes.length; i++) {
+
+  }
+}
 
 const renderNoteInputs = () => {  
   const inputDiv = document.getElementById('inputDiv')    
@@ -270,7 +285,8 @@ const renderNoteInputs = () => {
           prioritySelect.value, 
           listSelect.value,  
           `note-${Date.now()}`, 
-          false)
+          ''
+          )
         inputDiv.classList.remove('flexColumn')
         inputDiv.classList.add('hide')
         renderNotes()
@@ -386,6 +402,10 @@ const changePriority = (note, newPriority) => {
   note.setPriority(newPriority)
   renderNotes()
   return 'priority changed'
+}
+
+const addCheckList = (note, listItem) => {
+  note.setCheckList(listItem)
 }
 
 const renderNewNoteBtn = () => {
@@ -507,6 +527,9 @@ const handleRemoveBtn = () => {
   }
 }
 
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
   removeList()
   renderNoteInputs('inputDiv')  
@@ -520,9 +543,12 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNotes()
   renderNewNoteBtn()
   handleRemoveBtn()
+ 
 })
   
 //diagnostic tools
+
+
 function handleCLick(event) {
   const clickedElement = event.target
   console.log(clickedElement)
