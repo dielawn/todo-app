@@ -21,9 +21,9 @@ function createNote(title, description, dueDate, time, priority, list, id, check
         time: time,
         priority: priority,
         list: list,
-        array: [title, description, dueDate, time, priority],
         id: id,
         checkList: checkList,
+        array: [title, description, dueDate, time, priority, list, id, checkList],        
         setTitle(title) {
             this.title = title
         },
@@ -407,7 +407,7 @@ const saveToLocalStorage = () => {
   if (JSON.stringify(lists) !== savedLists) {
     localStorage.setItem('savedLists', JSON.stringify(lists))
   }
-  console.log('Saved to local storage')
+  console.log(`Saved to local storage: ${savedNotes}`)
 }
   
   
@@ -436,9 +436,9 @@ const loadSavedNotes = () => {
         savedNote.time,
         savedNote.priority,
         savedNote.list,
-        savedNote.array,
         savedNote.id,
-        savedNote.checkList
+        savedNote.checkList,
+        savedNote.array,        
       )
     })
   }  
