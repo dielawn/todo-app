@@ -56,7 +56,7 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 }
 
  //test variables 
- let description = 'Teeth cleaning and x-ray'
+//  let description = 'Teeth cleaning and x-ray'
 // const dentistApt = createNote('Dentist', description, '11/24/23', '12:00', priorityLevel[1], lists[1], 'dp', false)
 // const hairApt = createNote('Hair did', 'Pubes', '11/25/23', '1:00', priorityLevel[0], lists[0], 'hp', true)
 // const welcomeArray = ['Welcome', 'The bestest todo list app', 'firstEvent.setArray(work.array)', 'renderNotes(work.array)']
@@ -110,11 +110,6 @@ class SuperElement {
   })
 }
    
-   const handlePriority = () => {
-
-   }
-    
-
   
 const editNote = (parent, i) => {
   
@@ -155,6 +150,8 @@ const editNote = (parent, i) => {
             prioritySelect.add(option)
         })     
         renderListSelector(parent)
+        renderNewListInput(parent)
+ 
      //save btn
      new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn')
      const saveTitleBtn = document.getElementById('saveTitleBtn')
@@ -200,13 +197,15 @@ const editNote = (parent, i) => {
   const displayedTime = document.getElementById(`${notes[i].id}-noteTime`)
   new SuperElement(noteDiv, 'p', notes[i].priority, 'note', `${notes[i].id}-notePriority`)
   const displayedPriority = document.getElementById(`${notes[i].id}-notePriority`)
-  
-  handlePriorityColor(displayedPriority, notes[i])
-  handlePriorityColor(displayedTitle, notes[i])
-  handlePriorityColor(displayedDesc, notes[i])
-  handlePriorityColor(displayedDate, notes[i])
-  handlePriorityColor(displayedTime, notes[i])
-  
+  if (notes[i].list != 'complete') {
+    handlePriorityColor(displayedPriority, notes[i])
+    handlePriorityColor(displayedTitle, notes[i])
+    handlePriorityColor(displayedDesc, notes[i])
+    handlePriorityColor(displayedDate, notes[i])
+    handlePriorityColor(displayedTime, notes[i])
+    
+  }
+
 
   //remove Btn
    const removeBtnId = `removeBtn-${noteId}`
@@ -220,6 +219,7 @@ const editNote = (parent, i) => {
       // console.log(notes[i].list)
       if (notes[i].list != 'complete') {
         changeList(notes[i], 'complete')
+        
         
       } else {
         noteToRemove.remove()
@@ -276,7 +276,6 @@ const renderNoteInputs = () => {
             prioritySelect.add(option)
         })
         
-        
         renderListSelector(inputDiv)
 
         new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn')
@@ -312,16 +311,17 @@ const renderListSelector = (parent) => {
     options.forEach(option => {
     listSelect.add(option);
 });
+
 }
 
-const renderNewListInput = () => {
+const renderNewListInput = (parent) => {
 
     //Title input
-    new SuperElement(inputDiv, 'input', '', 'newListInput', 'newListInput')
+    new SuperElement(parent, 'input', '', 'newListInput', 'newListInput')
     const newListInput = document.getElementById('newListInput')
     newListInput.placeholder = 'New List'
     //Add list button
-    new SuperElement(inputDiv, 'button', 'Add List', 'addListBtn', 'addListBtn')
+    new SuperElement(parent, 'button', 'Add List', 'addListBtn', 'addListBtn')
         const addListBtn = document.getElementById('addListBtn')
         addListBtn.addEventListener('click', () => {
 
@@ -329,7 +329,8 @@ const renderNewListInput = () => {
             saveToLocalStorage()    
             console.log(lists)
             renderList(lists)
-            renderListSelector(inputDiv)
+            renderListSelector(parent)
+            
         })
 }
 
@@ -417,12 +418,12 @@ const hideListNotesExcept = (displayedListId) => {
   
     if (JSON.stringify(notes) !== savedNotes) {
       localStorage.setItem('savedNotes', JSON.stringify(notes));
-      console.log('firstOne')
+      console.log('firstOne',savedNotes)
     }
   console.log(lists)
     if (JSON.stringify(lists) !== savedLists) {
       localStorage.setItem('savedLists', JSON.stringify(lists));
-      console.log('secondOne')
+      console.log('secondOne',savedLists)
     }
   
     console.log('Saved to local storage');
@@ -489,11 +490,16 @@ const removeList = () => {
   lists.forEach((list, index) => {
     
     if (list !== 'complete' && list !== 'all') {
-
+   const listHeader = document.getElementById(`${list}Header`)
+   if (listHeader) {
+    console.log('listHeader is true')
+   }
+      
+    
       const capitalList = capitalizeFirstLetter(list)
       new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`)
       const removeListBtn = document.getElementById(`removeListBtn${index}`)
-      handleRemoveBtn(removeListBtn)
+      // handleRemoveBtn(removeListBtn)
       removeListBtn.addEventListener('click', () => {
         const listIndex = lists.findIndex(item => item === list)
         if (listIndex !== -1) {
@@ -505,11 +511,29 @@ const removeList = () => {
           console.log(localStorage)
           renderList()
           renderListSelector(inputDiv)
-          removeListBtn.remove();
+         
+          removeListBtn.remove()
         }
       })
     }
   })
+}
+
+const handlePriorityColor = (el, note) => {
+  console.log(note)
+  if (note.priority === 'Urgent') {
+    el.classList.add('red')
+    console.log(`Urgent ${note.priority}`)
+  } else if (note.priority === 'High') {
+    el.classList.add('redish')
+    console.log(`High ${note.priority}`)
+  } else if (note.priority === 'Medium') {
+    el.classList.add('yellowish')
+    console.log(`Medium ${note.priority}`)
+  } else {
+    el.classList.add('greenish')
+    console.log(`Low ${note.priority}`)
+  }
 }
 
 const handleRemoveBtn = (btn) => {
@@ -523,38 +547,23 @@ const handleRemoveBtn = (btn) => {
   }
 }
 
-removeList()
-
-  renderNoteInputs('inputDiv')
-  
+  removeList()
+  renderNoteInputs('inputDiv')  
   handleDefault()
+
   document.addEventListener('DOMContentLoaded', function() {
+
     loadSavedLists()
     renderListSelector(inputDiv)
-    
+    renderNewListInput(inputDiv)
     renderList();
-    hideListNotesExcept(lists[2]);
+    hideListNotesExcept(lists[2])
     loadSavedNotes()
     renderNotes()
     renderNewNoteBtn()
     
   })
-  const handlePriorityColor = (el, note) => {
-    console.log(note);
-    if (note.priority === 'Urgent') {
-      el.classList.add('redish');
-      console.log(`Urgent ${note.priority}`);
-    } else if (note.priority === 'High') {
-      el.classList.add('redish');
-      console.log(`High ${note.priority}`);
-    } else if (note.priority === 'Medium') {
-      el.classList.add('yellowish');
-      console.log(`Medium ${note.priority}`);
-    } else {
-      el.classList.add('greenish');
-      console.log(`Low ${note.priority}`);
-    }
-  };
+
   
   
 
