@@ -25,33 +25,33 @@ function createNote(title, description, dueDate, time, priority, list, id, check
         id: id,
         checkList: checkList,
         setTitle(title) {
-            this.title = title;
+            this.title = title
         },
         setDescription(description) {
-            this.description = description;
+            this.description = description
         },
         setDueDate(dueDate) {
-            this.dueDate = dueDate;
+            this.dueDate = dueDate
         },
         setTime(time) {
-            this.time = time;
+            this.time = time
         },
         setPriority(priority) {
-            this.priority = priority;
+            this.priority = priority
         },
         setList(list) {
-            this.list = list;
+            this.list = list
         },
         setId(id) {
-            this.id = id;
+            this.id = id
         },
         setCheckList(checkList) {
             this.checkList = checkList
         }
-    };
+    }
 
-    notes.push(note);
-    return note;
+    notes.push(note)
+    return note
 }
 
  //test variables 
@@ -64,27 +64,28 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 //DOM stuff
 const containerDiv = document.getElementById('container')
 const listDiv = document.getElementById('listDiv')
+listDiv.classList.add('flex')
 const inputDiv = document.getElementById('inputDiv')
 const menuDiv = document.getElementById('menuDiv')
 
 
 class SuperElement {
     constructor(parent, elementType, innerHTML = '', className = '', id = '') {
-      const element = document.createElement(elementType);
-      element.innerHTML = innerHTML;
-      element.className = className;
-      element.id = id;
+      const element = document.createElement(elementType)
+      element.innerHTML = innerHTML
+      element.className = className
+      element.id = id
       if (parent) {
-        parent.appendChild(element);
+        parent.appendChild(element)
       } else {
-        throw new Error('Parent element does not exist.');
+        throw new Error('Parent element does not exist.')
       }
     }
   }
   
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1)
-  };
+  }
 
  let displayedList
  const renderList = () => {
@@ -195,14 +196,18 @@ const renderNotes = () => {
       handlePriorityColor(displayedTime, notes[i])    
     }
   //remove Btn
-  const removeBtnId = `removeBtn-${noteId}`
+  console.log(notes[i].id)
+  const removeBtnId = `removeBtn-${notes[i].id}`
+  console.log(removeBtnId)
   new SuperElement(listElement, 'button', 'Complete', 'removeBtn', removeBtnId)
   const removeBtn = document.getElementById(removeBtnId)
   removeBtn.addEventListener('click', () => {
     const noteToRemove = document.getElementById(noteId)
-    if (notes[i].list != 'complete') {
+    if (notes[i].list != 'complete') {      
       changeList(notes[i], 'complete')
+      removeBtn.textContent = 'Delete'
     } else {
+      removeBtn.textContent = 'Delete'
       noteToRemove.remove()
       notes.splice(i, 1)
       renderNotes()
@@ -257,7 +262,15 @@ const renderNoteInputs = () => {
       const addNoteBtn = document.getElementById('addNoteBtn')
       addNoteBtn.addEventListener('click', () => {
         const noteId = `note-${Date.now()}`
-        createNote(titleInput.value, descInput.value, dateInput.value, timeInput.value, prioritySelect.value, listSelect.value, noteId, false)
+        createNote(
+          titleInput.value, 
+          descInput.value, 
+          dateInput.value, 
+          timeInput.value, 
+          prioritySelect.value, 
+          listSelect.value,  
+          `note-${Date.now()}`, 
+          false)
         inputDiv.classList.remove('flexColumn')
         inputDiv.classList.add('hide')
         renderNotes()
