@@ -141,7 +141,8 @@ const editNote = (parent, i) => {
     options.forEach(option => {
       prioritySelect.add(option)
     })     
-  renderListSelector(parent)
+    let listSelectValue = renderListSelector(parent)
+    console.log(listSelectValue)
   renderNewListInput(parent)
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
@@ -152,6 +153,7 @@ const editNote = (parent, i) => {
       changeTime(notes[i], editTimeInput.value)
       changePriority(notes[i], prioritySelect.value)
       saveToLocalStorage()
+      changeList(notes[i], listSelectValue)
      })   
   }
 
@@ -207,8 +209,9 @@ const renderNotes = () => {
     new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
     const listItemInputs = document.querySelectorAll('.listItemInput')
     const listInput = listItemInputs[i]
-    listInput.placeholder = 'Checklist Item'
-
+    if (listInput) {
+      listInput.placeholder = 'Checklist Item'
+    }
     // CheckList button
     const addCLBtn = new SuperElement(listElement, 'button', 'Add List Item', 'addCLBtn', 'addCLBtn-' + i).element
     addCLBtn.addEventListener('click', () => {
@@ -273,24 +276,30 @@ const renderNoteInputs = () => {
     })
 }
 
-const renderListSelector = (parent) => {
-  // list selector
+const renderListSelector = (parent, defaultValue) => {
   const listSelectDiv = new SuperElement(parent, 'div', '', 'listSelectDiv', 'listSelectDiv').element
   listSelectDiv.innerHTML = ''
   const listSelect = new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect').element  
   listSelect.name = 'listSelectLabel'    
-  // Create option elements and set their values
+
   const options = lists.map(item => {
     const option = document.createElement('option')
     option.value = item
     option.text = item
     return option
   })
-  // Add options to the listSelect element
+
   options.forEach(option => {
-  listSelect.add(option)
+    listSelect.add(option)
   })
+
+  // Set the default value if provided
+  if (defaultValue) {
+    listSelect.value = defaultValue
+  }
 }
+
+
 
 const renderNewListInput = (parent) => {
   //Title input
@@ -463,7 +472,7 @@ const removeList = () => {
           lists.splice(listIndex, 1)
           saveToLocalStorage()
           renderList()
-          renderListSelector(inputDiv)
+          renderListSelector(inputDiv, item)
           renderNotes()
           removeListBtn.remove()
         }
@@ -510,7 +519,8 @@ const renderCheckList = () => {
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem, 'checkList', `checkList-${noteId}-${index}`).element
         textElement.addEventListener('click', () => {
-          textElement.classList.toggle('lineThrough')         
+          textElement.classList.toggle('lineThrough');
+         
         })  
       })
     } 
@@ -532,7 +542,6 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNoteInputs('inputDiv')  
   handleDefault()
   loadSavedLists()
-  renderListSelector(inputDiv)
   renderNewListInput(inputDiv)
   renderList();
   hideListNotesExcept(lists[0])
