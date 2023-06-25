@@ -330,7 +330,7 @@ const renderNewListInput = (parent) => {
             console.log(lists)
             renderList(lists)
             renderListSelector(parent)
-            
+            renderNotes()
         })
 }
 
@@ -448,7 +448,7 @@ const loadSavedLists = () => {
   }
 };
 
-console.log(lists)
+
 const loadSavedNotes = () => {
 
   const savedNotes = JSON.parse(localStorage.getItem('savedNotes'))
@@ -503,15 +503,15 @@ const removeList = () => {
       removeListBtn.addEventListener('click', () => {
         const listIndex = lists.findIndex(item => item === list)
         if (listIndex !== -1) {
-          console.log(lists)
+          console.log(listIndex)
           lists.splice(listIndex, 1)
-          console.log(lists)
+          console.log(listIndex)
           console.log(localStorage)
           saveToLocalStorage()
           console.log(localStorage)
           renderList()
           renderListSelector(inputDiv)
-         
+         renderNotes()
           removeListBtn.remove()
         }
       })
@@ -561,9 +561,12 @@ const handleRemoveBtn = (btn) => {
     loadSavedNotes()
     renderNotes()
     renderNewNoteBtn()
-    
+    console.log(lists)
+    console.log(notes)
   })
-
+for (let i = 0; i < notes.length; i++) {
+  console.log(notes[i].list)
+}
   
   
 
