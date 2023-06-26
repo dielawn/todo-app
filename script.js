@@ -187,8 +187,21 @@ const renderNotes = () => {
     }
     //checklist
     const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
-    checkListDiv.textContent = 'Check List'
-
+    // checkListDiv.textContent = 'Check List'
+    // Checklist Input
+    new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
+    const listItemInputs = document.querySelectorAll('.listItemInput')
+    const listInput = listItemInputs[i]
+    if (listInput) {
+      listInput.placeholder = 'Checklist Item'
+    }
+    // CheckList button
+    const addCLBtn = new SuperElement(listElement, 'button', 'Add List Item', 'addCLBtn', 'addCLBtn-' + i).element
+    addCLBtn.addEventListener('click', () => {
+      addCheckList(notes[i], listInput.value)
+      renderCheckList()
+      saveToLocalStorage()
+    })
   //remove Btn
   const removeBtnId = `removeBtn-${notes[i].id}`
   const removeBtn = new SuperElement(listElement, 'button', 'Completed', 'removeBtn', removeBtnId).element
@@ -204,19 +217,7 @@ const renderNotes = () => {
       saveToLocalStorage()
       removeBtn.remove()
     })
-    // Checklist Input
-    new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
-    const listItemInputs = document.querySelectorAll('.listItemInput')
-    const listInput = listItemInputs[i]
-    if (listInput) {
-      listInput.placeholder = 'Checklist Item'
-    }
-    // CheckList button
-    const addCLBtn = new SuperElement(listElement, 'button', 'Add List Item', 'addCLBtn', 'addCLBtn-' + i).element
-    addCLBtn.addEventListener('click', () => {
-      addCheckList(notes[i], listInput.value)
-      renderCheckList()
-    })
+   
     
   }
 }
@@ -418,9 +419,23 @@ const saveToLocalStorage = () => {
   if (JSON.stringify(lists) !== savedLists) {
     localStorage.setItem('savedLists', JSON.stringify(lists))
   }
+  for (let i = 0; i < notes.length; i++) {
+    const savedCheckList = localStorage.getItem(`savedCheckList-${notes[i].id}`);
+    if (JSON.stringify(notes[i].checkList) !== savedCheckList) {
+      localStorage.setItem(`savedCheckList-${notes[i].id}`, JSON.stringify(notes[i].checkList));
+    }
+  }
   console.log(`Saved to local storage: ${savedNotes}`)
 }
-  
+
+const loadSavedCheckList = () => {
+  for (let i = 0; i < notes.length; i++) {
+    const savedCheckList = localStorage.getItem(`savedCheckList-${notes[i].id}`)
+    if (savedCheckList) {
+      notes[i].checkList = JSON.parse(savedCheckList)
+    }
+  }
+}
   
 const removeItemLocalStorage = (key) => {
   localStorage.removeItem(key)
@@ -557,11 +572,14 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNotes()
   renderNewNoteBtn()
   handleRemoveBtn()
- 
+loadSavedCheckList()
+renderCheckList()
 })
   
 //diagnostic tools
-
+for (let i = 0; i < notes.length; i++) {
+  console.log(notes[i].checkList)
+}
 
 function handleCLick(event) {
   const clickedElement = event.target
