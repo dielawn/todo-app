@@ -141,8 +141,7 @@ const editNote = (parent, i) => {
     options.forEach(option => {
       prioritySelect.add(option)
     })     
-    let listSelectValue = renderListSelector(parent)
-    console.log(listSelectValue)
+    
   renderNewListInput(parent)
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
@@ -153,7 +152,7 @@ const editNote = (parent, i) => {
       changeTime(notes[i], editTimeInput.value)
       changePriority(notes[i], prioritySelect.value)
       saveToLocalStorage()
-      changeList(notes[i], listSelectValue)
+      
      })   
   }
 
@@ -277,17 +276,26 @@ const renderNoteInputs = () => {
 }
 
 const renderListSelector = (parent, defaultValue) => {
-  const listSelectDiv = new SuperElement(parent, 'div', '', 'listSelectDiv', 'listSelectDiv').element
+  const listSelectDiv = new SuperElement(parent, 'div', 'Select List:', 'listSelectDiv', 'listSelectDiv').element
   listSelectDiv.innerHTML = ''
+  const listSelectLabel = new SuperElement(listSelectDiv, 'label', '', 'listSelectLabel', 'listSelectLabel').element
+  listSelectLabel.for = 'listSelectLabel'
   const listSelect = new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect').element  
   listSelect.name = 'listSelectLabel'    
-
-  const options = lists.map(item => {
-    const option = document.createElement('option')
-    option.value = item
-    option.text = item
-    return option
-  })
+  // Create the default option
+  const defaultOption = document.createElement('option')
+  defaultOption.value = ''
+  defaultOption.text = 'Select a List'
+  listSelect.add(defaultOption)
+  const options = lists
+  // Create other options
+    .filter(item => item !== 'all' && item !== 'complete')// Exclude the "all" list
+    .map(item => {
+      const option = document.createElement('option')
+      option.value = item
+      option.text = item
+      return option
+    })
 
   options.forEach(option => {
     listSelect.add(option)
