@@ -565,26 +565,28 @@ const renderCheckList = () => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         textElement.addEventListener('click', () => {
           textElement.classList.toggle('lineThrough')
-          setCheckListItemComplete()
-
-          saveToLocalStorage()
-          
+          checkClassList(textElement)
+          console.log(textElement.classList)                    
         })  
       })
     } 
   })
 }
-
+const checkClassList = (element) => {
+  if( element.classList.contains('lineThrough')) {
+    setCheckListItemComplete()
+    saveToLocalStorage()
+  }
+}
 const setCheckListItemComplete = () => {
   for (let i = 0; i < notes.length; i++) {
     for (let j = 0; j < notes[i].checkList.length; j++) {
-      if (notes[i].checkList[j].completed === false) {
-        notes[i].checkList[j].completed = true
-        console.log(notes[i].checkList[j].completed)
-      }      
+      notes[i].checkList[j].completed = !notes[i].checkList[j].completed;
+      console.log(notes[i].checkList[j].completed);
     }
   }
 }
+
 
 
 // checkListDiv-note-1687708536409
