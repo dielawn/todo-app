@@ -45,8 +45,8 @@ function createNote(title, description, dueDate, time, priority, list, id, check
         setId(id) {
             this.id = id
         },
-        setCheckList(listItem) {
-          this.checkList.push(listItem);
+        setCheckList(item, completed = false) {
+          this.checkList.push({ item, completed });
         },
     }
 
@@ -201,7 +201,7 @@ const renderNotes = () => {
       addCheckList(notes[i], listInput.value)
       renderCheckList()
       saveToLocalStorage()
-    })
+  })
   //remove Btn
   const removeBtnId = `removeBtn-${notes[i].id}`
   const removeBtn = new SuperElement(listElement, 'button', 'Completed', 'removeBtn', removeBtnId).element
@@ -411,31 +411,53 @@ const renderNewNoteBtn = () => {
 
 //localStorage stuff
 const saveToLocalStorage = () => {
-  const savedNotes = localStorage.getItem('savedNotes')
-  const savedLists = localStorage.getItem('savedLists')
+  const savedNotes = localStorage.getItem('savedNotes');
+  const savedLists = localStorage.getItem('savedLists');
   if (JSON.stringify(notes) !== savedNotes) {
-    localStorage.setItem('savedNotes', JSON.stringify(notes))
+    localStorage.setItem('savedNotes', JSON.stringify(notes));
   }
   if (JSON.stringify(lists) !== savedLists) {
-    localStorage.setItem('savedLists', JSON.stringify(lists))
+    localStorage.setItem('savedLists', JSON.stringify(lists));
   }
   for (let i = 0; i < notes.length; i++) {
-    const savedCheckList = localStorage.getItem(`savedCheckList-${notes[i].id}`);
-    if (JSON.stringify(notes[i].checkList) !== savedCheckList) {
-      localStorage.setItem(`savedCheckList-${notes[i].id}`, JSON.stringify(notes[i].checkList));
+    const noteId = notes[i].id;
+    const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`));
+    if (JSON.stringify(notes[i].checkList) !== JSON.stringify(savedCheckList)) {
+      const checkListData = notes[i].checkList.map(item => ({ item}));
+      console.log(checkListData)
+          
+      localStorage.setItem(`savedCheckList-${noteId}`, JSON.stringify(checkListData));
+      
     }
   }
-  console.log(`Saved to local storage: ${savedNotes}`)
-}
+  console.log(`Saved to local storage: ${savedNotes}`);
+};
 
 const loadSavedCheckList = () => {
   for (let i = 0; i < notes.length; i++) {
-    const savedCheckList = localStorage.getItem(`savedCheckList-${notes[i].id}`)
+    const noteId = notes[i].id;
+    const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`));
     if (savedCheckList) {
-      notes[i].checkList = JSON.parse(savedCheckList)
+      notes[i].checkList = savedCheckList.map(item => item.item);
+      const checkListItems = document.querySelectorAll(`[data-note="${noteId}"] .checklist-item`);
+      checkListItems.forEach((item, index) => {
+        if (savedCheckList[index].lineThrough === true) {
+          item.classList.add('lineThrough');
+        }
+      });
     }
   }
-}
+};
+
+
+
+
+
+
+
+
+
+
   
 const removeItemLocalStorage = (key) => {
   localStorage.removeItem(key)
@@ -540,16 +562,29 @@ const renderCheckList = () => {
     if (note.checkList.length > 0) {      
         checkListDiv.innerHTML = ''
         note.checkList.forEach((checkListItem, index) => {
-        const textElement = new SuperElement(checkListDiv, 'p', checkListItem, 'checkList', `checkList-${noteId}-${index}`).element
+        const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         textElement.addEventListener('click', () => {
-          textElement.classList.toggle('lineThrough');
-         
+          textElement.classList.toggle('lineThrough')
+          setCheckListItemComplete()
+
+          saveToLocalStorage()
+          
         })  
       })
     } 
   })
 }
 
+const setCheckListItemComplete = () => {
+  for (let i = 0; i < notes.length; i++) {
+    for (let j = 0; j < notes[i].checkList.length; j++) {
+      if (notes[i].checkList[j].completed === false) {
+        notes[i].checkList[j].completed = true
+        console.log(notes[i].checkList[j].completed)
+      }      
+    }
+  }
+}
 
 
 // checkListDiv-note-1687708536409
@@ -572,14 +607,12 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNotes()
   renderNewNoteBtn()
   handleRemoveBtn()
-loadSavedCheckList()
-renderCheckList()
+ loadSavedCheckList()
+ renderCheckList()
 })
   
 //diagnostic tools
-for (let i = 0; i < notes.length; i++) {
-  console.log(notes[i].checkList)
-}
+
 
 function handleCLick(event) {
   const clickedElement = event.target
