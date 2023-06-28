@@ -548,9 +548,10 @@ const renderCheckList = () => {
         checkListDiv.innerHTML = ''
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
-        checkCompleted(textElement)
+        checkCompleted(textElement, noteId, index)
         textElement.addEventListener('click', () => {
           textElement.classList.toggle('lineThrough')
+          console.log(index)
           setCheckListItemComplete(noteId, index)
           saveToLocalStorage()                   
         })  
@@ -558,26 +559,28 @@ const renderCheckList = () => {
     } 
   })
 }
-const checkClassList = (element) => {
-  if( element.classList.contains('lineThrough')) {
-    setCheckListItemComplete()
-    saveToLocalStorage()
-  }
-}
-const checkCompleted = (element) => {
-  for (let i = 0; i < notes.length; i++) {
-    for (let j = 0; j < notes[i].checkList.length; j++) {
-         console.log(notes[i].checkList[j])
-         if (notes[i].checkList[j].completed === true) {
-          element.classList.add('lineThrough');
-        } 
-        
-        console.log(notes[i].checkList[j])
+
+// const checkCompleted = (element) => {
+//   for (let i = 0; i < notes.length; i++) {
+//     for (let j = 0; j < notes[i].checkList.length; j++) {
+//          console.log(notes[i].checkList[j].com)
+//          if (notes[i].checkList[j].completed === true) {
+//           element.classList.add('lineThrough')
+//         } 
+//         console.log(notes[i].checkList[j])
+//     }
+//   }
+// }
+const checkCompleted = (element, noteId, index) => {
+  const note = notes.find(note => note.id === noteId);
+  if (note && index >= 0 && index < note.checkList.length) {
+    if (note.checkList[index].completed) {
+      element.classList.add('lineThrough');
     }
   }
 }
 
-const logCheckList = (element) => {
+const logCheckList = () => {
   for (let i = 0; i < notes.length; i++) {
     for (let j = 0; j < notes[i].checkList.length; j++) {       
         console.log(notes[i].checkList[j])
@@ -586,12 +589,13 @@ const logCheckList = (element) => {
 }
 
 const setCheckListItemComplete = (noteId, index) => {
-  const note = notes.find(note => note.id === noteId)
+  const note = notes.find(note => note.id === noteId);
   if (note && index >= 0 && index < note.checkList.length) {
-    note.checkList[index]. completed = !note.checkList[index]. completed
-    console.log((note.checkList[index].completed))
+    note.checkList[index].completed = !note.checkList[index].completed;
+    console.log(note.checkList[index].completed);
   }
 }
+
 
 
 // checkListDiv-note-1687708536409
