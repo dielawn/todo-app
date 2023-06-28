@@ -411,54 +411,39 @@ const renderNewNoteBtn = () => {
 
 //localStorage stuff
 const saveToLocalStorage = () => {
-  const savedNotes = localStorage.getItem('savedNotes');
-  const savedLists = localStorage.getItem('savedLists');
+  const savedNotes = localStorage.getItem('savedNotes')
+  const savedLists = localStorage.getItem('savedLists')
   if (JSON.stringify(notes) !== savedNotes) {
-    localStorage.setItem('savedNotes', JSON.stringify(notes));
+    localStorage.setItem('savedNotes', JSON.stringify(notes))
   }
   if (JSON.stringify(lists) !== savedLists) {
-    localStorage.setItem('savedLists', JSON.stringify(lists));
+    localStorage.setItem('savedLists', JSON.stringify(lists))
   }
   for (let i = 0; i < notes.length; i++) {
-    const noteId = notes[i].id;
-    const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`));
+    const noteId = notes[i].id
+    const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`))
     if (JSON.stringify(notes[i].checkList) !== JSON.stringify(savedCheckList)) {
       const checkListData = notes[i].checkList.map(item => ({ item}));
       console.log(checkListData)
           
-      localStorage.setItem(`savedCheckList-${noteId}`, JSON.stringify(checkListData));
+      localStorage.setItem(`savedCheckList-${noteId}`, JSON.stringify(checkListData))
       
     }
   }
-  console.log(`Saved to local storage: ${savedNotes}`);
+  console.log(`Saved to local storage: ${savedNotes}`)
 };
 
 const loadSavedCheckList = () => {
   for (let i = 0; i < notes.length; i++) {
     const noteId = notes[i].id;
-    const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`));
+    const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`))
+    console.log(savedCheckList)
     if (savedCheckList) {
-      notes[i].checkList = savedCheckList.map(item => item.item);
-      const checkListItems = document.querySelectorAll(`[data-note="${noteId}"] .checklist-item`);
-      checkListItems.forEach((item, index) => {
-        if (savedCheckList[index].lineThrough === true) {
-          item.classList.add('lineThrough');
-        }
-      });
+      notes[i].checkList = savedCheckList.map(item => item.item)
     }
   }
-};
+}
 
-
-
-
-
-
-
-
-
-
-  
 const removeItemLocalStorage = (key) => {
   localStorage.removeItem(key)
 }
@@ -468,7 +453,7 @@ const loadSavedLists = () => {
   if (savedLists) {
     lists.length = 0; // Clear the lists array
     savedLists.forEach(item => {
-      lists.push(item);
+      lists.push(item)
     })
   }
 }
@@ -563,10 +548,11 @@ const renderCheckList = () => {
         checkListDiv.innerHTML = ''
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
+        checkCompleted(textElement)
         textElement.addEventListener('click', () => {
           textElement.classList.toggle('lineThrough')
-          checkClassList(textElement)
-          console.log(textElement.classList)                    
+          setCheckListItemComplete(noteId, index)
+          saveToLocalStorage()                   
         })  
       })
     } 
@@ -578,15 +564,34 @@ const checkClassList = (element) => {
     saveToLocalStorage()
   }
 }
-const setCheckListItemComplete = () => {
+const checkCompleted = (element) => {
   for (let i = 0; i < notes.length; i++) {
     for (let j = 0; j < notes[i].checkList.length; j++) {
-      notes[i].checkList[j].completed = !notes[i].checkList[j].completed;
-      console.log(notes[i].checkList[j].completed);
+         console.log(notes[i].checkList[j])
+         if (notes[i].checkList[j].completed === true) {
+          element.classList.add('lineThrough');
+        } 
+        
+        console.log(notes[i].checkList[j])
     }
   }
 }
 
+const logCheckList = (element) => {
+  for (let i = 0; i < notes.length; i++) {
+    for (let j = 0; j < notes[i].checkList.length; j++) {       
+        console.log(notes[i].checkList[j])
+    }
+  }
+}
+
+const setCheckListItemComplete = (noteId, index) => {
+  const note = notes.find(note => note.id === noteId)
+  if (note && index >= 0 && index < note.checkList.length) {
+    note.checkList[index]. completed = !note.checkList[index]. completed
+    console.log((note.checkList[index].completed))
+  }
+}
 
 
 // checkListDiv-note-1687708536409
