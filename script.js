@@ -119,7 +119,7 @@ class SuperElement {
   })
 }
    
-const editNote = (parent, i) => {  
+const renderEditNote = (parent, i) => {  
   //title
   const titleInput = new SuperElement(parent, 'input', '', 'editTitleInput', 'editTitleInput').element
   titleInput.value = notes[i].title  
@@ -149,16 +149,13 @@ const editNote = (parent, i) => {
       prioritySelect.add(option)
     })     
     
-  renderNewListInput(parent)
+  let listSelectValue = renderListSelector(parent, notes[i].list)
+  console.log(listSelectValue.value)
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
      saveTitleBtn.addEventListener('click', () => {
-      changeNote(notes[i], titleInput.value, editDescriptInput.value, editDateInput.value, editTimeInput.value, prioritySelect.value)
-      // changeTitle(notes[i], titleInput.value)
-      // changeDescription(notes[i], editDescriptInput.value)
-      // changeDueDate(notes[i], editDateInput.value)
-      // changeTime(notes[i], editTimeInput.value)
-      // changePriority(notes[i], prioritySelect.value)
+      changeNote(notes[i], titleInput.value, editDescriptInput.value, editDateInput.value, editTimeInput.value, prioritySelect.value, listSelectValue.value, )
+    
       renderCheckList()
       saveToLocalStorage()
       
@@ -181,7 +178,7 @@ const renderNotes = () => {
     //hide p element show titleInput save and cancel btns
       noteDiv.classList.add('hide')
       editDiv.classList.remove('hide')
-      editNote(editDiv, i)    
+      renderEditNote(editDiv, i)    
     })
     const displayedDesc = new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`).element
     const displayedDate = new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`).element
@@ -288,36 +285,42 @@ const renderNoteInputs = () => {
 }
 
 const renderListSelector = (parent, defaultValue) => {
-  const listSelectDiv = new SuperElement(parent, 'div', 'Select List:', 'listSelectDiv', 'listSelectDiv').element
-  listSelectDiv.innerHTML = ''
-  const listSelectLabel = new SuperElement(listSelectDiv, 'label', '', 'listSelectLabel', 'listSelectLabel').element
-  listSelectLabel.for = 'listSelectLabel'
-  const listSelect = new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect').element  
-  listSelect.name = 'listSelectLabel'    
+  const listSelectDiv = new SuperElement(parent, 'div', 'Select List:', 'listSelectDiv', 'listSelectDiv').element;
+  listSelectDiv.innerHTML = '';
+  const listSelectLabel = new SuperElement(listSelectDiv, 'label', '', 'listSelectLabel', 'listSelectLabel').element;
+  listSelectLabel.for = 'listSelectLabel';
+  const listSelect = new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect').element;
+  listSelect.name = 'listSelectLabel';
+
   // Create the default option
-  const defaultOption = document.createElement('option')
-  defaultOption.value = ''
-  defaultOption.text = 'Select a List'
-  listSelect.add(defaultOption)
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.text = 'Select a List';
+  listSelect.add(defaultOption);
+  
   const options = lists
-  // Create other options
-    .filter(item => item !== 'all' && item !== 'complete')// Exclude the "all" list
+    .filter(item => item !== 'all' && item !== 'complete') // Exclude the "all" list
     .map(item => {
-      const option = document.createElement('option')
-      option.value = item
-      option.text = item
-      return option
-    })
+      const option = document.createElement('option');
+      option.value = item;
+      option.text = item;
+      return option;
+    });
 
   options.forEach(option => {
-    listSelect.add(option)
-  })
+    listSelect.add(option);
+  });
 
   // Set the default value if provided
   if (defaultValue) {
-    listSelect.value = defaultValue
+    listSelect.value = defaultValue;
   }
-}
+
+  return listSelect;
+};
+
+
+
 
 
 
@@ -366,13 +369,14 @@ const clearNoteEl = () => {
   })
 }
 
-const changeNote = (note, newTitle, newDescription, newDate, newTime, newPriority) => {
+const changeNote = (note, newTitle, newDescription, newDate, newTime, newPriority, newList) => {
   clearNoteEl()
   note.setTitle(newTitle)
   note.setDescription(newDescription)
   note.setDueDate(newDate)
   note.setTime(newTime)
   note.setPriority(newPriority) 
+  note.setList(newList)
   renderNotes()
   return 'note changed'
 }
@@ -382,41 +386,6 @@ const changeList = (note, newList) => {
   renderNotes()
   return 'list changed'
 }
-
-// const changeTitle = (note, newTitle) => {
-//   clearNoteEl()
-//   note.setTitle(newTitle)
-//   renderNotes()
-//   return 'title changed'
-// }
-
-// const changeDescription = (note, newDescription) => {
-//   clearNoteEl()
-//   note.setDescription(newDescription)
-//   renderNotes()
-//   return 'description changed'
-// }
-
-// const changeDueDate = (note, newDate) => {
-//   clearNoteEl()
-//   note.setDueDate(newDate)
-//   renderNotes()
-//   return 'date changed'
-// }
-
-// const changeTime = (note, newTime) => {
-//   clearNoteEl()
-//   note.setTime(newTime)
-//   renderNotes()
-//   return 'time changed'
-// }
-
-// const changePriority = (note, newPriority) => {
-//   clearNoteEl()
-//   note.setPriority(newPriority)
-//   renderNotes()
-//   return 'priority changed'
-// }
 
 const addCheckList = (note, listItem) => {
   note.setCheckList(listItem)
