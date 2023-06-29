@@ -153,11 +153,13 @@ const editNote = (parent, i) => {
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
      saveTitleBtn.addEventListener('click', () => {
-      changeTitle(notes[i], titleInput.value)
-      changeDescription(notes[i], editDescriptInput.value)
-      changeDueDate(notes[i], editDateInput.value)
-      changeTime(notes[i], editTimeInput.value)
-      changePriority(notes[i], prioritySelect.value)
+      changeNote(notes[i], titleInput.value, editDescriptInput.value, editDateInput.value, editTimeInput.value, prioritySelect.value)
+      // changeTitle(notes[i], titleInput.value)
+      // changeDescription(notes[i], editDescriptInput.value)
+      // changeDueDate(notes[i], editDateInput.value)
+      // changeTime(notes[i], editTimeInput.value)
+      // changePriority(notes[i], prioritySelect.value)
+      renderCheckList()
       saveToLocalStorage()
       
      })   
@@ -364,6 +366,16 @@ const clearNoteEl = () => {
   })
 }
 
+const changeNote = (note, newTitle, newDescription, newDate, newTime, newPriority) => {
+  clearNoteEl()
+  note.setTitle(newTitle)
+  note.setDescription(newDescription)
+  note.setDueDate(newDate)
+  note.setTime(newTime)
+  note.setPriority(newPriority) 
+  renderNotes()
+  return 'note changed'
+}
 const changeList = (note, newList) => {
   clearNoteEl()
   note.setList(newList)
@@ -371,40 +383,40 @@ const changeList = (note, newList) => {
   return 'list changed'
 }
 
-const changeTitle = (note, newTitle) => {
-  clearNoteEl()
-  note.setTitle(newTitle)
-  renderNotes()
-  return 'title changed'
-}
+// const changeTitle = (note, newTitle) => {
+//   clearNoteEl()
+//   note.setTitle(newTitle)
+//   renderNotes()
+//   return 'title changed'
+// }
 
-const changeDescription = (note, newDescription) => {
-  clearNoteEl()
-  note.setDescription(newDescription)
-  renderNotes()
-  return 'description changed'
-}
+// const changeDescription = (note, newDescription) => {
+//   clearNoteEl()
+//   note.setDescription(newDescription)
+//   renderNotes()
+//   return 'description changed'
+// }
 
-const changeDueDate = (note, newDate) => {
-  clearNoteEl()
-  note.setDueDate(newDate)
-  renderNotes()
-  return 'date changed'
-}
+// const changeDueDate = (note, newDate) => {
+//   clearNoteEl()
+//   note.setDueDate(newDate)
+//   renderNotes()
+//   return 'date changed'
+// }
 
-const changeTime = (note, newTime) => {
-  clearNoteEl()
-  note.setTime(newTime)
-  renderNotes()
-  return 'time changed'
-}
+// const changeTime = (note, newTime) => {
+//   clearNoteEl()
+//   note.setTime(newTime)
+//   renderNotes()
+//   return 'time changed'
+// }
 
-const changePriority = (note, newPriority) => {
-  clearNoteEl()
-  note.setPriority(newPriority)
-  renderNotes()
-  return 'priority changed'
-}
+// const changePriority = (note, newPriority) => {
+//   clearNoteEl()
+//   note.setPriority(newPriority)
+//   renderNotes()
+//   return 'priority changed'
+// }
 
 const addCheckList = (note, listItem) => {
   note.setCheckList(listItem)
@@ -572,10 +584,10 @@ const renderCheckList = () => {
 
 
 const checkCompleted = (element, noteId, index) => {
-  const note = notes.find(note => note.id === noteId);
+  const note = notes.find(note => note.id === noteId)
   if (note && index >= 0 && index < note.checkList.length) {
     if (note.checkList[index].isCompleted) {
-      element.classList.add('lineThrough');
+      element.classList.add('lineThrough')
     }
   }
 }
@@ -583,8 +595,8 @@ const checkCompleted = (element, noteId, index) => {
 const setCheckListItemComplete = (noteId, index) => {
   const note = notes.find(note => note.id === noteId);
   if (note && index >= 0 && index < note.checkList.length) {
-    note.checkList[index].isCompleted = !note.checkList[index].isCompleted;
-    console.log(note.checkList[index].isCompleted);
+    note.checkList[index].isCompleted = !note.checkList[index].isCompleted
+    console.log(note.checkList[index].isCompleted)
   }
 }
 
@@ -600,8 +612,8 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNotes()
   renderNewNoteBtn()
   handleRemoveBtn()
- loadSavedCheckList()
- renderCheckList()
+  loadSavedCheckList()
+  renderCheckList()
 })
   
 //diagnostic tools
