@@ -1,3 +1,4 @@
+// import { formatDistance, subDays } from 'date-fns'
 
   const lists = []
   const createNewList = (name) => {
@@ -45,8 +46,8 @@ function createNote(title, description, dueDate, time, priority, list, id, check
         setId(id) {
             this.id = id
         },
-        setCheckList(item, completed = false) {
-          this.checkList.push({ item, completed });
+        setCheckList(item, isCompleted = false) {
+          this.checkList.push({ item, isCompleted });
         },
     }
 
@@ -87,6 +88,12 @@ class SuperElement {
   }
 }
 
+// const handleDate = () => {
+//   const currentDate = new Date();
+//   const formattedDate = format(currentDate, 'yyyy-MM-dd');
+//   console.log(formattedDate); // Output: 2023-06-28
+// }
+// handleDate()
   
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1)
@@ -187,7 +194,7 @@ const renderNotes = () => {
     }
     //checklist
     const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
-    // checkListDiv.textContent = 'Check List'
+   
     // Checklist Input
     new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
     const listItemInputs = document.querySelectorAll('.listItemInput')
@@ -272,7 +279,9 @@ const renderNoteInputs = () => {
         inputDiv.classList.remove('flexColumn')
         inputDiv.classList.add('hide')
         renderNotes()
+        renderCheckList()
         saveToLocalStorage()
+        
     })
 }
 
@@ -546,6 +555,7 @@ const renderCheckList = () => {
     const note = notes.find(note => note.id === noteId)
     if (note.checkList.length > 0) {      
         checkListDiv.innerHTML = ''
+        const checkListHeader = new SuperElement(checkListDiv, 'p', 'Check List', 'checkListHeader', `checkListHeader-${noteId}`)
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         checkCompleted(textElement, noteId, index)
@@ -560,30 +570,12 @@ const renderCheckList = () => {
   })
 }
 
-// const checkCompleted = (element) => {
-//   for (let i = 0; i < notes.length; i++) {
-//     for (let j = 0; j < notes[i].checkList.length; j++) {
-//          console.log(notes[i].checkList[j].com)
-//          if (notes[i].checkList[j].completed === true) {
-//           element.classList.add('lineThrough')
-//         } 
-//         console.log(notes[i].checkList[j])
-//     }
-//   }
-// }
+
 const checkCompleted = (element, noteId, index) => {
   const note = notes.find(note => note.id === noteId);
   if (note && index >= 0 && index < note.checkList.length) {
-    if (note.checkList[index].completed) {
+    if (note.checkList[index].isCompleted) {
       element.classList.add('lineThrough');
-    }
-  }
-}
-
-const logCheckList = () => {
-  for (let i = 0; i < notes.length; i++) {
-    for (let j = 0; j < notes[i].checkList.length; j++) {       
-        console.log(notes[i].checkList[j])
     }
   }
 }
@@ -591,20 +583,10 @@ const logCheckList = () => {
 const setCheckListItemComplete = (noteId, index) => {
   const note = notes.find(note => note.id === noteId);
   if (note && index >= 0 && index < note.checkList.length) {
-    note.checkList[index].completed = !note.checkList[index].completed;
-    console.log(note.checkList[index].completed);
+    note.checkList[index].isCompleted = !note.checkList[index].isCompleted;
+    console.log(note.checkList[index].isCompleted);
   }
 }
-
-
-
-// checkListDiv-note-1687708536409
-// checkListDiv-note-1687708555384
-
-
-
-
-
 
 document.addEventListener('DOMContentLoaded', function() {
   removeList()
@@ -623,7 +605,13 @@ document.addEventListener('DOMContentLoaded', function() {
 })
   
 //diagnostic tools
-
+const logCheckList = () => {
+  for (let i = 0; i < notes.length; i++) {
+    for (let j = 0; j < notes[i].checkList.length; j++) {       
+        console.log(notes[i].checkList[j])
+    }
+  }
+}
 
 function handleCLick(event) {
   const clickedElement = event.target
