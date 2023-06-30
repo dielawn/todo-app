@@ -15,44 +15,43 @@ const notes = []
 
 //factory functions
 function createNote(title, description, dueDate, time, priority, list, id, checkList) {
-    const note = {
-        title: title,
-        description: description,
-        dueDate: dueDate,
-        time: time,
-        priority: priority,
-        list: list,
-        id: id,
-        checkList: [],
-        array: [title, description, dueDate, time, priority, list, id, checkList],        
-        setTitle(title) {
-            this.title = title
-        },
-        setDescription(description) {
-            this.description = description
-        },
-        setDueDate(dueDate) {
-            this.dueDate = dueDate
-        },
-        setTime(time) {
-            this.time = time
-        },
-        setPriority(priority) {
-            this.priority = priority
-        },
-        setList(list) {
-            this.list = list
-        },
-        setId(id) {
-            this.id = id
-        },
-        setCheckList(item, isCompleted = false) {
-          this.checkList.push({ item, isCompleted });
-        },
-    }
-
-    notes.push(note)
-    return note
+  const note = {
+    title: title,
+    description: description,
+    dueDate: dueDate,
+    time: time,
+    priority: priority,
+    list: list,
+    id: id,
+    checkList: [],
+    array: [title, description, dueDate, time, priority, list, id, checkList],        
+    setTitle(title) {
+      this.title = title
+    },
+    setDescription(description) {
+      this.description = description
+    },
+    setDueDate(dueDate) {
+      this.dueDate = dueDate
+    },
+    setTime(time) {
+      this.time = time
+    },
+    setPriority(priority) {
+      this.priority = priority
+    },
+    setList(list) {
+      this.list = list
+    },
+    setId(id) {
+      this.id = id
+    },
+    setCheckList(item, isCompleted = false) {
+      this.checkList.push({ item, isCompleted });
+    },
+  }
+  notes.push(note)
+  return note
 }
 
  //test variables 
@@ -66,6 +65,7 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 const containerDiv = document.getElementById('container')
 const listDiv = document.getElementById('listDiv')
 listDiv.classList.add('flex')
+
 const inputDiv = document.getElementById('inputDiv')
 const menuDiv = document.getElementById('menuDiv')
 
@@ -95,27 +95,28 @@ class SuperElement {
 // }
 // handleDate()
   
-  const capitalizeFirstLetter = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  }
+const capitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
  let displayedList
+
  const renderList = () => {
   listDiv.innerHTML = ''
   loadSavedLists()
-    lists.map(item => {              
-      const listHeaderId = item + 'Header'
-      let listHeader = document.getElementById(listHeaderId)  
-      if (!listHeader) {
-        let capitalName = capitalizeFirstLetter(item)
-        new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)
-        new SuperElement(listDiv, 'div', '', 'list', item)
-        listHeader = document.getElementById(listHeaderId)
-      }  
-      listHeader.addEventListener('click', () => {
-        displayedList = item     
-        hideListNotesExcept(displayedList)
-      })
+  lists.map(item => {              
+    const listHeaderId = item + 'Header'
+    let listHeader = document.getElementById(listHeaderId)  
+    if (!listHeader) {
+      let capitalName = capitalizeFirstLetter(item)
+      new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)
+      new SuperElement(listDiv, 'div', '', 'list', item)
+      listHeader = document.getElementById(listHeaderId)
+    }  
+    listHeader.addEventListener('click', () => {
+      displayedList = item     
+      hideListNotesExcept(displayedList)
+    })
   })
 }
    
@@ -145,15 +146,13 @@ const renderEditNote = (parent, i) => {
     option.text = item
     return option
   })
-    options.forEach(option => {
-      prioritySelect.add(option)
-    })     
-    
+  options.forEach(option => {
+    prioritySelect.add(option)
+  })       
   let listSelectValue = renderListSelector(parent, notes[i].list)
-  console.log(listSelectValue.value)
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
-     saveTitleBtn.addEventListener('click', () => {
+    saveTitleBtn.addEventListener('click', () => {
       changeNote(
         notes[i], 
         titleInput.value, 
@@ -165,8 +164,7 @@ const renderEditNote = (parent, i) => {
         )    
       renderCheckList()
       saveToLocalStorage()
-      
-     })   
+    })   
   }
 
 const renderNotes = () => {
@@ -176,6 +174,7 @@ const renderNotes = () => {
     let noteList = notes[i].list
     let listElement = document.getElementById(noteList)
     const noteDiv = new SuperElement(listElement, 'div', '', 'noteDiv', noteId).element
+    noteDiv.classList.add('boxShaddow')
     //create edit div
     const editDiv = new SuperElement(listElement, 'div', '', 'editDiv', 'editDiv').element
     editDiv.classList.add('hide')
@@ -191,13 +190,12 @@ const renderNotes = () => {
     const displayedDate = new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`).element
     const displayedTime = new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`).element
     const displayedPriority = new SuperElement(noteDiv, 'p', `${notes[i].priority} Priority`, 'note', `${notes[i].id}-notePriority`).element
-    //sets background color of note based on priority
+    //removes background color of note
     if (notes[i].list != 'complete') {     
       handlePriorityColor(noteDiv, notes[i])
     }
     //checklist
     const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
-   
     // Checklist Input
     new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
     const listItemInputs = document.querySelectorAll('.listItemInput')
@@ -211,76 +209,75 @@ const renderNotes = () => {
       addCheckList(notes[i], listInput.value)
       renderCheckList()
       saveToLocalStorage()
-  })
-  //remove Btn
-  const removeBtnId = `removeBtn-${notes[i].id}`
-  const removeBtn = new SuperElement(listElement, 'button', 'Completed', 'removeBtn', removeBtnId).element
-  removeBtn.addEventListener('click', () => {
-    const noteToRemove = document.getElementById(noteId)
-    if (notes[i].list != 'complete') {      
+    })
+    //remove Btn
+    const removeBtnId = `removeBtn-${notes[i].id}`
+    const removeBtn = new SuperElement(listElement, 'button', 'Completed', 'removeBtn', removeBtnId).element
+    removeBtn.addEventListener('click', () => {
+      const noteToRemove = document.getElementById(noteId)
+      if (notes[i].list != 'complete') {      
       changeList(notes[i], 'complete')
-    } else {
-      noteToRemove.remove()
-      notes.splice(i, 1)
-      renderNotes()
-    }
+      } else {
+        noteToRemove.remove()
+        notes.splice(i, 1)
+        renderNotes()
+      }
       saveToLocalStorage()
       removeBtn.remove()
     })
   }
 }
 
-const renderNoteInputs = () => {  
-  const inputDiv = document.getElementById('inputDiv')    
+const renderNoteInputs = () => {     
   inputDiv.classList.add('hide')
-    //Title input
-    const titleInput = new SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput').element
-    titleInput.placeholder = 'Title'
-    // Description input
-    const descInput = new SuperElement(inputDiv, 'input', '', 'descInput', 'descInput').element
-    descInput.placeholder = 'Description'
-    //Date input
-    const dateInput = new SuperElement(inputDiv, 'input', '', 'dateInput', 'dateInput').element
-    dateInput.placeholder = 'Date'
-    //Time input
-    const timeInput = new SuperElement(inputDiv, 'input', '', 'timeInput', 'timeInput').element
-    timeInput.placeholder = 'Time'
-    //Priority Select
-    const prioritySelectDiv = new SuperElement(inputDiv, 'div', '', 'prioritySelectDiv', 'prioritySelectDiv').element
-    const prioritySelectLabel = new SuperElement(prioritySelectDiv, 'label', 'Priority', 'prioritySelectLabel', 'prioritySelectLabel').element
-    prioritySelectLabel.for = 'prioritySelect'
-    const prioritySelect = new SuperElement(prioritySelectDiv, 'select', '', 'prioritySelect', 'prioritySelect').element  
-    prioritySelect.name = 'prioritySelectLabel'    
-    // Create option elements and set their values
-    const options = priorityLevel.map(item => {
-    const option = document.createElement('option')
-      option.value = item
-      option.text = item
-      return option
-    })
-    options.forEach(option => {
-      prioritySelect.add(option)
-    })
-    renderListSelector(inputDiv)
-    const addNoteBtn = new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn').element
-      addNoteBtn.addEventListener('click', () => {
-        // const noteId = `note-${Date.now()}`
-        createNote(
-          titleInput.value, 
-          descInput.value, 
-          dateInput.value, 
-          timeInput.value, 
-          prioritySelect.value, 
-          listSelect.value,  
-          `note-${Date.now()}`, 
-          ''
-          )
-        inputDiv.classList.remove('flexColumn')
-        inputDiv.classList.add('hide')
-        renderNotes()
-        renderCheckList()
-        saveToLocalStorage()        
-    })
+  //Title input
+  const titleInput = new SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput').element
+  titleInput.placeholder = 'Title'
+  // Description input
+  const descInput = new SuperElement(inputDiv, 'input', '', 'descInput', 'descInput').element
+  descInput.placeholder = 'Description'
+  //Date input
+  const dateInput = new SuperElement(inputDiv, 'input', '', 'dateInput', 'dateInput').element
+  dateInput.placeholder = 'Date'
+  //Time input
+  const timeInput = new SuperElement(inputDiv, 'input', '', 'timeInput', 'timeInput').element
+  timeInput.placeholder = 'Time'
+  //Priority Select
+  const prioritySelectDiv = new SuperElement(inputDiv, 'div', '', 'prioritySelectDiv', 'prioritySelectDiv').element
+  const prioritySelectLabel = new SuperElement(prioritySelectDiv, 'label', 'Priority', 'prioritySelectLabel', 'prioritySelectLabel').element
+  prioritySelectLabel.for = 'prioritySelect'
+  const prioritySelect = new SuperElement(prioritySelectDiv, 'select', '', 'prioritySelect', 'prioritySelect').element  
+  prioritySelect.name = 'prioritySelectLabel'    
+  // Create option elements and set their values
+  const options = priorityLevel.map(item => {
+  const option = document.createElement('option')
+    option.value = item
+    option.text = item
+    return option
+  })
+  options.forEach(option => {
+    prioritySelect.add(option)
+  })
+  renderListSelector(inputDiv)
+  const addNoteBtn = new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn').element
+  addNoteBtn.addEventListener('click', () => {
+    // const noteId = `note-${Date.now()}`
+    createNote(
+      titleInput.value, 
+      descInput.value, 
+      dateInput.value, 
+      timeInput.value, 
+      prioritySelect.value, 
+      listSelect.value,  
+      `note-${Date.now()}`, 
+      ''
+    )
+    inputDiv.classList.remove('flexColumn')
+    inputDiv.classList.add('hide')
+    renderNotes()
+    renderCheckList()
+    saveToLocalStorage()        
+  })
 }
 
 const renderListSelector = (parent, defaultValue) => {

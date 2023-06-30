@@ -57,3 +57,15 @@
 .bold800 {
     font-weight: 800;
 }
+.boxShaddow {
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .1);
+}
+.noteDiv {
+    padding: 10px;
+}
+.checkListDiv {
+    padding: 10px;
+}
+.listItemInput {
+    margin-bottom: 5px;
+}
