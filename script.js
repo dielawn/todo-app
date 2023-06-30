@@ -5,9 +5,9 @@
       lists.push(name)
   }
 //default lists
-let viewAllList = createNewList('all')
-let personalList = createNewList('personal')
-let professionalList = createNewList('professional')
+let viewAllList = createNewList('home')
+let dayList = createNewList('day')
+let weekList = createNewList('week')
 let completeList = createNewList('complete')
 
 const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']  
@@ -94,7 +94,9 @@ class SuperElement {
 //   console.log(formattedDate); // Output: 2023-06-28
 // }
 // handleDate()
-  
+
+
+
 const capitalizeFirstLetter = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
@@ -204,7 +206,7 @@ const renderNotes = () => {
       listInput.placeholder = 'Checklist Item'
     }
     // CheckList button
-    const addCLBtn = new SuperElement(listElement, 'button', 'Add List Item', 'addCLBtn', 'addCLBtn-' + i).element
+    const addCLBtn = new SuperElement(listElement, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
     addCLBtn.addEventListener('click', () => {
       addCheckList(notes[i], listInput.value)
       renderCheckList()
@@ -212,7 +214,7 @@ const renderNotes = () => {
     })
     //remove Btn
     const removeBtnId = `removeBtn-${notes[i].id}`
-    const removeBtn = new SuperElement(listElement, 'button', 'Completed', 'removeBtn', removeBtnId).element
+    const removeBtn = new SuperElement(listElement, 'button', 'Task Completed', 'removeBtn', removeBtnId).element
     removeBtn.addEventListener('click', () => {
       const noteToRemove = document.getElementById(noteId)
       if (notes[i].list != 'complete') {      
@@ -293,7 +295,7 @@ const renderListSelector = (parent, defaultValue) => {
   defaultOption.text = 'Select a List'
   listSelect.add(defaultOption)  
   const options = lists
-    .filter(item => item !== 'all' && item !== 'complete') // Exclude the "all" list
+    .filter(item => item !== 'home' && item !== 'complete') // Exclude the "home" list
     .map(item => {
       const option = document.createElement('option')
       option.value = item
@@ -313,9 +315,9 @@ const renderListSelector = (parent, defaultValue) => {
 const renderNewListInput = (parent) => {
   //Title input
   const newListInput = new SuperElement(parent, 'input', '', 'newListInput', 'newListInput').element
-  newListInput.placeholder = 'New List'
+  newListInput.placeholder = 'New Project'
   //Add list button
-  const addListBtn = new SuperElement(parent, 'button', 'Add List', 'addListBtn', 'addListBtn').element
+  const addListBtn = new SuperElement(parent, 'button', 'Add Project', 'addListBtn', 'addListBtn').element
   addListBtn.addEventListener('click', () => {
     createNewList(newListInput.value)        
     saveToLocalStorage()    
@@ -324,6 +326,8 @@ const renderNewListInput = (parent) => {
     handleDefault()
     renderListSelector(parent)
     renderNotes()
+    renderCheckList()
+    renderNewListInput(menuDiv)
   })
 }
 
@@ -333,7 +337,7 @@ const hideListNotesExcept = (displayedListId) => {
     const currentList = listOfLists[i]      
     if (currentList.id === displayedListId) {
       currentList.classList.remove('hide')
-    } else if (displayedListId === 'all') {
+    } else if (displayedListId === 'home') {
       listOfLists[i].classList.remove('hide')
     } else {
       currentList.classList.add('hide')
@@ -449,6 +453,16 @@ const clearLocalStorage = () => {
   localStorage.clear()
 }
 
+const handleMenu = () => {
+  menuDiv.classList.add('hide')
+  const menuIcon = new SuperElement(containerDiv, 'img', '', 'iconBtn', 'menuBtn').element
+  menuIcon.src = 'images/menu_FILL0_wght400_GRAD0_opsz48.png'
+  menuIcon.addEventListener('click', () => {
+    menuDiv.classList.toggle('flexColumn')
+    menuDiv.classList.toggle('hide')
+  })
+}
+
 const handleDefault = () => {
   const defaultBtn = new SuperElement(menuDiv, 'button', 'Default Settings', 'defaultBtn', 'defaultBtn').element
   defaultBtn.addEventListener('click', () => {
@@ -461,7 +475,7 @@ const handleDefault = () => {
 const removeList = () => {
   menuDiv.innerHTML = ''
   lists.forEach((list, index) => {    
-    if (list !== 'complete' && list !== 'all') {
+    if (list !== 'complete' && list !== 'home' && list != 'day' && list != 'week') {
       const capitalList = capitalizeFirstLetter(list)
       const removeListBtn = new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`).element
       removeListBtn.addEventListener('click', () => {
@@ -481,14 +495,14 @@ const removeList = () => {
 
 const handleRemoveBtn = () => {
   //the remove btns were persistant even if the default lists had been disabled
-  const personalList = document.getElementById('personal')
-  const professionalList = document.getElementById('professional')
+  const dayList = document.getElementById('day')
+  const weeklList = document.getElementById('week')
   //check for element
-  if (!professionalList) {
+  if (!weeklList) {
     const removeListBtn1 = document.getElementById('removeListBtn2')
     removeListBtn1.remove()
   }
-  if (!personalList) {
+  if (!dayList) {
     const removeListBtn2 = document.getElementById('removeListBtn1')
     removeListBtn2.remove()
   }
@@ -499,6 +513,7 @@ const renderCheckList = () => {
   Array.from(noteDivs).forEach(noteDiv => {
     const noteId = noteDiv.id
     const checkListDiv = document.getElementById(`checkListDiv-${noteId}`)
+    checkListDiv.classList.add('boxShaddow')
     const note = notes.find(note => note.id === noteId)
     if (note.checkList.length > 0) {      
         checkListDiv.innerHTML = ''
@@ -538,7 +553,7 @@ const setCheckListItemComplete = (noteId, index) => {
 //style stuff
 const handlePriorityColor = (el, note) => {
   if (note.priority === 'Urgent') {
-    el.classList.add('red')
+    el.classList.add('reder')
   } else if (note.priority === 'High') {
     el.classList.add('redish')
   } else if (note.priority === 'Medium') {
@@ -550,19 +565,23 @@ const handlePriorityColor = (el, note) => {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+  
   removeList()
   renderNoteInputs('inputDiv')  
   handleDefault()
   loadSavedLists()
-  renderNewListInput(inputDiv)
-  renderList();
+  
+  renderNewListInput(menuDiv)
+  renderList()
   hideListNotesExcept(lists[0])
   loadSavedNotes()
   renderNotes()
+  handleMenu()
   renderNewNoteBtn()
   handleRemoveBtn()
   loadSavedCheckList()
   renderCheckList()
+  
 })
   
 //diagnostic tools
