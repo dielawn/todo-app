@@ -32,16 +32,17 @@
     flex-wrap: wrap;
 }
 .greenish {
-    background-color: rgba(0, 255, 0, .5);
+    border-left: solid 10px rgba(0, 255, 0, .5);
+    
 }
 .yellowish {
-    background-color: rgba(248, 245, 64, 0.5);
+    border-left: solid 10px rgba(243, 239, 25, 0.5);
 }
 .redish {
-    background-color: rgba(255, 0, 0, .5);
+    border-left: solid 10px rgba(255, 0, 0, .5);
 }
 .red {
-    background-color: rgba(255, 0, 0, .9);
+    border-left: solid 10px rgba(255, 0, 0, .9);
 }
 .lineThrough {
     text-decoration: line-through;
@@ -49,4 +50,10 @@
 .checkList {
     margin: 10px;
     z-index: 9999;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold800 {
+    font-weight: 800;
 }

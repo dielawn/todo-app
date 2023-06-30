@@ -113,7 +113,7 @@ class SuperElement {
         listHeader = document.getElementById(listHeaderId)
       }  
       listHeader.addEventListener('click', () => {
-        displayedList = item // Assign the ID of the clicked list header      
+        displayedList = item     
         hideListNotesExcept(displayedList)
       })
   })
@@ -154,8 +154,15 @@ const renderEditNote = (parent, i) => {
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
      saveTitleBtn.addEventListener('click', () => {
-      changeNote(notes[i], titleInput.value, editDescriptInput.value, editDateInput.value, editTimeInput.value, prioritySelect.value, listSelectValue.value, )
-    
+      changeNote(
+        notes[i], 
+        titleInput.value, 
+        editDescriptInput.value, 
+        editDateInput.value, 
+        editTimeInput.value, 
+        prioritySelect.value, 
+        listSelectValue.value, 
+        )    
       renderCheckList()
       saveToLocalStorage()
       
@@ -183,13 +190,10 @@ const renderNotes = () => {
     const displayedDesc = new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`).element
     const displayedDate = new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`).element
     const displayedTime = new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`).element
-    const displayedPriority = new SuperElement(noteDiv, 'p', notes[i].priority, 'note', `${notes[i].id}-notePriority`).element
-    if (notes[i].list != 'complete') {
-      handlePriorityColor(displayedPriority, notes[i])
-      handlePriorityColor(displayedTitle, notes[i])
-      handlePriorityColor(displayedDesc, notes[i])
-      handlePriorityColor(displayedDate, notes[i])
-      handlePriorityColor(displayedTime, notes[i])    
+    const displayedPriority = new SuperElement(noteDiv, 'p', `${notes[i].priority} Priority`, 'note', `${notes[i].id}-notePriority`).element
+    //sets background color of note based on priority
+    if (notes[i].list != 'complete') {     
+      handlePriorityColor(noteDiv, notes[i])
     }
     //checklist
     const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
@@ -223,12 +227,8 @@ const renderNotes = () => {
       saveToLocalStorage()
       removeBtn.remove()
     })
-   
-    
   }
 }
-
-
 
 const renderNoteInputs = () => {  
   const inputDiv = document.getElementById('inputDiv')    
@@ -264,7 +264,7 @@ const renderNoteInputs = () => {
     renderListSelector(inputDiv)
     const addNoteBtn = new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn').element
       addNoteBtn.addEventListener('click', () => {
-        const noteId = `note-${Date.now()}`
+        // const noteId = `note-${Date.now()}`
         createNote(
           titleInput.value, 
           descInput.value, 
@@ -279,50 +279,39 @@ const renderNoteInputs = () => {
         inputDiv.classList.add('hide')
         renderNotes()
         renderCheckList()
-        saveToLocalStorage()
-        
+        saveToLocalStorage()        
     })
 }
 
 const renderListSelector = (parent, defaultValue) => {
-  const listSelectDiv = new SuperElement(parent, 'div', 'Select List:', 'listSelectDiv', 'listSelectDiv').element;
-  listSelectDiv.innerHTML = '';
-  const listSelectLabel = new SuperElement(listSelectDiv, 'label', '', 'listSelectLabel', 'listSelectLabel').element;
-  listSelectLabel.for = 'listSelectLabel';
-  const listSelect = new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect').element;
-  listSelect.name = 'listSelectLabel';
-
+  const listSelectDiv = new SuperElement(parent, 'div', 'Select List:', 'listSelectDiv', 'listSelectDiv').element
+  listSelectDiv.innerHTML = ''
+  const listSelectLabel = new SuperElement(listSelectDiv, 'label', '', 'listSelectLabel', 'listSelectLabel').element
+  listSelectLabel.for = 'listSelectLabel'
+  const listSelect = new SuperElement(listSelectDiv, 'select', '', 'listSelect', 'listSelect').element
+  listSelect.name = 'listSelectLabel'
   // Create the default option
-  const defaultOption = document.createElement('option');
-  defaultOption.value = '';
-  defaultOption.text = 'Select a List';
-  listSelect.add(defaultOption);
-  
+  const defaultOption = document.createElement('option')
+  defaultOption.value = ''
+  defaultOption.text = 'Select a List'
+  listSelect.add(defaultOption)  
   const options = lists
     .filter(item => item !== 'all' && item !== 'complete') // Exclude the "all" list
     .map(item => {
-      const option = document.createElement('option');
-      option.value = item;
-      option.text = item;
-      return option;
-    });
-
+      const option = document.createElement('option')
+      option.value = item
+      option.text = item
+      return option
+    })
   options.forEach(option => {
-    listSelect.add(option);
-  });
-
+    listSelect.add(option)
+  })
   // Set the default value if provided
   if (defaultValue) {
-    listSelect.value = defaultValue;
+    listSelect.value = defaultValue
   }
-
-  return listSelect;
-};
-
-
-
-
-
+  return listSelect
+}
 
 const renderNewListInput = (parent) => {
   //Title input
@@ -334,10 +323,8 @@ const renderNewListInput = (parent) => {
     createNewList(newListInput.value)        
     saveToLocalStorage()    
     renderList(lists)
-    //menuDiv add removeBtn
     removeList()
     handleDefault()
-    //add name to selector option
     renderListSelector(parent)
     renderNotes()
   })
@@ -380,13 +367,12 @@ const changeNote = (note, newTitle, newDescription, newDate, newTime, newPriorit
   renderNotes()
   return 'note changed'
 }
+
 const changeList = (note, newList) => {
   clearNoteEl()
   note.setList(newList)
   renderNotes()
-  return 'list changed'
 }
-
 const addCheckList = (note, listItem) => {
   note.setCheckList(listItem)
 }
@@ -413,21 +399,17 @@ const saveToLocalStorage = () => {
     const noteId = notes[i].id
     const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`))
     if (JSON.stringify(notes[i].checkList) !== JSON.stringify(savedCheckList)) {
-      const checkListData = notes[i].checkList.map(item => ({ item}));
-      console.log(checkListData)
-          
-      localStorage.setItem(`savedCheckList-${noteId}`, JSON.stringify(checkListData))
-      
+      const checkListData = notes[i].checkList.map(item => ({ item}))        
+      localStorage.setItem(`savedCheckList-${noteId}`, JSON.stringify(checkListData))      
     }
   }
-  console.log(`Saved to local storage: ${savedNotes}`)
-};
+  // console.log(`Saved to local storage: ${savedNotes}`)
+}
 
 const loadSavedCheckList = () => {
   for (let i = 0; i < notes.length; i++) {
     const noteId = notes[i].id;
     const savedCheckList = JSON.parse(localStorage.getItem(`savedCheckList-${noteId}`))
-    console.log(savedCheckList)
     if (savedCheckList) {
       notes[i].checkList = savedCheckList.map(item => item.item)
     }
@@ -460,8 +442,7 @@ const loadSavedNotes = () => {
         savedNote.priority,
         savedNote.list,
         savedNote.id,
-        savedNote.checkList,
-        savedNote.array,        
+        savedNote.checkList,       
       )
     })
   }  
@@ -501,18 +482,6 @@ const removeList = () => {
   })
 }
 
-const handlePriorityColor = (el, note) => {
-  if (note.priority === 'Urgent') {
-    el.classList.add('red')
-  } else if (note.priority === 'High') {
-    el.classList.add('redish')
-  } else if (note.priority === 'Medium') {
-    el.classList.add('yellowish')
-  } else {
-    el.classList.add('greenish')
-  }
-}
-
 const handleRemoveBtn = () => {
   //the remove btns were persistant even if the default lists had been disabled
   const personalList = document.getElementById('personal')
@@ -536,7 +505,8 @@ const renderCheckList = () => {
     const note = notes.find(note => note.id === noteId)
     if (note.checkList.length > 0) {      
         checkListDiv.innerHTML = ''
-        const checkListHeader = new SuperElement(checkListDiv, 'p', 'Check List', 'checkListHeader', `checkListHeader-${noteId}`)
+        const checkListHeader = new SuperElement(checkListDiv, 'p', 'Check List', 'checkListHeader', `checkListHeader-${noteId}`).element
+        checkListHeader.classList.add('underline')
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         checkCompleted(textElement, noteId, index)
@@ -550,7 +520,6 @@ const renderCheckList = () => {
     } 
   })
 }
-
 
 const checkCompleted = (element, noteId, index) => {
   const note = notes.find(note => note.id === noteId)
@@ -568,6 +537,20 @@ const setCheckListItemComplete = (noteId, index) => {
     console.log(note.checkList[index].isCompleted)
   }
 }
+
+//style stuff
+const handlePriorityColor = (el, note) => {
+  if (note.priority === 'Urgent') {
+    el.classList.add('red')
+  } else if (note.priority === 'High') {
+    el.classList.add('redish')
+  } else if (note.priority === 'Medium') {
+    el.classList.add('yellowish')
+  } else {
+    el.classList.add('greenish')
+  }
+}
+
 
 document.addEventListener('DOMContentLoaded', function() {
   removeList()
