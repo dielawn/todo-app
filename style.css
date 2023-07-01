@@ -51,6 +51,14 @@
     font-weight: 900;
     padding: 10px;
 }
+.listHeader:hover {
+    background-color:gray;
+    color: white;
+}
+.listHeader:active {
+    background-color: gray;
+    
+}
 .note {
     display: flex;
     font-weight: 100;
@@ -68,13 +76,19 @@
     width: 90vw;
 }
 .checkListDiv {
+    margin: 5px;
     padding: 10px;
     background-color: rgba(0, 0, 0, .1);
     color:black;
 }
 .icon{
-    padding: 5px;
+    padding: 1px;
     width: 40px;
+   
+}
+.icon:active {
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .1);
+    margin: 2px;
 }
 .listItemInput {
     margin-bottom: 5px;
@@ -145,4 +159,11 @@ input {
 }
 .defaultBtn {
     margin: 40px;
+}
+.addCLBtn {
+    margin: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+}
+.addCLBtn:hover {
+    box-shadow: 0 6px 8px 0 rgba(0,0,0,0.24), 0 8px 25px 0 rgba(0,0,0,0.19);
 }

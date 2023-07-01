@@ -209,9 +209,10 @@ const renderNotes = () => {
       handlePriorityColor(noteDiv, notes[i])
     }
     //checklist
-    const checkListInputDiv = new SuperElement(listElement, 'div', '', 'checkListInputDiv', `checkListInputDiv-${notes[i].id}`).element
+    const checkListContent = new SuperElement(listElement, 'div', '', 'cLContent', 'cLContent').element
+    const checkListInputDiv = new SuperElement(checkListContent, 'div', '', 'checkListInputDiv', `checkListInputDiv-${notes[i].id}`).element
    
-      const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
+      const checkListDiv =  new SuperElement(checkListContent, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
       // Checklist Input
       new SuperElement(checkListInputDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
       const listItemInputs = document.querySelectorAll('.listItemInput')
@@ -221,13 +222,13 @@ const renderNotes = () => {
       }
       // CheckList button
       const addCLBtn = new SuperElement(checkListInputDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
+      addCLBtn.classList.add('boxShaddow')
       addCLBtn.addEventListener('click', () => {
         addCheckList(notes[i], listInput.value)
         listInput.value = ''
         renderCheckList()
         saveToLocalStorage()
-        console.log(checkListDiv.classList)
-        checkListDiv.classList.remove('hide')
+        
       })
    
     
@@ -588,15 +589,17 @@ const renderCheckList = () => {
   const noteDivs = document.getElementsByClassName('noteDiv')
   Array.from(noteDivs).forEach(noteDiv => {
     const noteId = noteDiv.id
+    const checkListContent = document.getElementsByClassName('cLContent')
     const checkListDiv = document.getElementById(`checkListDiv-${noteId}`)   
-    checkListDiv.classList.add('boxShaddow')    
+   
     const note = notes.find(note => note.id === noteId)
     console.log(note.checkList.length)
    
       checkListDiv.innerHTML = ''
-      const checkListHeader = new SuperElement(checkListDiv, 'p', 'Checklist', 'checklistHeader', 'checklistHeader')
+      
+      const checkListHeader = new SuperElement(checkListDiv, 'div', 'Checklist', 'checklistHeader', 'checklistHeader').element
       const expandIcon = new SuperElement(checkListDiv, 'img', '', 'icon', 'checkListIcon').element
-      expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
+      expandIcon.src = 'images/expand_less_FILL0_wght400_GRAD0_opsz48.png'
         
         note.checkList.forEach((checkListItem, index) => {
         const checkListRow = new SuperElement(checkListDiv, 'div', '', 'checkListRow', `checkListRow-${noteId}`).element
@@ -605,8 +608,8 @@ const renderCheckList = () => {
         const textElement = new SuperElement(checkListRow, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         checkBoxIcon.src = 'images/check_box_outline_blank_FILL0_wght400_GRAD0_opsz48.png'
         
-        textElement.classList.add('hide')
-        checkBoxIcon.classList.add('hide')
+       
+
         expandIcon.addEventListener('click', () => {
           textElement.classList.toggle('hide')
           checkBoxIcon.classList.toggle('hide')
@@ -667,11 +670,9 @@ const handlePriorityColor = (el, note) => {
 
 document.addEventListener('DOMContentLoaded', function() {  
   removeList()
-  renderNoteInputs('inputDiv')  
-  
+  renderNoteInputs('inputDiv')    
   loadSavedLists()  
-  renderNewListInput(menuDiv)
-  
+  renderNewListInput(menuDiv)  
   renderList()
   hideListNotesExcept(lists[0])
   loadSavedNotes()
@@ -681,8 +682,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNewNoteBtn()
   handleRemoveBtn()
   loadSavedCheckList()
-  renderCheckList()
-  
+  renderCheckList()  
 })
   
 //diagnostic tools
