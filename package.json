@@ -1,0 +1,23 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test passed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dielawn/todo-app.git"
+  },
+  "author": "dielawn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dielawn/todo-app/issues"
+  },
+  "homepage": "https://github.com/dielawn/todo-app#readme",
+  "devDependencies": {
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
+  }
+}
