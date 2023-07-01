@@ -143,3 +143,6 @@ input {
     background-color: white;
     text-align: center;
 }
+.defaultBtn {
+    margin: 40px;
+}

@@ -117,6 +117,12 @@ const capitalizeFirstLetter = (str) => {
         capitalName = capitalizeFirstLetter(item)
       } 
       new SuperElement(menuDiv, 'div', capitalName, 'menuName', `menuName-${listHeaderId}`)
+      const menuList = document.getElementById(`menuName-${listHeaderId}`)
+      menuList.addEventListener('click', () => {
+        displayedList = item     
+        hideListNotesExcept(displayedList)
+openCloseMenu()
+      })
       new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)
       
       new SuperElement(listDiv, 'div', '', 'list', item)
@@ -371,11 +377,10 @@ const hideListNotesExcept = (displayedListId) => {
     console.log(listOfHeaders[i].textContent)
   }
   for (let i = 0; i < listOfLists.length; i++) {
-    const currentList = listOfLists[i]      
-    
+    const currentList = listOfLists[i]          
     if (currentList.id === displayedListId) {
       currentList.classList.remove('hide')
-      listOfHeaders[i].classList.add('underline')
+      underlineToggleElement(listOfHeaders[i])
     } else if (displayedListId === 'all') {
       listOfLists[i].classList.remove('hide')
       
@@ -385,7 +390,18 @@ const hideListNotesExcept = (displayedListId) => {
     } 
   }
 }
+const underlineToggleElement = (el) => {
+ const listHeaders = document.querySelectorAll('.listHeader')
+console.log(listHeaders) 
+for (let i = 0; i < listHeaders.length; i++) {
+  console.log(listHeaders[i])
+  if (listHeaders[i].classList.contains('underline')) {
+    listHeaders[i].classList.remove('underline')
+  }
+}
 
+  el.classList.add('underline')
+}
 const clearNoteEl = () => {
   lists.map(item => {
     let listDiv = document.getElementById(item)
@@ -502,11 +518,14 @@ const viewHideMenu = () => {
   const menuIcon = new SuperElement(containerDiv, 'img', '', 'icon', 'menuBtn').element
   menuIcon.src = 'images/menu_FILL0_wght400_GRAD0_opsz48.png'
   menuIcon.addEventListener('click', () => {   
-    menuDiv.classList.toggle('hide')
+    openCloseMenu()
+  })
+}
+const openCloseMenu = () => {
+  menuDiv.classList.toggle('hide')
     menuDiv.classList.toggle('flexColumn')
     listDiv.classList.toggle('blur')
     toggleScroll()
-  })
 }
 function toggleScroll() {
  if (document.body.style.overflow != 'hidden') {
@@ -519,7 +538,7 @@ function toggleScroll() {
   
 
 const handleDefault = () => {
-  const defaultBtn = new SuperElement(menuDiv, 'button', 'FULL RESET', 'defaultBtn', 'defaultBtn').element
+  const defaultBtn = new SuperElement(menuDiv, 'button', 'RESET', 'defaultBtn', 'defaultBtn').element
   defaultBtn.addEventListener('click', () => {
     clearLocalStorage()
     // Reload the current page
@@ -652,12 +671,13 @@ document.addEventListener('DOMContentLoaded', function() {
   
   loadSavedLists()  
   renderNewListInput(menuDiv)
-  handleDefault()
+  
   renderList()
   hideListNotesExcept(lists[0])
   loadSavedNotes()
   renderNotes()
   viewHideMenu()
+  handleDefault()
   renderNewNoteBtn()
   handleRemoveBtn()
   loadSavedCheckList()
