@@ -6,7 +6,7 @@
   }
 //default lists
 let viewAllList = createNewList('all')
-let dayList = createNewList('day')
+let dayList = createNewList('today')
 let weekList = createNewList('week')
 let completeList = createNewList('complete')
 
@@ -109,15 +109,25 @@ const capitalizeFirstLetter = (str) => {
     const listHeaderId = item + 'Header'
     let listHeader = document.getElementById(listHeaderId)  
     if (!listHeader) {
-      let capitalName = capitalizeFirstLetter(item)
+      console.log(item)
+      let capitalName
+      if (item === 'all') {
+        capitalName = 'View All'
+      } else {
+        capitalName = capitalizeFirstLetter(item)
+      } 
+      new SuperElement(menuDiv, 'div', capitalName, 'menuName', `menuName-${listHeaderId}`)
       new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)
+      
       new SuperElement(listDiv, 'div', '', 'list', item)
       listHeader = document.getElementById(listHeaderId)
+      listHeader.addEventListener('click', () => {
+        displayedList = item     
+        hideListNotesExcept(displayedList)
+             
+      })
     }  
-    listHeader.addEventListener('click', () => {
-      displayedList = item     
-      hideListNotesExcept(displayedList)
-    })
+   
   })
 }
    
@@ -179,6 +189,7 @@ const renderNotes = () => {
     //create edit div
     const editDiv = new SuperElement(listElement, 'div', '', 'editDiv', 'editDiv').element
     editDiv.classList.add('hide')
+    editDiv.classList.add('flexColumn')
     //note title
     let displayedTitle = new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`).element
     
@@ -192,23 +203,30 @@ const renderNotes = () => {
       handlePriorityColor(noteDiv, notes[i])
     }
     //checklist
-    const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
-    // Checklist Input
-    new SuperElement(checkListDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
-    const listItemInputs = document.querySelectorAll('.listItemInput')
-    const listInput = listItemInputs[i]
-    if (listInput) {
-      listInput.placeholder = 'Checklist Item'
-    }
-    // CheckList button
-    const addCLBtn = new SuperElement(checkListDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
-    addCLBtn.addEventListener('click', () => {
-      addCheckList(notes[i], listInput.value)
-      renderCheckList()
-      saveToLocalStorage()
-    })
+    const checkListInputDiv = new SuperElement(listElement, 'div', '', 'checkListInputDiv', `checkListInputDiv-${notes[i].id}`).element
+   
+      const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
+      // Checklist Input
+      new SuperElement(checkListInputDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
+      const listItemInputs = document.querySelectorAll('.listItemInput')
+      const listInput = listItemInputs[i]
+      if (listInput) {
+        listInput.placeholder = 'Checklist Item'
+      }
+      // CheckList button
+      const addCLBtn = new SuperElement(checkListInputDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
+      addCLBtn.addEventListener('click', () => {
+        addCheckList(notes[i], listInput.value)
+        listInput.value = ''
+        renderCheckList()
+        saveToLocalStorage()
+        console.log(checkListDiv.classList)
+        checkListDiv.classList.remove('hide')
+      })
+   
+    
     //edit Btn
-    const editIcon = new SuperElement(listElement, 'img', '', 'editIcon', 'editIcon').element
+    const editIcon = new SuperElement(noteDiv, 'img', '', 'icon', 'editIcon').element
     editIcon.src = 'images/edit_note_FILL0_wght400_GRAD0_opsz48.png'
 
     editIcon.addEventListener('click', () => {
@@ -219,7 +237,7 @@ const renderNotes = () => {
     })
     //remove Btn
     const removeBtnId = `removeBtn-${notes[i].id}`
-    const garbageIcon = new SuperElement(listElement, 'img', '', 'garbageIcon', removeBtnId).element
+    const garbageIcon = new SuperElement(listElement, 'img', '', 'icon', removeBtnId).element
     garbageIcon.src = 'images/delete_FILL0_wght400_GRAD0_opsz48.png'
     garbageIcon.addEventListener('click', () => {
       const noteToRemove = document.getElementById(noteId)
@@ -342,14 +360,28 @@ const renderNewListInput = (parent) => {
 
 const hideListNotesExcept = (displayedListId) => {
   const listOfLists = document.querySelectorAll('.list')   
+  const listOfHeaders = document.querySelectorAll('.listHeader')
+  console.log(displayedListId)
+  for (let i = 0; i < listOfHeaders.length; i++) {
+    if (displayedListId === 'all') {
+      if(displayedListId === listOfHeaders[i].textContent) {
+        
+      }
+    }
+    console.log(listOfHeaders[i].textContent)
+  }
   for (let i = 0; i < listOfLists.length; i++) {
     const currentList = listOfLists[i]      
+    
     if (currentList.id === displayedListId) {
       currentList.classList.remove('hide')
+      listOfHeaders[i].classList.add('underline')
     } else if (displayedListId === 'all') {
       listOfLists[i].classList.remove('hide')
+      
     } else {
       currentList.classList.add('hide')
+      
     } 
   }
 }
@@ -467,7 +499,7 @@ const clearLocalStorage = () => {
 
 const viewHideMenu = () => {
   menuDiv.classList.add('hide')
-  const menuIcon = new SuperElement(containerDiv, 'img', '', 'iconBtn', 'menuBtn').element
+  const menuIcon = new SuperElement(containerDiv, 'img', '', 'icon', 'menuBtn').element
   menuIcon.src = 'images/menu_FILL0_wght400_GRAD0_opsz48.png'
   menuIcon.addEventListener('click', () => {   
     menuDiv.classList.toggle('hide')
@@ -499,7 +531,8 @@ const removeList = () => {
   menuDiv.innerHTML = ''
   lists.forEach((list, index) => {    
     //disable remove list bts for defaults
-    if (list !== 'complete' && list !== 'all' && list != 'day' && list != 'week') {
+    if (list !== 'complete' && list !== 'all' && list != 'today' && list != 'week') {
+     
       const capitalList = capitalizeFirstLetter(list)
       const removeListBtn = new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`).element
       removeListBtn.addEventListener('click', () => {
@@ -519,7 +552,7 @@ const removeList = () => {
 
 const handleRemoveBtn = () => {
   //the remove btns were persistant even if the default lists had been disabled
-  const dayList = document.getElementById('day')
+  const dayList = document.getElementById('today')
   const weeklList = document.getElementById('week')
   //check for element
   if (!weeklList) {
@@ -536,58 +569,57 @@ const renderCheckList = () => {
   const noteDivs = document.getElementsByClassName('noteDiv')
   Array.from(noteDivs).forEach(noteDiv => {
     const noteId = noteDiv.id
-    const checkListDiv = document.getElementById(`checkListDiv-${noteId}`)
-    checkListDiv.classList.add('boxShaddow')
+    const checkListDiv = document.getElementById(`checkListDiv-${noteId}`)   
+    checkListDiv.classList.add('boxShaddow')    
     const note = notes.find(note => note.id === noteId)
-    if (note.checkList.length > 0) {      
-        checkListDiv.innerHTML = ''
-        const expandIcon = new SuperElement(checkListDiv, 'img', '', 'checkListIcon', 'checkListIcon').element
-       
-        expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
+    console.log(note.checkList.length)
+   
+      checkListDiv.innerHTML = ''
+      const checkListHeader = new SuperElement(checkListDiv, 'p', 'Checklist', 'checklistHeader', 'checklistHeader')
+      const expandIcon = new SuperElement(checkListDiv, 'img', '', 'icon', 'checkListIcon').element
+      expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
         
         note.checkList.forEach((checkListItem, index) => {
-        const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
+        const checkListRow = new SuperElement(checkListDiv, 'div', '', 'checkListRow', `checkListRow-${noteId}`).element
+        checkListRow.classList.add('flex')
+        const checkBoxIcon = new SuperElement(checkListRow, 'img', '', 'icon', 'checkBoxIcon').element
+        const textElement = new SuperElement(checkListRow, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
+        checkBoxIcon.src = 'images/check_box_outline_blank_FILL0_wght400_GRAD0_opsz48.png'
+        
         textElement.classList.add('hide')
+        checkBoxIcon.classList.add('hide')
         expandIcon.addEventListener('click', () => {
           textElement.classList.toggle('hide')
+          checkBoxIcon.classList.toggle('hide')
           expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
           if(!textElement.classList.contains('hide')) {
             expandIcon.src = 'images/expand_less_FILL0_wght400_GRAD0_opsz48.png'
           }
         })
-        checkCompleted(textElement, noteId, index)
-        textElement.addEventListener('click', () => {
+        checkCompleted(textElement, noteId, index, checkBoxIcon)
+        checkListRow.addEventListener('click', () => {
           textElement.classList.toggle('lineThrough')
+          if (textElement.classList.contains('lineThrough')) {
+            checkBoxIcon.src = 'images/check_box_FILL0_wght400_GRAD0_opsz48.png'
+          } else {
+            checkBoxIcon.src = 'images/check_box_outline_blank_FILL0_wght400_GRAD0_opsz48.png'
+          }
+          
           console.log(index)
           setCheckListItemComplete(noteId, index)
           saveToLocalStorage()                   
         })  
       })
-    } 
+   
   })
 }
-const renderCheckListInput = (parent) => {
-  const checkListDiv =  new SuperElement(parent, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
-  // Checklist Input
-  new SuperElement(checkListDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
-  const listItemInputs = document.querySelectorAll('.listItemInput')
-  const listInput = listItemInputs[i]
-  if (listInput) {
-    listInput.placeholder = 'Checklist Item'
-  }
-  // CheckList button
-  const addCLBtn = new SuperElement(checkListDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
-  addCLBtn.addEventListener('click', () => {
-    addCheckList(notes[i], listInput.value)
-    renderCheckList()
-    saveToLocalStorage()
-  })
-}
-const checkCompleted = (element, noteId, index) => {
+
+const checkCompleted = (element, noteId, index, icon) => {
   const note = notes.find(note => note.id === noteId)
   if (note && index >= 0 && index < note.checkList.length) {
     if (note.checkList[index].isCompleted) {
       element.classList.add('lineThrough')
+      icon.src = 'images/check_box_FILL0_wght400_GRAD0_opsz48.png'
     }
   }
 }
