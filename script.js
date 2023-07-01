@@ -529,14 +529,19 @@ const renderCheckList = () => {
     const note = notes.find(note => note.id === noteId)
     if (note.checkList.length > 0) {      
         checkListDiv.innerHTML = ''
-        const checkListIcon = new SuperElement(checkListDiv, 'img', '', 'checkListIcon', 'checkListIcon').element
-        checkListIcon.src = 'images/event_list_FILL0_wght400_GRAD0_opsz48.png'
+        const expandIcon = new SuperElement(checkListDiv, 'img', '', 'checkListIcon', 'checkListIcon').element
+       
+        expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
         
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         textElement.classList.add('hide')
-        checkListIcon.addEventListener('click', () => {
+        expandIcon.addEventListener('click', () => {
           textElement.classList.toggle('hide')
+          expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
+          if(!textElement.classList.contains('hide')) {
+            expandIcon.src = 'images/expand_less_FILL0_wght400_GRAD0_opsz48.png'
+          }
         })
         checkCompleted(textElement, noteId, index)
         textElement.addEventListener('click', () => {
