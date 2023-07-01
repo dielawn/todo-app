@@ -453,13 +453,14 @@ const clearLocalStorage = () => {
   localStorage.clear()
 }
 
-const handleMenu = () => {
+const viewHideMenu = () => {
   menuDiv.classList.add('hide')
   const menuIcon = new SuperElement(containerDiv, 'img', '', 'iconBtn', 'menuBtn').element
   menuIcon.src = 'images/menu_FILL0_wght400_GRAD0_opsz48.png'
-  menuIcon.addEventListener('click', () => {
-    menuDiv.classList.toggle('flexColumn')
+  menuIcon.addEventListener('click', () => {   
     menuDiv.classList.toggle('hide')
+    menuDiv.classList.toggle('flexColumn')
+    listDiv.classList.toggle('blur')
   })
 }
 
@@ -475,6 +476,7 @@ const handleDefault = () => {
 const removeList = () => {
   menuDiv.innerHTML = ''
   lists.forEach((list, index) => {    
+    //disable remove list bts for defaults
     if (list !== 'complete' && list !== 'home' && list != 'day' && list != 'week') {
       const capitalList = capitalizeFirstLetter(list)
       const removeListBtn = new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`).element
@@ -564,19 +566,17 @@ const handlePriorityColor = (el, note) => {
 }
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  
+document.addEventListener('DOMContentLoaded', function() {  
   removeList()
   renderNoteInputs('inputDiv')  
   handleDefault()
-  loadSavedLists()
-  
+  loadSavedLists()  
   renderNewListInput(menuDiv)
   renderList()
   hideListNotesExcept(lists[0])
   loadSavedNotes()
   renderNotes()
-  handleMenu()
+  viewHideMenu()
   renderNewNoteBtn()
   handleRemoveBtn()
   loadSavedCheckList()

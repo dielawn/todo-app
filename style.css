@@ -106,3 +106,16 @@ input {
     top: 25px;
     right: 25px;
 }
+.menuDiv {
+    background-color: aliceblue;
+    border-radius: 7px;
+    padding: 50px;
+    position: absolute;
+    top: 150px;
+    left: 20vw;
+    z-index: 9998;
+}
+.blur {
+    filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
