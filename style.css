@@ -72,7 +72,10 @@
     background-color: rgba(0, 0, 0, .1);
     color:black;
 }
-.checkListIcon {
+.garbageIcon,
+.checkListIcon,
+.editIcon {
+    padding: 5px;
     width: 35px;
 }
 .listItemInput {
@@ -104,6 +107,13 @@ input {
     color: white;
     font-size: xx-large;
     z-index: 9999;
+}
+.inputDiv {
+    position: fixed;
+    top: 20%;    
+    background-color: rgb(6, 138, 245);
+    width: 90vw;
+    padding: 50px;
 }
 #menuBtn {
     position: fixed;

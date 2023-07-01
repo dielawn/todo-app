@@ -5,7 +5,7 @@
       lists.push(name)
   }
 //default lists
-let viewAllList = createNewList('home')
+let viewAllList = createNewList('all')
 let dayList = createNewList('day')
 let weekList = createNewList('week')
 let completeList = createNewList('complete')
@@ -65,7 +65,6 @@ function createNote(title, description, dueDate, time, priority, list, id, check
 const containerDiv = document.getElementById('container')
 const listDiv = document.getElementById('listDiv')
 listDiv.classList.add('flex')
-
 const inputDiv = document.getElementById('inputDiv')
 const menuDiv = document.getElementById('menuDiv')
 
@@ -182,12 +181,8 @@ const renderNotes = () => {
     editDiv.classList.add('hide')
     //note title
     let displayedTitle = new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`).element
-    noteDiv.addEventListener('click', () => {
-    //hide p element show titleInput save and cancel btns
-      noteDiv.classList.add('hide')
-      editDiv.classList.remove('hide')
-      renderEditNote(editDiv, i)    
-    })
+    
+    
     const displayedDesc = new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`).element
     const displayedDate = new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`).element
     const displayedTime = new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`).element
@@ -212,10 +207,21 @@ const renderNotes = () => {
       renderCheckList()
       saveToLocalStorage()
     })
+    //edit Btn
+    const editIcon = new SuperElement(listElement, 'img', '', 'editIcon', 'editIcon').element
+    editIcon.src = 'images/edit_note_FILL0_wght400_GRAD0_opsz48.png'
+
+    editIcon.addEventListener('click', () => {
+    //hide p element show titleInput save and cancel btns
+      noteDiv.classList.add('hide')
+      editDiv.classList.remove('hide')
+      renderEditNote(editDiv, i)    
+    })
     //remove Btn
     const removeBtnId = `removeBtn-${notes[i].id}`
-    const removeBtn = new SuperElement(listElement, 'button', 'Task Completed', 'removeBtn', removeBtnId).element
-    removeBtn.addEventListener('click', () => {
+    const garbageIcon = new SuperElement(listElement, 'img', '', 'garbageIcon', removeBtnId).element
+    garbageIcon.src = 'images/delete_FILL0_wght400_GRAD0_opsz48.png'
+    garbageIcon.addEventListener('click', () => {
       const noteToRemove = document.getElementById(noteId)
       if (notes[i].list != 'complete') {      
       changeList(notes[i], 'complete')
@@ -225,7 +231,7 @@ const renderNotes = () => {
         renderNotes()
       }
       saveToLocalStorage()
-      removeBtn.remove()
+      garbageIcon.remove()
     })
   }
 }
@@ -279,6 +285,9 @@ const renderNoteInputs = () => {
     renderNotes()
     renderCheckList()
     saveToLocalStorage()        
+    listDiv.classList.remove('blur')
+    menuDiv.classList.remove('blur')
+    toggleScroll()
   })
 }
 
@@ -295,7 +304,7 @@ const renderListSelector = (parent, defaultValue) => {
   defaultOption.text = 'Select a List'
   listSelect.add(defaultOption)  
   const options = lists
-    .filter(item => item !== 'home' && item !== 'complete') // Exclude the "home" list
+    .filter(item => item !== 'all' && item !== 'complete') // Exclude the "all" list
     .map(item => {
       const option = document.createElement('option')
       option.value = item
@@ -337,7 +346,7 @@ const hideListNotesExcept = (displayedListId) => {
     const currentList = listOfLists[i]      
     if (currentList.id === displayedListId) {
       currentList.classList.remove('hide')
-    } else if (displayedListId === 'home') {
+    } else if (displayedListId === 'all') {
       listOfLists[i].classList.remove('hide')
     } else {
       currentList.classList.add('hide')
@@ -383,6 +392,9 @@ const renderNewNoteBtn = () => {
   newNoteBtn.addEventListener('click', () => {
     inputDiv.classList.remove('hide')
     inputDiv.classList.add('flexColumn')
+    listDiv.classList.add('blur')
+    menuDiv.classList.add('blur')
+    toggleScroll()
   })
 }
 
@@ -475,7 +487,7 @@ function toggleScroll() {
   
 
 const handleDefault = () => {
-  const defaultBtn = new SuperElement(menuDiv, 'button', 'Default Settings', 'defaultBtn', 'defaultBtn').element
+  const defaultBtn = new SuperElement(menuDiv, 'button', 'FULL RESET', 'defaultBtn', 'defaultBtn').element
   defaultBtn.addEventListener('click', () => {
     clearLocalStorage()
     // Reload the current page
@@ -487,7 +499,7 @@ const removeList = () => {
   menuDiv.innerHTML = ''
   lists.forEach((list, index) => {    
     //disable remove list bts for defaults
-    if (list !== 'complete' && list !== 'home' && list != 'day' && list != 'week') {
+    if (list !== 'complete' && list !== 'all' && list != 'day' && list != 'week') {
       const capitalList = capitalizeFirstLetter(list)
       const removeListBtn = new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`).element
       removeListBtn.addEventListener('click', () => {
@@ -605,9 +617,10 @@ const handlePriorityColor = (el, note) => {
 document.addEventListener('DOMContentLoaded', function() {  
   removeList()
   renderNoteInputs('inputDiv')  
-  handleDefault()
+  
   loadSavedLists()  
   renderNewListInput(menuDiv)
+  handleDefault()
   renderList()
   hideListNotesExcept(lists[0])
   loadSavedNotes()
