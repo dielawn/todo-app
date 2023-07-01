@@ -50,6 +50,7 @@
 .listHeader {
     font-weight: 900;
     padding: 10px;
+    height: fit-content;
 }
 .listHeader:hover {
     background-color:gray;
@@ -71,9 +72,12 @@
 
 .noteDiv {
     position: relative;
+    position: relative;
     padding: 10px;
     background-color: white;
     width: 90vw;
+    max-width: 800px;
+    
 }
 .checkListDiv {
     margin: 5px;
@@ -126,6 +130,7 @@ input {
     background-color: rgb(6, 138, 245);
     border-radius: 7px;
     width: 90vw;
+    max-width: 800px;
     padding: 50px;
 }
 #menuBtn {
@@ -144,13 +149,15 @@ input {
 }
 .blur {
     filter: blur(8px);
-  -webkit-filter: blur(8px);
+    -webkit-filter: blur(8px);
 }
+
 #editIcon {
     position: absolute;
-  bottom: 10px;
-  right: 10px;
+    bottom: 10px;
+    right: 10px;
 }
+
 .menuName {
     margin: 5px;
     padding: 5px;
@@ -166,4 +173,8 @@ input {
 }
 .addCLBtn:hover {
     box-shadow: 0 6px 8px 0 rgba(0,0,0,0.24), 0 8px 25px 0 rgba(0,0,0,0.19);
+}
+.checklistHeader {
+    display: flex;
+    align-items: center;
 }

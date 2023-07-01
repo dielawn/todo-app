@@ -139,16 +139,16 @@ openCloseMenu()
    
 const renderEditNote = (parent, i) => {  
   //title
-  const titleInput = new SuperElement(parent, 'input', '', 'editTitleInput', 'editTitleInput').element
+  const titleInput = new SuperElement(parent, 'input', '', 'editInput', 'editTitleInput').element
   titleInput.value = notes[i].title  
   //description
-  const editDescriptInput = new SuperElement(parent, 'input', '', 'editDescriptInput', 'editDescriptInput').element
+  const editDescriptInput = new SuperElement(parent, 'input', '', 'editInput', 'editDescriptInput').element
   editDescriptInput.value = notes[i].description
   //date
-  const editDateInput = new SuperElement(parent, 'input', '', 'editDateInput', 'editDateInput').element
+  const editDateInput = new SuperElement(parent, 'input', '', 'editInput', 'editDateInput').element
   editDateInput.value = notes[i].dueDate
   //time
-  const editTimeInput = new SuperElement(parent, 'input', '', 'editTimeInput', 'editTimeInput').element
+  const editTimeInput = new SuperElement(parent, 'input', '', 'editInput', 'editTimeInput').element
   editTimeInput.value = notes[i].time
   //priority
   const editPriorityDiv = new SuperElement(parent, 'div', '', 'prioritySelectDiv', 'editPriority').element
@@ -166,7 +166,7 @@ const renderEditNote = (parent, i) => {
   options.forEach(option => {
     prioritySelect.add(option)
   })       
-  let listSelectValue = renderListSelector(parent, notes[i].list)
+  let listSelectValue = renderListSelector(parent)
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
     saveTitleBtn.addEventListener('click', () => {
@@ -244,7 +244,8 @@ const renderNotes = () => {
     })
     //remove Btn
     const removeBtnId = `removeBtn-${notes[i].id}`
-    const garbageIcon = new SuperElement(listElement, 'img', '', 'icon', removeBtnId).element
+    const garbageIcon = new SuperElement(listElement, 'img', '', 'garbageIcon', removeBtnId).element
+    
     garbageIcon.src = 'images/delete_FILL0_wght400_GRAD0_opsz48.png'
     garbageIcon.addEventListener('click', () => {
       const noteToRemove = document.getElementById(noteId)
@@ -254,6 +255,7 @@ const renderNotes = () => {
         noteToRemove.remove()
         notes.splice(i, 1)
         renderNotes()
+        renderCheckList()
       }
       saveToLocalStorage()
       garbageIcon.remove()
@@ -264,16 +266,16 @@ const renderNotes = () => {
 const renderNoteInputs = () => {     
   inputDiv.classList.add('hide')
   //Title input
-  const titleInput = new SuperElement(inputDiv, 'input', '', 'titleInput', 'titleInput').element
+  const titleInput = new SuperElement(inputDiv, 'input', '', 'noteInput', 'titleInput').element
   titleInput.placeholder = 'Title'
   // Description input
-  const descInput = new SuperElement(inputDiv, 'input', '', 'descInput', 'descInput').element
+  const descInput = new SuperElement(inputDiv, 'input', '', 'noteInput', 'descInput').element
   descInput.placeholder = 'Description'
   //Date input
-  const dateInput = new SuperElement(inputDiv, 'input', '', 'dateInput', 'dateInput').element
+  const dateInput = new SuperElement(inputDiv, 'input', '', 'noteInput', 'dateInput').element
   dateInput.placeholder = 'Date'
   //Time input
-  const timeInput = new SuperElement(inputDiv, 'input', '', 'timeInput', 'timeInput').element
+  const timeInput = new SuperElement(inputDiv, 'input', '', 'noteInput', 'timeInput').element
   timeInput.placeholder = 'Time'
   //Priority Select
   const prioritySelectDiv = new SuperElement(inputDiv, 'div', '', 'prioritySelectDiv', 'prioritySelectDiv').element
@@ -291,28 +293,30 @@ const renderNoteInputs = () => {
   options.forEach(option => {
     prioritySelect.add(option)
   })
-  renderListSelector(inputDiv)
+  let listSelectValue = renderListSelector(inputDiv)
   const addNoteBtn = new SuperElement(inputDiv, 'button', 'Add Note', 'addNoteBtn', 'addNoteBtn').element
   addNoteBtn.addEventListener('click', () => {
-    // const noteId = `note-${Date.now()}`
     createNote(
       titleInput.value, 
       descInput.value, 
       dateInput.value, 
       timeInput.value, 
       prioritySelect.value, 
-      listSelect.value,  
+      listSelectValue.value,  
       `note-${Date.now()}`, 
       ''
     )
     inputDiv.classList.remove('flexColumn')
     inputDiv.classList.add('hide')
-    renderNotes()
-    renderCheckList()
+    
     saveToLocalStorage()        
     listDiv.classList.remove('blur')
     menuDiv.classList.remove('blur')
     toggleScroll()
+    renderNotes()
+    renderCheckList()
+    // renderListSelector(inputDiv)
+    // renderNoteInputs()
   })
 }
 
@@ -326,7 +330,7 @@ const renderListSelector = (parent, defaultValue) => {
   // Create the default option
   const defaultOption = document.createElement('option')
   defaultOption.value = ''
-  defaultOption.text = 'Select a List'
+  defaultOption.text = 'Select a Project'
   listSelect.add(defaultOption)  
   const options = lists
     .filter(item => item !== 'all' && item !== 'complete') // Exclude the "all" list
@@ -358,10 +362,12 @@ const renderNewListInput = (parent) => {
     renderList(lists)
     removeList()
     handleDefault()
-    renderListSelector(parent)
+    // renderListSelector(parent)
     renderNotes()
     renderCheckList()
     renderNewListInput(menuDiv)
+    renderNoteInputs()
+    renderListSelector(parent)
   })
 }
 
@@ -439,6 +445,7 @@ const addCheckList = (note, listItem) => {
 const renderNewNoteBtn = () => {
   const newNoteBtn = new SuperElement(containerDiv, 'button', '+', 'newNoteBtn', 'newNoteBtn').element
   newNoteBtn.addEventListener('click', () => {
+    document.querySelectorAll('.noteInput').value = ''
     inputDiv.classList.remove('hide')
     inputDiv.classList.add('flexColumn')
     listDiv.classList.add('blur')
@@ -598,8 +605,8 @@ const renderCheckList = () => {
       checkListDiv.innerHTML = ''
       
       const checkListHeader = new SuperElement(checkListDiv, 'div', 'Checklist', 'checklistHeader', 'checklistHeader').element
-      const expandIcon = new SuperElement(checkListDiv, 'img', '', 'icon', 'checkListIcon').element
-      expandIcon.src = 'images/expand_less_FILL0_wght400_GRAD0_opsz48.png'
+      const expandIcon = new SuperElement(checkListHeader, 'img', '', 'icon', 'checkListIcon').element
+      expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
         
         note.checkList.forEach((checkListItem, index) => {
         const checkListRow = new SuperElement(checkListDiv, 'div', '', 'checkListRow', `checkListRow-${noteId}`).element
@@ -608,14 +615,12 @@ const renderCheckList = () => {
         const textElement = new SuperElement(checkListRow, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
         checkBoxIcon.src = 'images/check_box_outline_blank_FILL0_wght400_GRAD0_opsz48.png'
         
-       
-
         expandIcon.addEventListener('click', () => {
           textElement.classList.toggle('hide')
           checkBoxIcon.classList.toggle('hide')
-          expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
+          expandIcon.src = 'images/expand_less_FILL0_wght400_GRAD0_opsz48.png'
           if(!textElement.classList.contains('hide')) {
-            expandIcon.src = 'images/expand_less_FILL0_wght400_GRAD0_opsz48.png'
+            expandIcon.src = 'images/expand_more_FILL0_wght400_GRAD0_opsz48.png'
           }
         })
         checkCompleted(textElement, noteId, index, checkBoxIcon)
@@ -670,7 +675,7 @@ const handlePriorityColor = (el, note) => {
 
 document.addEventListener('DOMContentLoaded', function() {  
   removeList()
-  renderNoteInputs('inputDiv')    
+  renderNoteInputs()    
   loadSavedLists()  
   renderNewListInput(menuDiv)  
   renderList()
