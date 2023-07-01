@@ -65,11 +65,15 @@
 .noteDiv {
     padding: 10px;
     background-color: white;
+    width: 90vw;
 }
 .checkListDiv {
     padding: 10px;
     background-color: rgba(0, 0, 0, .1);
     color:black;
+}
+.checkListIcon {
+    width: 35px;
 }
 .listItemInput {
     margin-bottom: 5px;

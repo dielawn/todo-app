@@ -199,14 +199,14 @@ const renderNotes = () => {
     //checklist
     const checkListDiv =  new SuperElement(listElement, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
     // Checklist Input
-    new SuperElement(listElement, 'input', '', 'listItemInput', 'listItemInput-' + i)
+    new SuperElement(checkListDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
     const listItemInputs = document.querySelectorAll('.listItemInput')
     const listInput = listItemInputs[i]
     if (listInput) {
       listInput.placeholder = 'Checklist Item'
     }
     // CheckList button
-    const addCLBtn = new SuperElement(listElement, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
+    const addCLBtn = new SuperElement(checkListDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
     addCLBtn.addEventListener('click', () => {
       addCheckList(notes[i], listInput.value)
       renderCheckList()
@@ -461,8 +461,18 @@ const viewHideMenu = () => {
     menuDiv.classList.toggle('hide')
     menuDiv.classList.toggle('flexColumn')
     listDiv.classList.toggle('blur')
+    toggleScroll()
   })
 }
+function toggleScroll() {
+ if (document.body.style.overflow != 'hidden') {
+  document.body.style.overflow = 'hidden'
+ } else {
+  document.body.style.overflow = 'auto'
+ }
+}
+
+  
 
 const handleDefault = () => {
   const defaultBtn = new SuperElement(menuDiv, 'button', 'Default Settings', 'defaultBtn', 'defaultBtn').element
@@ -519,10 +529,15 @@ const renderCheckList = () => {
     const note = notes.find(note => note.id === noteId)
     if (note.checkList.length > 0) {      
         checkListDiv.innerHTML = ''
-        const checkListHeader = new SuperElement(checkListDiv, 'p', 'Check List', 'checkListHeader', `checkListHeader-${noteId}`).element
-        checkListHeader.classList.add('underline')
+        const checkListIcon = new SuperElement(checkListDiv, 'img', '', 'checkListIcon', 'checkListIcon').element
+        checkListIcon.src = 'images/event_list_FILL0_wght400_GRAD0_opsz48.png'
+        
         note.checkList.forEach((checkListItem, index) => {
         const textElement = new SuperElement(checkListDiv, 'p', checkListItem.item, 'checkList', `checkList-${noteId}-${index}`).element
+        textElement.classList.add('hide')
+        checkListIcon.addEventListener('click', () => {
+          textElement.classList.toggle('hide')
+        })
         checkCompleted(textElement, noteId, index)
         textElement.addEventListener('click', () => {
           textElement.classList.toggle('lineThrough')
@@ -534,7 +549,23 @@ const renderCheckList = () => {
     } 
   })
 }
-
+const renderCheckListInput = (parent) => {
+  const checkListDiv =  new SuperElement(parent, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
+  // Checklist Input
+  new SuperElement(checkListDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
+  const listItemInputs = document.querySelectorAll('.listItemInput')
+  const listInput = listItemInputs[i]
+  if (listInput) {
+    listInput.placeholder = 'Checklist Item'
+  }
+  // CheckList button
+  const addCLBtn = new SuperElement(checkListDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
+  addCLBtn.addEventListener('click', () => {
+    addCheckList(notes[i], listInput.value)
+    renderCheckList()
+    saveToLocalStorage()
+  })
+}
 const checkCompleted = (element, noteId, index) => {
   const note = notes.find(note => note.id === noteId)
   if (note && index >= 0 && index < note.checkList.length) {
