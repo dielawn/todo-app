@@ -1,4 +1,4 @@
-import { format, formatDistance, subDays } from 'date-fns'
+import { format, Interval, isDate, } from 'date-fns'
 
   const lists = []
   const createNewList = (name) => {
@@ -666,11 +666,21 @@ const handlePriorityColor = (el, note) => {
   }
 }
 
+const isThisADate = (dateString) => {
+  const parsedDate = Date.parse(dateString);
+  const isValidDate = !isNaN(parsedDate);
+  console.log(isValidDate);
+};
+
 const handleDate = () => {
   const currentDate = new Date();
   const formattedDate = format(currentDate, 'yyyy-MM-dd');
-  console.log(formattedDate)
-}
+  console.log(formattedDate);
+  return formattedDate;
+};
+
+// const formattedDate = handleDate();
+// isThisADate(formattedDate);
 
 
 
@@ -689,7 +699,8 @@ document.addEventListener('DOMContentLoaded', function() {
   handleRemoveBtn()
   loadSavedCheckList()
   renderCheckList()  
-  handleDate()
+const formattedDate = handleDate();
+isThisADate(formattedDate);
 })
   
 //diagnostic tools
