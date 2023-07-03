@@ -1,4 +1,4 @@
-import { format, Interval, isDate, } from 'date-fns'
+import { format, isFuture, isDate, min, max,} from 'date-fns'
 
   const lists = []
   const createNewList = (name) => {
@@ -667,9 +667,8 @@ const handlePriorityColor = (el, note) => {
 }
 
 const isThisADate = (dateString) => {
-  const parsedDate = Date.parse(dateString);
-  const isValidDate = !isNaN(parsedDate);
-  console.log(isValidDate);
+  const result = isDate(new Date(dateString));
+  console.log(result);
 };
 
 const handleDate = () => {
@@ -681,7 +680,22 @@ const handleDate = () => {
 
 // const formattedDate = handleDate();
 // isThisADate(formattedDate);
+// const result = ;
 
+//date picker
+const renderDatePicker = () => {
+  
+  const datePicker = new SuperElement(containerDiv, 'div', 'Custom Date Picker', 'datePickerDiv', 'datePickerDiv').element
+  const selectedDate = new SuperElement(datePicker, 'div', '', 'selectedDate', 'selectedDate').element
+  const datesDiv = new SuperElement(datePicker, 'div', '', 'dates', 'dates').element
+  const monthDiv = new SuperElement(datesDiv, 'div', '', 'monthDiv', 'monthDiv').element
+  const prevArrow = new SuperElement(datesDiv, 'div', '', 'arrow', 'prevArrow').element
+  prevArrow.innerHTML = '&lt;'
+  const monthName = new SuperElement(datesDiv, 'div', '', 'monthName', 'monthName').element
+  const nextArrow = new SuperElement(datesDiv, 'div', '', 'arrow', 'nextArrow').element
+  nextArrow.innerHTML = '&gt;'
+  const daysDiv = new SuperElement(datesDiv, 'div', '', 'daysDiv', 'daysDiv').element
+}
 
 
 document.addEventListener('DOMContentLoaded', function() {  
@@ -701,6 +715,18 @@ document.addEventListener('DOMContentLoaded', function() {
   renderCheckList()  
 const formattedDate = handleDate();
 isThisADate(formattedDate);
+const result = isFuture(formattedDate)
+const dates = [
+  new Date(1989, 6, 10),
+  new Date(1987, 1, 11),
+  new Date(1995, 6, 2),
+  new Date(1990, 0, 1)
+]
+const minResult = min(dates)
+console.log(minResult)
+const maxResult = max(dates)
+console.log(maxResult)
+renderDatePicker()
 })
   
 //diagnostic tools
