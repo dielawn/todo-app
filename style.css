@@ -67,7 +67,7 @@
 }
 .checkList {
     margin: 10px;
-    z-index: 9999;
+   
 }
 
 .noteDiv {
@@ -142,9 +142,9 @@ input {
     background-color:  rgb(6, 138, 245);
     border-radius: 7px;
     padding: 50px;
-    position: absolute;
-    top: 150px;
-    left: 20vw;
+    position: fixed;
+    top: 6%;  
+    right: 8vw;
     z-index: 9998;
 }
 .blur {
@@ -189,6 +189,7 @@ input {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 .day::selection {
     color: #313131;
@@ -235,7 +236,7 @@ input {
 	left: 0;
 	right: 0;
 
-	background-color: #FFF;
+	background-color: white;
 }
 
 .dates.active {
@@ -247,6 +248,7 @@ input {
 	justify-content: space-between;
 	align-items: center;
 	border-bottom: 2px solid #EEE;
+    background-color: white;
 }
 
 .arrows {

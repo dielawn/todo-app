@@ -1,5 +1,5 @@
 import { format, isFuture, isDate, min, max, } from 'date-fns'
-const { getFullYear, getMonth, getDate, populateDates, goToNextMonth, goToPrevMonth } = require('./calendar.js');
+const { getFullYear, getMonth, getDate, populateDates, goToNextMonth, goToPrevMonth, toggleDatePicker } = require('./calendar.js');
 
 
   const lists = []
@@ -8,8 +8,8 @@ const { getFullYear, getMonth, getDate, populateDates, goToNextMonth, goToPrevMo
   }
 //default lists
 let viewAllList = createNewList('all')
-let dayList = createNewList('today')
-let weekList = createNewList('week')
+let dayList = createNewList('personal')
+let weekList = createNewList('professional')
 let completeList = createNewList('complete')
 
 const priorityLevel = ['Low', 'Medium', 'High', 'Urgent']  
@@ -226,8 +226,8 @@ const renderNotes = () => {
       const addCLBtn = new SuperElement(checkListInputDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
       addCLBtn.classList.add('boxShaddow')
       addCLBtn.addEventListener('click', () => {
-        addCheckList(notes[i], listInput.value)
-        listInput.value = ''
+        addCheckList(notes[i], listItemInput.value)
+        listItemInput.value = ''
         renderCheckList()
         saveToLocalStorage()
         
@@ -386,13 +386,7 @@ const viewHideCalendar = () => {
 const hideListNotesExcept = (displayedListId) => {
   const listOfLists = document.querySelectorAll('.list')   
   const listOfHeaders = document.querySelectorAll('.listHeader')
-  for (let i = 0; i < listOfHeaders.length; i++) {
-    if (displayedListId === 'all') {
-      if(displayedListId === listOfHeaders[i].textContent) {
-        
-      }
-    }
-  }
+  
   for (let i = 0; i < listOfLists.length; i++) {
     const currentList = listOfLists[i]          
     if (currentList.id === displayedListId) {
@@ -565,7 +559,7 @@ const removeList = () => {
   menuDiv.innerHTML = ''
   lists.forEach((list, index) => {    
     //disable remove list bts for defaults
-    if (list !== 'complete' && list !== 'all' && list != 'today' && list != 'week') {
+    if (list !== 'complete' && list !== 'all' && list != 'personal' && list != 'professional') {
      
       const capitalList = capitalizeFirstLetter(list)
       const removeListBtn = new SuperElement(menuDiv, 'button', `Remove ${capitalList} List`, 'removeBtn', `removeListBtn${index}`).element
@@ -586,8 +580,8 @@ const removeList = () => {
 
 const handleRemoveBtn = () => {
   //the remove btns were persistant even if the default lists had been disabled
-  const dayList = document.getElementById('today')
-  const weeklList = document.getElementById('week')
+  const dayList = document.getElementById('personal')
+  const weeklList = document.getElementById('professional')
   //check for element
   if (!weeklList) {
     const removeListBtn1 = document.getElementById('removeListBtn2')
@@ -686,7 +680,6 @@ const isThisADate = (dateString) => {
 const handleDate = () => {
   const currentDate = new Date();
   const formattedDate = format(currentDate, 'MM-dd-yyyy');
-  console.log(formattedDate);
   return formattedDate;
 };
 
@@ -702,9 +695,7 @@ const checkDueDates = () => {
   populateDates();
   for (let i = 0; i < notes.length; i++) {
     const dueDate = notes[i].dueDate;
-    console.log('duedate', dueDate)
     let date;
-    console.log(date)
     // Check if dueDate is a string and parse it to a Date object
     if (typeof dueDate === 'string') {
       date = new Date(dueDate);
@@ -715,12 +706,10 @@ const checkDueDates = () => {
       console.error(`Invalid dueDate value for note at index ${i}`);
       continue; // Skip this iteration and move to the next note
     }
-    console.log('date', date)
     // Use the functions from calendar.js to get the year, month, and day
     const year = getFullYear(date);
     const month = getMonth(date);
     const day = getDate(date);
-    console.log(year, month, day)
    // Create a new element for the due date on the calendar
    const dueDateElement = document.createElement('div');
    dueDateElement.classList.add('due-date');
@@ -732,20 +721,31 @@ const checkDueDates = () => {
    // Find the corresponding day element in the calendar
    const dayElements = document.querySelectorAll('.day');
    const targetDayElement = Array.from(dayElements).find((dayElement) => {      
-    console.log(dayElement.dataset.date)
      const date = new Date(year, month, day);
      const selectedDate = new Date(dayElement.dataset.date);
-     console.log('selected date: ', selectedDate);
      return date.getTime() === selectedDate.getTime();
    });
    
-   console.log(targetDayElement)
    // Add the due date element to the corresponding day element in the calendar
    if (targetDayElement) {
      targetDayElement.appendChild(dueDateElement);
    }
  }
 };
+// EVENT LISTENERS
+const selected_date_element = document.querySelector('.selected-date');
+
+selected_date_element.addEventListener('click', (e) => {
+  toggleDatePicker(e);
+  checkDueDates();
+  console.log(listDiv.classList)
+  listDiv.classList.toggle('flex')
+  listDiv.classList.toggle('hide');
+  console.log(listDiv.classList)
+ removeList()
+  
+});
+
 
 const next_mth_element = document.querySelector('.date-picker .dates .month .next-mth');
   const prev_mth_element = document.querySelector('.date-picker .dates .month .prev-mth');
@@ -758,6 +758,7 @@ const next_mth_element = document.querySelector('.date-picker .dates .month .nex
     checkDueDates()
   });
 
+let selectedDate = document.querySelector('.selected')
 
 
 document.addEventListener('DOMContentLoaded', function() {  
@@ -774,10 +775,8 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNewNoteBtn()
   handleRemoveBtn()
   loadSavedCheckList()
-  renderCheckList()  
-  
+  renderCheckList()    
   checkDueDates()
-
 })
   
 //diagnostic tools

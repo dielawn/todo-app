@@ -18,7 +18,8 @@ function getFullYear(date) {
     getDate,
     populateDates,
     goToNextMonth,
-    goToPrevMonth
+    goToPrevMonth, 
+    toggleDatePicker
   };
 
 
@@ -50,8 +51,6 @@ selected_date_element.dataset.value = selectedDate;
 
 populateDates();
 
-// EVENT LISTENERS
-selected_date_element.addEventListener('click', toggleDatePicker);
 
 
 // FUNCTIONS
@@ -68,6 +67,7 @@ function toggleDatePicker(e) {
   
   if (!checkEventPathForClass(path, 'dates')) {
     dates_element.classList.toggle('active');
+   
   }
 }
 
@@ -133,6 +133,7 @@ function populateDates() {
 		selectedMonth === month
 	  ) {
 		day_element.classList.add('selected');
+        //notes from this date only
 	  }
   
 	  day_element.addEventListener('click', function () {
