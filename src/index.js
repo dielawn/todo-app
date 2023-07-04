@@ -103,7 +103,6 @@ const capitalizeFirstLetter = (str) => {
     const listHeaderId = item + 'Header'
     let listHeader = document.getElementById(listHeaderId)  
     if (!listHeader) {
-      console.log(item)
       let capitalName
       if (item === 'all') {
         capitalName = 'View All'
@@ -115,7 +114,7 @@ const capitalizeFirstLetter = (str) => {
       menuList.addEventListener('click', () => {
         displayedList = item     
         hideListNotesExcept(displayedList)
-openCloseMenu()
+        openCloseMenu()
       })
       new SuperElement(listDiv, 'div', capitalName, 'listHeader', listHeaderId)
       
@@ -141,9 +140,11 @@ const renderEditNote = (parent, i) => {
   //date
   const editDateInput = new SuperElement(parent, 'input', '', 'editInput', 'editDateInput').element
   editDateInput.value = notes[i].dueDate
+  editDateInput.setAttribute('type', 'date')
   //time
   const editTimeInput = new SuperElement(parent, 'input', '', 'editInput', 'editTimeInput').element
   editTimeInput.value = notes[i].time
+  editTimeInput.setAttribute('type', 'time')
   //priority
   const editPriorityDiv = new SuperElement(parent, 'div', '', 'prioritySelectDiv', 'editPriority').element
   const editPriorityLabel = new SuperElement(editPriorityDiv, 'label', 'Priority', 'editPriorityLabel', 'editPriorityLabel').element
@@ -164,6 +165,7 @@ const renderEditNote = (parent, i) => {
   //save btn
   const saveTitleBtn = new SuperElement(parent, 'button', 'Save', 'saveBtn', 'saveTitleBtn').element
     saveTitleBtn.addEventListener('click', () => {
+      console.log(dateInput.value)
       changeNote(
         notes[i], 
         titleInput.value, 
@@ -175,6 +177,8 @@ const renderEditNote = (parent, i) => {
         )    
       renderCheckList()
       saveToLocalStorage()
+      renderNotes()
+      renderCheckList()
     })   
   }
 
@@ -193,7 +197,7 @@ const renderNotes = () => {
     //note title
     let displayedTitle = new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`).element
     
-    
+    console.log(notes[i].dueDate)
     const displayedDesc = new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`).element
     const displayedDate = new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`).element
     const displayedTime = new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`).element
@@ -208,13 +212,15 @@ const renderNotes = () => {
    
       const checkListDiv =  new SuperElement(checkListContent, 'div', '', 'checkListDiv', `checkListDiv-${notes[i].id}`).element
       // Checklist Input
-      new SuperElement(checkListInputDiv, 'input', '', 'listItemInput', 'listItemInput-' + i)
-      const listItemInputs = document.querySelectorAll('.listItemInput')
-      const listInput = listItemInputs[i]
-      if (listInput) {
-        listInput.placeholder = 'Checklist Item'
-      }
-      // CheckList button
+      let listIndex = 0; // Counter variable for the list index
+
+      // Creating a new note and checklist input
+      const listItemInput = new SuperElement(checkListInputDiv, 'input', '', 'listItemInput', 'listItemInput-' + listIndex).element;
+      listItemInput.placeholder = 'Checklist Item';
+      
+      // Incrementing the list index for the next list
+      listIndex++;
+    
       const addCLBtn = new SuperElement(checkListInputDiv, 'button', 'Add Checklist Item', 'addCLBtn', 'addCLBtn-' + i).element
       addCLBtn.classList.add('boxShaddow')
       addCLBtn.addEventListener('click', () => {
@@ -253,6 +259,7 @@ const renderNotes = () => {
       }
       saveToLocalStorage()
       garbageIcon.remove()
+      renderCheckList()
     })
   }
 }
@@ -267,10 +274,14 @@ const renderNoteInputs = () => {
   descInput.placeholder = 'Description'
   //Date input
   const dateInput = new SuperElement(inputDiv, 'input', '', 'noteInput', 'dateInput').element
-  dateInput.placeholder = 'Date'
+  dateInput.setAttribute('type', 'date')
+  const today = new Date();
+  const formattedDate = today.toISOString().substr(0, 10);
+  dateInput.value = formattedDate;
   //Time input
   const timeInput = new SuperElement(inputDiv, 'input', '', 'noteInput', 'timeInput').element
   timeInput.placeholder = 'Time'
+  timeInput.setAttribute('type', 'time')
   //Priority Select
   const prioritySelectDiv = new SuperElement(inputDiv, 'div', '', 'prioritySelectDiv', 'prioritySelectDiv').element
   const prioritySelectLabel = new SuperElement(prioritySelectDiv, 'label', 'Priority', 'prioritySelectLabel', 'prioritySelectLabel').element
@@ -365,17 +376,19 @@ const renderNewListInput = (parent) => {
   })
 }
 
+const viewHideCalendar = () => {
+
+}
+
 const hideListNotesExcept = (displayedListId) => {
   const listOfLists = document.querySelectorAll('.list')   
   const listOfHeaders = document.querySelectorAll('.listHeader')
-  console.log(displayedListId)
   for (let i = 0; i < listOfHeaders.length; i++) {
     if (displayedListId === 'all') {
       if(displayedListId === listOfHeaders[i].textContent) {
         
       }
     }
-    console.log(listOfHeaders[i].textContent)
   }
   for (let i = 0; i < listOfLists.length; i++) {
     const currentList = listOfLists[i]          
@@ -393,14 +406,11 @@ const hideListNotesExcept = (displayedListId) => {
 }
 const underlineToggleElement = (el) => {
  const listHeaders = document.querySelectorAll('.listHeader')
-console.log(listHeaders) 
-for (let i = 0; i < listHeaders.length; i++) {
-  console.log(listHeaders[i])
+for (let i = 0; i < listHeaders.length; i++) {  
   if (listHeaders[i].classList.contains('underline')) {
     listHeaders[i].classList.remove('underline')
   }
 }
-
   el.classList.add('underline')
 }
 const clearNoteEl = () => {
@@ -673,7 +683,7 @@ const isThisADate = (dateString) => {
 
 const handleDate = () => {
   const currentDate = new Date();
-  const formattedDate = format(currentDate, 'yyyy-MM-dd');
+  const formattedDate = format(currentDate, 'MM-dd-yyyy');
   console.log(formattedDate);
   return formattedDate;
 };
@@ -699,23 +709,16 @@ document.addEventListener('DOMContentLoaded', function() {
   handleRemoveBtn()
   loadSavedCheckList()
   renderCheckList()  
-const formattedDate = handleDate();
-isThisADate(formattedDate);
-const result = isFuture(formattedDate)
-const dates = [
-  new Date(1989, 6, 10),
-  new Date(1987, 1, 11),
-  new Date(1995, 6, 2),
-  new Date(1990, 0, 1)
-]
-const minResult = min(dates)
-console.log(minResult)
-const maxResult = max(dates)
-console.log(maxResult)
+
 
 })
   
 //diagnostic tools
+const logNotes = () => {
+  for (let i = 0; i < notes.length; i++) {
+    console.log(notes[i])
+  }
+}
 const logCheckList = () => {
   for (let i = 0; i < notes.length; i++) {
     for (let j = 0; j < notes[i].checkList.length; j++) {       
