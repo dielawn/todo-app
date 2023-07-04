@@ -1,5 +1,6 @@
 import { format, isFuture, isDate, min, max, } from 'date-fns'
-const { getFullYear, getMonth, getDate, populateDates } = require('./calendar.js');
+const { getFullYear, getMonth, getDate, populateDates, goToNextMonth, goToPrevMonth } = require('./calendar.js');
+
 
   const lists = []
   const createNewList = (name) => {
@@ -321,6 +322,7 @@ const renderNoteInputs = () => {
     toggleScroll()
     renderNotes()
     renderCheckList()
+    checkDueDates()
     // renderListSelector(inputDiv)
     // renderNoteInputs()
   })
@@ -745,7 +747,16 @@ const checkDueDates = () => {
  }
 };
 
-
+const next_mth_element = document.querySelector('.date-picker .dates .month .next-mth');
+  const prev_mth_element = document.querySelector('.date-picker .dates .month .prev-mth');
+  next_mth_element.addEventListener('click', () => {
+    goToNextMonth()
+    checkDueDates()
+  })
+  prev_mth_element.addEventListener('click', () => {
+    goToPrevMonth()
+    checkDueDates()
+  });
 
 
 
@@ -764,6 +775,7 @@ document.addEventListener('DOMContentLoaded', function() {
   handleRemoveBtn()
   loadSavedCheckList()
   renderCheckList()  
+  
   checkDueDates()
 
 })

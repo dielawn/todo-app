@@ -1,3 +1,5 @@
+const { checkDueDates } = require('./index.js');
+
 function getFullYear(date) {
     return date.getFullYear();
   }
@@ -14,16 +16,19 @@ function getFullYear(date) {
     getFullYear,
     getMonth,
     getDate,
-    populateDates
+    populateDates,
+    goToNextMonth,
+    goToPrevMonth
   };
+
+
   
   
 const date_picker_element = document.querySelector('.date-picker');
 const selected_date_element = document.querySelector('.date-picker .selected-date');
 const dates_element = document.querySelector('.date-picker .dates');
 const mth_element = document.querySelector('.date-picker .dates .month .mth');
-const next_mth_element = document.querySelector('.date-picker .dates .month .next-mth');
-const prev_mth_element = document.querySelector('.date-picker .dates .month .prev-mth');
+
 const days_element = document.querySelector('.date-picker .dates .days');
 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -47,8 +52,7 @@ populateDates();
 
 // EVENT LISTENERS
 selected_date_element.addEventListener('click', toggleDatePicker);
-next_mth_element.addEventListener('click', goToNextMonth);
-prev_mth_element.addEventListener('click', goToPrevMonth);
+
 
 // FUNCTIONS
 function toggleDatePicker(e) {
