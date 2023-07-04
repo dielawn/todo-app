@@ -13,7 +13,8 @@ function getFullYear(date) {
   module.exports = {
     getFullYear,
     getMonth,
-    getDate
+    getDate,
+    populateDates
   };
   
   
@@ -119,6 +120,8 @@ function populateDates() {
 	  const day_element = document.createElement('div');
 	  day_element.classList.add('day');
 	  day_element.textContent = i;
+      const dateString = `${year}-${month + 1}-${i + 1}`;
+      day_element.setAttribute('data-date', dateString);
   
 	  if (
 		selectedDay === i &&
@@ -138,7 +141,7 @@ function populateDates() {
 		selected_date_element.dataset.value = selectedDate;
   
 		populateDates();
-		toggleDatePicker('click');
+		// toggleDatePicker('click');
 	  });
   
 	  days_element.appendChild(day_element);

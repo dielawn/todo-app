@@ -1,5 +1,5 @@
 import { format, isFuture, isDate, min, max, } from 'date-fns'
-const { getFullYear, getMonth, getDate } = require('./calendar.js');
+const { getFullYear, getMonth, getDate, populateDates } = require('./calendar.js');
 
   const lists = []
   const createNewList = (name) => {
@@ -180,6 +180,7 @@ const renderEditNote = (parent, i) => {
       saveToLocalStorage()
       renderNotes()
       renderCheckList()
+      checkDueDates()
     })   
   }
 
@@ -691,10 +692,17 @@ const handleDate = () => {
 // isThisADate(formattedDate);
 // const result = ;
 const checkDueDates = () => {
+  const dayContainers = document.querySelectorAll('.day');
+ 
+  for (let i = 0; i < dayContainers.length; i++) {
+    dayContainers[i].innerHTML = ''
+  }
+  populateDates();
   for (let i = 0; i < notes.length; i++) {
     const dueDate = notes[i].dueDate;
+    console.log('duedate', dueDate)
     let date;
-
+    console.log(date)
     // Check if dueDate is a string and parse it to a Date object
     if (typeof dueDate === 'string') {
       date = new Date(dueDate);
@@ -705,28 +713,31 @@ const checkDueDates = () => {
       console.error(`Invalid dueDate value for note at index ${i}`);
       continue; // Skip this iteration and move to the next note
     }
-
+    console.log('date', date)
     // Use the functions from calendar.js to get the year, month, and day
     const year = getFullYear(date);
     const month = getMonth(date);
     const day = getDate(date);
-
+    console.log(year, month, day)
    // Create a new element for the due date on the calendar
    const dueDateElement = document.createElement('div');
    dueDateElement.classList.add('due-date');
 
    // Set any desired content or styling for the due date element
-   dueDateElement.textContent = 'Due';
-   dueDateElement.style.backgroundColor = 'red';
-
+   dueDateElement.textContent = notes[i].title;
+ 
+    handlePriorityColor(dueDateElement, notes[i])
    // Find the corresponding day element in the calendar
    const dayElements = document.querySelectorAll('.day');
-   const targetDayElement = Array.from(dayElements).find((dayElement) => {
+   const targetDayElement = Array.from(dayElements).find((dayElement) => {      
+    console.log(dayElement.dataset.date)
      const date = new Date(year, month, day);
-     const selectedDate = new Date(dayElement.dataset.value);
+     const selectedDate = new Date(dayElement.dataset.date);
+     console.log('selected date: ', selectedDate);
      return date.getTime() === selectedDate.getTime();
    });
-
+   
+   console.log(targetDayElement)
    // Add the due date element to the corresponding day element in the calendar
    if (targetDayElement) {
      targetDayElement.appendChild(dueDateElement);

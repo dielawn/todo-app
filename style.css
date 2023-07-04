@@ -202,7 +202,7 @@ input {
 .date-picker {
 	position: relative;
 	width: 100%;
-	max-width: 500px;
+	max-width: 700px;
 	height: 60px;
 	background-color: #FFF;
 	margin: 30px auto;
@@ -250,8 +250,8 @@ input {
 }
 
 .arrows {
-	width: 35px;
-	height: 35px;
+	width: 50px;
+	height: 50px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -272,15 +272,22 @@ input {
 	grid-template-columns: repeat(7, 1fr);
 	height: 200px;
 }
-.day-names {
-	display: grid;
-	justify-content: center;
-	align-items: center;
-}
-.day { 
+.dayNames {
+    background-color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+    width: 100%;
+    z-index: 9995;
+}
+.day { 
+    
+    border: solid black 1px;
+    height: 75px;
+	display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
 	color: #313131;
     background-color: white;
     z-index: 9997;
@@ -290,4 +297,8 @@ input {
 }
 .day.selected {
 	background-color: #00CA85;
+}
+.due-date {
+    width: 100%;
+    text-align: left;
 }
