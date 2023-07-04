@@ -1,4 +1,5 @@
 import { format, isFuture, isDate, min, max, } from 'date-fns'
+const { getFullYear, getMonth, getDate } = require('./calendar.js');
 
   const lists = []
   const createNewList = (name) => {
@@ -197,7 +198,6 @@ const renderNotes = () => {
     //note title
     let displayedTitle = new SuperElement(noteDiv, 'p', notes[i].title, 'note', `${notes[i].id}-noteTitle`).element
     
-    console.log(notes[i].dueDate)
     const displayedDesc = new SuperElement(noteDiv, 'p', notes[i].description, 'note', `${notes[i].id}-noteDesc`).element
     const displayedDate = new SuperElement(noteDiv, 'p', notes[i].dueDate, 'note', `${notes[i].id}-noteDueDate`).element
     const displayedTime = new SuperElement(noteDiv, 'p', notes[i].time, 'note', `${notes[i].id}-noteTime`).element
@@ -604,8 +604,7 @@ const renderCheckList = () => {
     const checkListDiv = document.getElementById(`checkListDiv-${noteId}`)   
    
     const note = notes.find(note => note.id === noteId)
-    console.log(note.checkList.length)
-   
+       
       checkListDiv.innerHTML = ''
       
       const checkListHeader = new SuperElement(checkListDiv, 'div', 'Checklist', 'checklistHeader', 'checklistHeader').element
@@ -691,6 +690,51 @@ const handleDate = () => {
 // const formattedDate = handleDate();
 // isThisADate(formattedDate);
 // const result = ;
+const checkDueDates = () => {
+  for (let i = 0; i < notes.length; i++) {
+    const dueDate = notes[i].dueDate;
+    let date;
+
+    // Check if dueDate is a string and parse it to a Date object
+    if (typeof dueDate === 'string') {
+      date = new Date(dueDate);
+    } else if (dueDate instanceof Date) {
+      date = dueDate;
+    } else {
+      // Handle invalid dueDate value
+      console.error(`Invalid dueDate value for note at index ${i}`);
+      continue; // Skip this iteration and move to the next note
+    }
+
+    // Use the functions from calendar.js to get the year, month, and day
+    const year = getFullYear(date);
+    const month = getMonth(date);
+    const day = getDate(date);
+
+   // Create a new element for the due date on the calendar
+   const dueDateElement = document.createElement('div');
+   dueDateElement.classList.add('due-date');
+
+   // Set any desired content or styling for the due date element
+   dueDateElement.textContent = 'Due';
+   dueDateElement.style.backgroundColor = 'red';
+
+   // Find the corresponding day element in the calendar
+   const dayElements = document.querySelectorAll('.day');
+   const targetDayElement = Array.from(dayElements).find((dayElement) => {
+     const date = new Date(year, month, day);
+     const selectedDate = new Date(dayElement.dataset.value);
+     return date.getTime() === selectedDate.getTime();
+   });
+
+   // Add the due date element to the corresponding day element in the calendar
+   if (targetDayElement) {
+     targetDayElement.appendChild(dueDateElement);
+   }
+ }
+};
+
+
 
 
 
@@ -709,7 +753,7 @@ document.addEventListener('DOMContentLoaded', function() {
   handleRemoveBtn()
   loadSavedCheckList()
   renderCheckList()  
-
+  checkDueDates()
 
 })
   

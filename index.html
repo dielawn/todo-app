@@ -9,13 +9,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-   
+    
+
 </head>
 <body>
     <div class="container" id="container">
         <div class="menuDiv" id="menuDiv"></div>
+        <div class="calendarDiv" id="calendarDiv">
+            <div class="date-picker">
+                <div class="selected-date"></div>
+        
+                <div class="dates">
+                    <div class="month">
+                        <div class="arrows prev-mth">&lt;</div>
+                        <div class="mth"></div>
+                        <div class="arrows next-mth">&gt;</div>
+                    </div>
+        
+                    <div class="days"></div>
+                </div>
+            </div>
+            </div>
         <div class="listDiv" id="listDiv"></div>
         <div class="inputDiv" id="inputDiv"></div>
+        
+        </div>
     </div>
     <script src="../dist/bundle.js" defer></script>
 </body>
