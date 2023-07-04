@@ -178,3 +178,18 @@ input {
     display: flex;
     align-items: center;
 }
+
+.weekDiv {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    height: 200px;
+}
+.day {
+    grid-column: span 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.day::selection {
+    color: #313131;
+}
