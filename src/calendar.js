@@ -19,18 +19,19 @@ function getFullYear(date) {
     populateDates,
     goToNextMonth,
     goToPrevMonth, 
-    toggleDatePicker
+    toggleDatePicker,
+    formatDate
   };
 
 
   
   
 const date_picker_element = document.querySelector('.date-picker');
-const selected_date_element = document.querySelector('.date-picker .selected-date');
-const dates_element = document.querySelector('.date-picker .dates');
-const mth_element = document.querySelector('.date-picker .dates .month .mth');
+const selected_date_element = document.querySelector('.selected-date');
+const dates_element = document.querySelector('.dates');
+const mth_element = document.querySelector('.mth');
 
-const days_element = document.querySelector('.date-picker .dates .days');
+const days_element = document.querySelector('.days');
 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -47,7 +48,7 @@ let selectedYear = year;
 mth_element.textContent = months[month] + ' ' + year;
 
 selected_date_element.textContent = formatDate(date);
-selected_date_element.dataset.value = selectedDate;
+selected_date_element.dataset.value = formatDate(selectedDate);
 
 populateDates();
 
@@ -124,7 +125,8 @@ function populateDates() {
 	  const day_element = document.createElement('div');
 	  day_element.classList.add('day');
 	  day_element.textContent = i;
-      const dateString = `${year}-${month + 1}-${i + 1}`;
+      const dateString = `${year}-${(month + 1).toString().padStart(2, '0')}-${(i + 1).toString().padStart(2, '0')}`;
+      console.log(dateString)
       day_element.setAttribute('data-date', dateString);
   
 	  if (
@@ -143,8 +145,9 @@ function populateDates() {
 		selectedYear = year;
   
 		selected_date_element.textContent = formatDate(selectedDate);
-		selected_date_element.dataset.value = selectedDate;
-  
+		selected_date_element.dataset.value = formatDate(selectedDate);
+          console.log(formatDate(selectedDate))
+          console.log(selected_date_element.dataset.value)
 		populateDates();
 		// toggleDatePicker('click');
 	  });
@@ -163,18 +166,19 @@ function checkEventPathForClass (path, selector) {
 	
 	return false;
 }
-function formatDate (date) {
-	let day = date.getDate();
-	if (day < 10) {
-		day = '0' + day;
-	}
-
-	let month = date.getMonth() + 1;
-	if (month < 10) {
-		month = '0' + month;
-	}
-
-	let year = date.getFullYear();
-
-	return month + ' / ' + day + ' / ' + year;
-}
+function formatDate(date) {
+    let day = date.getDate();
+    if (day < 10) {
+      day = '0' + day;
+    }
+  
+    let month = date.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+  
+    let year = date.getFullYear();
+  
+    return year + '-' + month + '-' + day;
+  }
+  

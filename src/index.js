@@ -1,5 +1,5 @@
 import { format, isFuture, isDate, min, max, } from 'date-fns'
-const { getFullYear, getMonth, getDate, populateDates, goToNextMonth, goToPrevMonth, toggleDatePicker } = require('./calendar.js');
+const { getFullYear, getMonth, getDate, populateDates, goToNextMonth, goToPrevMonth, toggleDatePicker, formatDate } = require('./calendar.js');
 
 
   const lists = []
@@ -379,8 +379,9 @@ const renderNewListInput = (parent) => {
   })
 }
 
-const viewHideCalendar = () => {
-
+const hideNotesExcept = () => {
+ let noteDiv = document.querySelectorAll('.noteDiv')
+console.log(noteDiv)
 }
 
 const hideListNotesExcept = (displayedListId) => {
@@ -720,28 +721,59 @@ const checkDueDates = () => {
     handlePriorityColor(dueDateElement, notes[i])
    // Find the corresponding day element in the calendar
    const dayElements = document.querySelectorAll('.day');
-   const targetDayElement = Array.from(dayElements).find((dayElement) => {      
+   const targetDayElement = Array.from(dayElements).find((dayElement) => {
      const date = new Date(year, month, day);
-     const selectedDate = new Date(dayElement.dataset.date);
-     return date.getTime() === selectedDate.getTime();
+     const selectedDate = new Date(dayElement.getAttribute('data-date'));
+     const formattedDate = formatDate(selectedDate); // Format the selected date
+   
+     return formattedDate === dayElement.getAttribute('data-date');
    });
    
+  console.log('selected date: ', selectedDate.getAttribute('data-date'))
+   console.log('day elements: ', dayElements)
+   console.log(dayElements.length)
+   for (let i = 0; i < dayElements.length; i++) {
+    console.log(dayElements[i].getAttribute('data-date'));
+
+   }
+ 
+   
+   
+
    // Add the due date element to the corresponding day element in the calendar
    if (targetDayElement) {
      targetDayElement.appendChild(dueDateElement);
    }
+  for (let j = 0; j < dayElements.length; j++) {
+    // let testElement = formatDate(dayElements[j].dataset.date)
+    // console.log(testElement)
+    let dateString = notes[i].dueDate
+   
+    const dateData = dayElements[j].dataset.date
+    console.log('note[i]date string: ', dateString)
+    console.log(`element date: ${dateData}`);
+    if (dayElements[j].dataset.date === dateString) {
+      console.log('they match!')
+    } else {
+      console.log('they do not match')
+    }
+
+    targetDayElement.addEventListener('click', () => {
+      
+      console.log(typeof(dateData));
+     })
+  }
+   
  }
 };
 // EVENT LISTENERS
 const selected_date_element = document.querySelector('.selected-date');
-
+console.log(selected_date_element)
 selected_date_element.addEventListener('click', (e) => {
-  toggleDatePicker(e);
-  checkDueDates();
-  console.log(listDiv.classList)
+  toggleDatePicker(e)
+  checkDueDates()
   listDiv.classList.toggle('flex')
-  listDiv.classList.toggle('hide');
-  console.log(listDiv.classList)
+  listDiv.classList.toggle('hide')
  removeList()
   
 });
@@ -777,6 +809,7 @@ document.addEventListener('DOMContentLoaded', function() {
   loadSavedCheckList()
   renderCheckList()    
   checkDueDates()
+ 
 })
   
 //diagnostic tools
