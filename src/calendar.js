@@ -125,8 +125,8 @@ function populateDates() {
 	  const day_element = document.createElement('div');
 	  day_element.classList.add('day');
 	  day_element.textContent = i;
-      const dateString = `${year}-${(month + 1).toString().padStart(2, '0')}-${(i + 1).toString().padStart(2, '0')}`;
-      console.log(dateString)
+      const dateString = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+
       day_element.setAttribute('data-date', dateString);
   
 	  if (
@@ -145,7 +145,7 @@ function populateDates() {
 		selectedYear = year;
   
 		selected_date_element.textContent = formatDate(selectedDate);
-		selected_date_element.dataset.value = formatDate(selectedDate);
+		// selected_date_element.dataset.value = formatDate(selectedDate);
           console.log(formatDate(selectedDate))
           console.log(selected_date_element.dataset.value)
 		populateDates();
