@@ -684,105 +684,69 @@ const handleDate = () => {
   return formattedDate;
 };
 
-// const formattedDate = handleDate();
-// isThisADate(formattedDate);
-// const result = ;
+
 const checkDueDates = () => {
   const dayContainers = document.querySelectorAll('.day');
- 
+
   for (let i = 0; i < dayContainers.length; i++) {
-    dayContainers[i].innerHTML = ''
+    dayContainers[i].innerHTML = '';
   }
+
   populateDates();
+
   for (let i = 0; i < notes.length; i++) {
     const dueDate = notes[i].dueDate;
     let date;
-    // Check if dueDate is a string and parse it to a Date object
+
     if (typeof dueDate === 'string') {
       date = new Date(dueDate);
     } else if (dueDate instanceof Date) {
       date = dueDate;
     } else {
-      // Handle invalid dueDate value
       console.error(`Invalid dueDate value for note at index ${i}`);
-      continue; // Skip this iteration and move to the next note
+      continue;
     }
-    // Use the functions from calendar.js to get the year, month, and day
+
     const year = getFullYear(date);
     const month = getMonth(date);
     const day = getDate(date);
-   // Create a new element for the due date on the calendar
-   const dueDateElement = document.createElement('div');
-   dueDateElement.classList.add('due-date');
 
-   // Set any desired content or styling for the due date element
-   dueDateElement.textContent = notes[i].title;
- 
-    handlePriorityColor(dueDateElement, notes[i])
-   // Find the corresponding day element in the calendar
-   const dayElements = document.querySelectorAll('.day');
+    const dueDateElement = document.createElement('div');
+    dueDateElement.classList.add('due-date');
+    // dueDateElement.id = `dueDateLink${i}`
+    // const dueDateLink = document.getElementById(`dueDateLink${i}`)
+  
+    dueDateElement.textContent = notes[i].title;
+    dueDateElement.addEventListener('click', () => {
+      console.log('you found it!')
+    })
+    handlePriorityColor(dueDateElement, notes[i]);
 
-   const targetDayElement = Array.from(dayElements).find((dayElement) => {
-    const date = new Date(year, month, day);
-    const selectedDate = new Date(dayElement.getAttribute('data-date'));
-    selectedDate.setUTCHours(0, 0, 0, 0);
-    console.log('SELECTED: ', selectedDate);
-  
-    const formattedDate = formatDate(selectedDate);
-    console.log('FORMATTED: ', formattedDate);
-    console.log('ELEMENT: ', dayElement.getAttribute('data-date'));
-  
-    const elementDate = new Date(`${dayElement.getAttribute('data-date')}T00:00:00Z`);
-    const elementDateUTC = new Date(Date.UTC(elementDate.getUTCFullYear(), elementDate.getUTCMonth(), elementDate.getUTCDate()));
-    const formattedElementDate = formatDate(elementDateUTC);
-    console.log('FORMATTED ELEMENT: ', formattedElementDate);
-  
-    if (formattedDate === formattedElementDate) {
-      console.log('we have a match!', formattedDate);
-    } else {
-      console.log('not so much', dayElement.getAttribute('data-date'));
-    }
-  
-    return formattedDate === formattedElementDate;
-  });
-  
-  
+    const dayElements = document.querySelectorAll('.day');
    
-  console.log('selected date: ', selectedDate.getAttribute('data-date'))
-   console.log('day elements: ', dayElements)
-   console.log(dayElements.length)
-   for (let i = 0; i < dayElements.length; i++) {
-    // console.log(dayElements[i].getAttribute('data-date'));
 
-   }
- console.log(targetDayElement)
-   // Add the due date element to the corresponding day element in the calendar
-   if (targetDayElement) {
-     targetDayElement.appendChild(dueDateElement);
-   }
-  for (let j = 0; j < dayElements.length; j++) {
-    // let testElement = formatDate(dayElements[j].dataset.date)
-    // console.log(testElement)
-    let dateString = notes[i].dueDate
-   
-    const dateData = dayElements[j].getAttribute('data-date')
-    console.log('note[i]date string: ', dateString)
-    console.log(`element date: ${dateData}`);
-    if (dayElements[j].dataset.date === dateString) {
-      console.log('they match!')
-    } else {
-      console.log('they do not match')
+    for (let j = 0; j < dayElements.length; j++) {
+      const dayElement = dayElements[j];
+      const elementDate = new Date(dayElement.getAttribute('data-date'));
+      elementDate.setUTCHours(0, 0, 0, 0);
+
+      const formattedElementDate = formatDate(elementDate);
+
+      dayElement.addEventListener('click', () => {
+        checkDueDates()
+      })
+
+      if (formattedElementDate === formatDate(date)) {
+        dayElement.appendChild(dueDateElement);
+        break; // Stop iterating once the element is appended
+      }
     }
-
-    targetDayElement.addEventListener('click', () => {      
-      console.log(dateData);
-     })
   }
- }
 };
 
+
 // EVENT LISTENERS
-const selected_date_element = document.querySelector('.selected-date');
+const selected_date_element = document.querySelector('.selected-date')
 console.log(selected_date_element)
 selected_date_element.addEventListener('click', (e) => {
   toggleDatePicker(e)
@@ -791,7 +755,7 @@ selected_date_element.addEventListener('click', (e) => {
   listDiv.classList.toggle('hide')
  removeList()
   
-});
+})
 
 
 const next_mth_element = document.querySelector('.date-picker .dates .month .next-mth');
@@ -803,7 +767,7 @@ const next_mth_element = document.querySelector('.date-picker .dates .month .nex
   prev_mth_element.addEventListener('click', () => {
     goToPrevMonth()
     checkDueDates()
-  });
+  })
 
 let selectedDate = document.querySelector('.selected')
 

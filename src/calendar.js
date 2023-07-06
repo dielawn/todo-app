@@ -146,8 +146,8 @@ function populateDates() {
   
 		selected_date_element.textContent = formatDate(selectedDate);
 		// selected_date_element.dataset.value = formatDate(selectedDate);
-          console.log(formatDate(selectedDate))
-          console.log(selected_date_element.dataset.value)
+        //   console.log(formatDate(selectedDate))
+        //   console.log(selected_date_element.dataset.value)
 		populateDates();
 		// toggleDatePicker('click');
 	  });
