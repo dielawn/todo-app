@@ -61,6 +61,7 @@
     
 }
 .note {
+   
     display: flex;
     font-weight: 100;
     padding: 1px;
@@ -71,13 +72,13 @@
 }
 
 .noteDiv {
+    max-width: 450px;
     position: relative;
     position: relative;
     padding: 10px;
     background-color: white;
     width: 90vw;
-    max-width: 800px;
-    
+        
 }
 .checkListDiv {
     margin: 5px;

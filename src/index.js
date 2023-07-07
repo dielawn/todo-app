@@ -195,21 +195,12 @@ const renderNotesBySelectedDate = (index) => {
   calendarNoteDiv.className = 'calendarNoteDiv';
   
   // Append the new div to the calendarDiv (assuming calendarDiv is already defined)
-  calendarDiv.appendChild(calendarNoteDiv);
-
-  // for (let i = 0; i < notes.length; i++) {
-  //   let noteId = notes[i].id
-  //   let noteDueDate = notes[i].dueDate
-  //   console.log('due date: ', noteDueDate)
-  //   console.log('selected date: ', selectedDate.getAttribute('data-date'))
-   
-      console.log('they match! such progress')
-      calendarNoteDiv.innerHTML = `${notes[index].title} <br> 
-      ${notes[index].description} <br>
-       ${notes[index].time}`
-    }
-
-// }
+  calendarDiv.appendChild(calendarNoteDiv)
+  console.log('they match! such progress')
+  calendarNoteDiv.innerHTML = `${notes[index].title} <br> 
+    ${notes[index].description} <br>
+    ${notes[index].time}`
+}
 
 const renderNotes = () => {
   clearNoteEl()
@@ -349,8 +340,8 @@ const renderNoteInputs = () => {
     renderNotes()
     renderCheckList()
     checkDueDates()
-    // renderListSelector(inputDiv)
-    // renderNoteInputs()
+    renderListSelector(inputDiv)
+    renderNoteInputs()
   })
 }
 
@@ -396,7 +387,6 @@ const renderNewListInput = (parent) => {
     renderList(lists)
     removeList()
     handleDefault()
-    // renderListSelector(parent)
     renderNotes()
     renderCheckList()
     renderNewListInput(menuDiv)
@@ -784,10 +774,17 @@ selected_date_element.addEventListener('click', (e) => {
   checkDueDates()
   listDiv.classList.toggle('flex')
   listDiv.classList.toggle('hide')
- removeList()
+  let calendarNoteDiv = document.getElementById('calendarNoteDiv')
+  if (calendarNoteDiv) {
+    calendarNoteDiv.classList.add('hide')
+  }
   
+ removeList()
+ renderNewListInput(menuDiv)
+ renderList()
+ handleDefault()
+ renderNotes()
 })
-
 
 const next_mth_element = document.querySelector('.date-picker .dates .month .next-mth');
   const prev_mth_element = document.querySelector('.date-picker .dates .month .prev-mth');
@@ -799,9 +796,6 @@ const next_mth_element = document.querySelector('.date-picker .dates .month .nex
     goToPrevMonth()
     checkDueDates()
   })
-
-let selectedDate = document.querySelector('.selected')
-
 
 document.addEventListener('DOMContentLoaded', function() {  
   removeList()
