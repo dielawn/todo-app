@@ -185,6 +185,32 @@ const renderEditNote = (parent, i) => {
     })   
   }
 
+const renderNotesBySelectedDate = (index) => {
+  let calendarNoteDiv = document.getElementById('calendarNoteDiv');
+  if (calendarNoteDiv) {
+    calendarNoteDiv.remove();
+  }  
+  calendarNoteDiv = document.createElement('div');
+  calendarNoteDiv.id = 'calendarNoteDiv';
+  calendarNoteDiv.className = 'calendarNoteDiv';
+  
+  // Append the new div to the calendarDiv (assuming calendarDiv is already defined)
+  calendarDiv.appendChild(calendarNoteDiv);
+
+  // for (let i = 0; i < notes.length; i++) {
+  //   let noteId = notes[i].id
+  //   let noteDueDate = notes[i].dueDate
+  //   console.log('due date: ', noteDueDate)
+  //   console.log('selected date: ', selectedDate.getAttribute('data-date'))
+   
+      console.log('they match! such progress')
+      calendarNoteDiv.innerHTML = `${notes[index].title} <br> 
+      ${notes[index].description} <br>
+       ${notes[index].time}`
+    }
+
+// }
+
 const renderNotes = () => {
   clearNoteEl()
   for (let i = 0; i < notes.length; i++) {
@@ -707,37 +733,42 @@ const checkDueDates = () => {
       continue;
     }
 
-    const year = getFullYear(date);
-    const month = getMonth(date);
-    const day = getDate(date);
+    // const year = getFullYear(date);
+    // const month = getMonth(date);
+    // const day = getDate(date);
 
     const dueDateElement = document.createElement('div');
     dueDateElement.classList.add('due-date');
-    // dueDateElement.id = `dueDateLink${i}`
-    // const dueDateLink = document.getElementById(`dueDateLink${i}`)
-  
     dueDateElement.textContent = notes[i].title;
-    dueDateElement.addEventListener('click', () => {
-      console.log('you found it!')
-    })
+
     handlePriorityColor(dueDateElement, notes[i]);
 
     const dayElements = document.querySelectorAll('.day');
-   
 
     for (let j = 0; j < dayElements.length; j++) {
       const dayElement = dayElements[j];
       const elementDate = new Date(dayElement.getAttribute('data-date'));
       elementDate.setUTCHours(0, 0, 0, 0);
 
-      const formattedElementDate = formatDate(elementDate);
-
       dayElement.addEventListener('click', () => {
         checkDueDates()
+        console.log(dayElement.getAttribute('data-date'))
       })
+
+      const formattedElementDate = formatDate(elementDate);
 
       if (formattedElementDate === formatDate(date)) {
         dayElement.appendChild(dueDateElement);
+
+        // Create a closure to capture the value of i for each iteration
+        (function (noteIndex) {
+          dueDateElement.addEventListener('click', () => {
+            if (notes[noteIndex].dueDate === dayElement.getAttribute('data-date')) {
+              renderNotesBySelectedDate(noteIndex)
+            }
+          });
+        })(i);
+
         break; // Stop iterating once the element is appended
       }
     }

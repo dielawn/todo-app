@@ -304,3 +304,8 @@ input {
     width: 100%;
     text-align: left;
 }
+.calendarNoteDiv {
+   position: absolute;
+   bottom: 75px;
+    color: black;
+}
